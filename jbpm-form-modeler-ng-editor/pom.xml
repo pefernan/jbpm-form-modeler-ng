@@ -14,5 +14,10 @@
 
   <name>jBPM Form Modeler NG - Editor</name>
   <description>jBPM Form Modeler NG - Editor</description>
+  <modules>
+    <module>jbpm-form-modeler-ng-editor-api</module>
+    <module>jbpm-form-modeler-ng-editor-backend</module>
+    <module>jbpm-form-modeler-ng-editor-client</module>
+  </modules>
 
 </project>

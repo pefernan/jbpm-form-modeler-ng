@@ -30,7 +30,7 @@ public interface FormSerializationManager extends Serializable {
 
     String generateHeaderFormFormId(long formId) throws IOException;
 
-    Form loadFormFromXML(String xml, String path) throws Exception;
+    Form loadFormFromXML(String xml, Map<String, Object> context) throws Exception;
 
     Form loadFormFromXML(String xml) throws Exception;
 

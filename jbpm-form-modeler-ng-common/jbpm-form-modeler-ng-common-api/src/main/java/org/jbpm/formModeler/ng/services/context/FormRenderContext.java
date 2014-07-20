@@ -25,20 +25,19 @@ public class FormRenderContext implements Serializable {
     private String UID;
     private Form form;
     private boolean readonly = false;
-    private Map<String, Object> inputData;
-    private Map<String, Object> outputData;
+    private Map<String, Object> data;
     private boolean submit = false;
     private int errors;
     private Map<String, Object> contextForms = new HashMap<String, Object>();
+    private Map<String, Object> attributes = new HashMap<String, Object>();
 
     public FormRenderContext() {
     }
 
-    public FormRenderContext(String uid, Form form, Map<String, Object> inputData, Map<String, Object> outputData) {
+    public FormRenderContext(String uid, Form form, Map<String, Object> data) {
         this.UID = uid;
         this.form = form;
-        this.inputData = inputData;
-        this.outputData = outputData;
+        this.data = this.data;
     }
 
     public String getUID() {
@@ -53,12 +52,8 @@ public class FormRenderContext implements Serializable {
         this.form = form;
     }
 
-    public Map<String, Object> getInputData() {
-        return inputData;
-    }
-
-    public Map<String, Object> getOutputData() {
-        return outputData;
+    public Map<String, Object> getData() {
+        return data;
     }
 
     public boolean isReadonly() {
@@ -91,5 +86,9 @@ public class FormRenderContext implements Serializable {
 
     public void setContextForms(Map<String, Object> contextForms) {
         this.contextForms = contextForms;
+    }
+
+    public Map<String, Object> getAttributes() {
+        return attributes;
     }
 }

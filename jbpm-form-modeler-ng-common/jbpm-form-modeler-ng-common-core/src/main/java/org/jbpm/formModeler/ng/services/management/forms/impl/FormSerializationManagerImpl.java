@@ -100,9 +100,9 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
     }
 
     @Override
-    public Form loadFormFromXML(String xml, String path) throws Exception {
+    public Form loadFormFromXML(String xml, Map<String, Object> context) throws Exception {
         if (StringUtils.isBlank(xml)) return null;
-        return loadFormFromXML(new InputSource(new StringReader(xml)), path, null);
+        return loadFormFromXML(new InputSource(new StringReader(xml)), context, null);
     }
 
     @Override
@@ -130,16 +130,16 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
         return deserializeForm(rootNode, null, resources);
     }
 
-    public Form loadFormFromXML(InputSource source, String path, Map<String, Properties> resources) throws Exception {
+    public Form loadFormFromXML(InputSource source,Map<String, Object> context, Map<String, Properties> resources) throws Exception {
         DOMParser parser = new DOMParser();
         parser.parse(source);
         Document doc = parser.getDocument();
         NodeList nodes = doc.getElementsByTagName(NODE_FORM);
         Node rootNode = nodes.item(0);
-        return deserializeForm(rootNode, path, resources);
+        return deserializeForm(rootNode, context, resources);
     }
 
-    public Form deserializeForm(Node nodeForm, String path, Map<String, Properties> resources) throws Exception {
+    public Form deserializeForm(Node nodeForm, Map<String, Object> context, Map<String, Properties> resources) throws Exception {
         if (!nodeForm.getNodeName().equals(NODE_FORM)) return null;
 
         Form form = formManager.createForm();
@@ -181,7 +181,7 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
                 if (!StringUtils.isEmpty(holderId) && !StringUtils.isEmpty(holderType) && !StringUtils.isEmpty(holderValue)) {
 
                     DataHolderBuildConfig config = new DataHolderBuildConfig(holderId, holderInputId, holderOutId, holderRenderColor, holderValue);
-                    config.addAttribute("path", path);
+                    config.addAttribute("path", context.get("path"));
                     if (!StringUtils.isEmpty(holderSupportedType))
                         config.addAttribute(ATTR_SUPPORTED_TYPE, holderSupportedType);
 

@@ -25,7 +25,7 @@ public class DataHolderBuildConfig {
     private String renderColor;
     private String className;
 
-    private Map<String, String> attributes = new HashMap<String, String>();
+    private Map<String, Object> attributes = new HashMap<String, Object>();
 
     public DataHolderBuildConfig(String holderId, String inputId, String outputId, String renderColor, String className) {
         this.holderId = holderId;
@@ -67,11 +67,11 @@ public class DataHolderBuildConfig {
         this.renderColor = renderColor;
     }
 
-    public void addAttribute(String attribute, String value) {
+    public void addAttribute(String attribute, Object value) {
         this.attributes.put(attribute, value);
     }
 
-    public String getAttribute(String attribute) {
+    public Object getAttribute(String attribute) {
         return this.attributes.get(attribute);
     }
 
