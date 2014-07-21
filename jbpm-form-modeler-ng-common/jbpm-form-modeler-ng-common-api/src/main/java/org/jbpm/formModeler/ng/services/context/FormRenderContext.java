@@ -37,7 +37,7 @@ public class FormRenderContext implements Serializable {
     public FormRenderContext(String uid, Form form, Map<String, Object> data) {
         this.UID = uid;
         this.form = form;
-        this.data = this.data;
+        this.data = data;
     }
 
     public String getUID() {

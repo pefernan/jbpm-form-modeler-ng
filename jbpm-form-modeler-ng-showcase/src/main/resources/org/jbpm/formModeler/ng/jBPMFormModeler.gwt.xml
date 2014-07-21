@@ -41,6 +41,8 @@
   <!-- Form-Modeler -->
   <inherits name="org.jbpm.formModeler.ng.editor.FormModelerEditorAPI"/>
   <inherits name="org.jbpm.formModeler.ng.editor.FormModelerEditorClient"/>
+  <inherits name="org.jbpm.formModeler.ng.renderer.FormModelerRendererAPI"/>
+  <inherits name="org.jbpm.formModeler.ng.renderer.FormRendererClient"/>
 
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/uberfire-showcase.css'/>

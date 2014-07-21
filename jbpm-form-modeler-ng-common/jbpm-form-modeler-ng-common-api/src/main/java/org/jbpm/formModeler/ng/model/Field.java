@@ -32,13 +32,15 @@ public class Field extends FormElement {
     private Boolean readonly = Boolean.FALSE;
 
     private String fieldClass;
+    private FieldValueMarshaller marshaller;
 
     private String inputBinding;
     private String outputBinding;
 
-    public Field(String code, String fieldClass, String icon) {
+    public Field(String code, String fieldClass, FieldValueMarshaller marshaller, String icon) {
         this.code = code;
         this.fieldClass = fieldClass;
+        this.marshaller = marshaller;
         this.icon = icon;
     }
 
@@ -106,8 +108,12 @@ public class Field extends FormElement {
         this.outputBinding = outputBinding;
     }
 
+    public FieldValueMarshaller getMarshaller() {
+        return marshaller;
+    }
+
     @Override
     public Field clone() {
-        return new Field(code, fieldClass, icon);
+        return new Field(code, fieldClass, marshaller, icon);
     }
 }

@@ -21,6 +21,7 @@ import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.workbench.model.menu.MenuFactory;
+import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.IconType;
 import org.uberfire.workbench.model.toolbar.ToolBar;
@@ -30,6 +31,8 @@ import org.uberfire.workbench.model.toolbar.impl.DefaultToolBarItem;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 @ApplicationScoped
 @WorkbenchPerspective(identifier = "home", isDefault = true)
@@ -87,6 +90,19 @@ public class HomePerspective {
         return this.menus;
     }
 
+    private List<? extends MenuItem> getFormDisplay() {
+        final List<MenuItem> result = new ArrayList<MenuItem>( 1 );
+
+        result.add( MenuFactory.newSimpleItem("Form Display").respondsWith( new Command() {
+            @Override
+            public void execute() {
+                placeManager.goTo( new DefaultPlaceRequest( "FMDisplayPerspective" ) );
+            }
+        } ).endMenu().build().getItems().get( 0 ) );
+
+        return result;
+    }
+
     @WorkbenchToolBar
     public ToolBar getToolBar() {
         return this.toolBar;
@@ -109,6 +125,10 @@ public class HomePerspective {
 
                 .newTopLevelMenu("Tools")
                 .withItems(projectMenu.getMenuItems())
+                .endMenu()
+
+                .newTopLevelMenu("Form Display")
+                .withItems(getFormDisplay())
                 .endMenu()
 
                 .build();

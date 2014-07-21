@@ -340,6 +340,18 @@
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-form-modeler-ng-editor-client</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-form-modeler-ng-renderer-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-form-modeler-ng-renderer-backend</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-form-modeler-ng-renderer-client</artifactId>
+    </dependency>
 
   </dependencies>
 
@@ -407,6 +419,8 @@
             <!-- Form Modeler -->
             <compileSourcesArtifact>org.jbpm:jbpm-form-modeler-ng-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.jbpm:jbpm-form-modeler-ng-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.jbpm:jbpm-form-modeler-ng-renderer-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.jbpm:jbpm-form-modeler-ng-renderer-client</compileSourcesArtifact>
 
           </compileSourcesArtifacts>
           <runTarget>org.jbpm.formModeler.ng.jBPMFormModeler/jBPM.html</runTarget>

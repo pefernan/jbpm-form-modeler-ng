@@ -1,0 +1,104 @@
+<form id="735331523">
+  <property name="subject" value=""/>
+  <property name="name" value="user.form"/>
+  <property name="displayMode" value="default"/>
+  <property name="status" value="0"/>
+  <field position="0" name="dbid" type="InputTextLong" id="3264234352712">
+    <property name="fieldRequired" value="false"/>
+    <property name="groupWithPrevious" value="false"/>
+    <property name="label" value="quot;enquot;,quot;Dbidquot;"/>
+    <property name="readonly" value="false"/>
+    <property name="inputBinding" value="user/dbid"/>
+    <property name="outputBinding" value="user/dbid"/>
+    <property name="newItemText" value=""/>
+    <property name="addItemText" value=""/>
+    <property name="cancelItemText" value=""/>
+    <property name="fieldClass" value="java.lang.Long"/>
+  </field>
+  <field position="1" name="name" type="InputText" id="3264544672712">
+    <property name="fieldRequired" value="false"/>
+    <property name="groupWithPrevious" value="false"/>
+    <property name="label" value="quot;enquot;,quot;Namequot;"/>
+    <property name="readonly" value="false"/>
+    <property name="inputBinding" value="user/name"/>
+    <property name="outputBinding" value="user/name"/>
+    <property name="newItemText" value=""/>
+    <property name="addItemText" value=""/>
+    <property name="cancelItemText" value=""/>
+    <property name="fieldClass" value="java.lang.String"/>
+  </field>
+  <field position="1" name="surname" type="InputText" id="3264544672712">
+    <property name="fieldRequired" value="false"/>
+    <property name="groupWithPrevious" value="true"/>
+    <property name="label" value="quot;enquot;,quot;Namequot;"/>
+    <property name="readonly" value="false"/>
+    <property name="inputBinding" value="user/surname"/>
+    <property name="outputBinding" value="user/surname"/>
+    <property name="newItemText" value=""/>
+    <property name="addItemText" value=""/>
+    <property name="cancelItemText" value=""/>
+    <property name="fieldClass" value="java.lang.String"/>
+  </field>
+  <field position="2" name="birthday" type="InputShortDate" id="578188446">
+    <property name="fieldRequired" value="false"/>
+    <property name="groupWithPrevious" value="false"/>
+    <property name="label" value="quot;enquot;,quot;Birthdayquot;"/>
+    <property name="readonly" value="false"/>
+    <property name="inputBinding" value="user/birthday"/>
+    <property name="outputBinding" value="user/birthday"/>
+    <property name="newItemText" value=""/>
+    <property name="addItemText" value=""/>
+    <property name="cancelItemText" value=""/>
+    <property name="fieldClass" value="java.util.Date"/>
+  </field>
+  <field position="3" name="startDate" type="InputDate" id="57818844646">
+    <property name="fieldRequired" value="false"/>
+    <property name="groupWithPrevious" value="false"/>
+    <property name="label" value="quot;enquot;,quot;StartDatequot;"/>
+    <property name="readonly" value="false"/>
+    <property name="inputBinding" value="user/startDate"/>
+    <property name="outputBinding" value="user/startDate"/>
+    <property name="newItemText" value=""/>
+    <property name="addItemText" value=""/>
+    <property name="cancelItemText" value=""/>
+    <property name="fieldClass" value="java.util.Date"/>
+  </field>
+  <field position="4" name="married" type="CheckBox" id="1881018412">
+    <property name="fieldRequired" value="false"/>
+    <property name="groupWithPrevious" value="false"/>
+    <property name="label" value="quot;enquot;,quot;Marriedquot;"/>
+    <property name="readonly" value="false"/>
+    <property name="inputBinding" value="user/married"/>
+    <property name="outputBinding" value="user/married"/>
+    <property name="newItemText" value=""/>
+    <property name="addItemText" value=""/>
+    <property name="cancelItemText" value=""/>
+    <property name="fieldClass" value="java.lang.Boolean"/>
+  </field>
+  <field position="5" name="address" type="InputText" id="32645275412">
+    <property name="fieldRequired" value="false"/>
+    <property name="groupWithPrevious" value="false"/>
+    <property name="label" value="quot;enquot;,quot;Addressquot;"/>
+    <property name="readonly" value="false"/>
+    <property name="inputBinding" value="user/address"/>
+    <property name="outputBinding" value="user/address"/>
+    <property name="newItemText" value=""/>
+    <property name="addItemText" value=""/>
+    <property name="cancelItemText" value=""/>
+    <property name="fieldClass" value="java.lang.String"/>
+  </field>
+  <field position="6" name="phone" type="InputText" id="32645276512">
+    <property name="fieldRequired" value="false"/>
+    <property name="groupWithPrevious" value="false"/>
+    <property name="label" value="quot;enquot;,quot;Phonequot;"/>
+    <property name="readonly" value="false"/>
+    <property name="inputBinding" value="user/phone"/>
+    <property name="outputBinding" value="user/phone"/>
+    <property name="newItemText" value=""/>
+    <property name="addItemText" value=""/>
+    <property name="cancelItemText" value=""/>
+    <property name="fieldClass" value="java.lang.String"/>
+  </field>
+  <dataHolder inputId="user" name="#0000A0" type="className" outId="user"
+              value="org.jbpm.formModeler.ng.renderer.backend.test.User" id="user"/>
+</form>

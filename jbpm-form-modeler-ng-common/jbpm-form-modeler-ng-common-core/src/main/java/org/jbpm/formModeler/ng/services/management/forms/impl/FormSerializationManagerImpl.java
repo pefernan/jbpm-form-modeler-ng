@@ -127,7 +127,7 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
         Document doc = parser.getDocument();
         NodeList nodes = doc.getElementsByTagName(NODE_FORM);
         Node rootNode = nodes.item(0);
-        return deserializeForm(rootNode, null, resources);
+        return deserializeForm(rootNode, new HashMap<String, Object>(), resources);
     }
 
     public Form loadFormFromXML(InputSource source,Map<String, Object> context, Map<String, Properties> resources) throws Exception {
@@ -181,7 +181,7 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
                 if (!StringUtils.isEmpty(holderId) && !StringUtils.isEmpty(holderType) && !StringUtils.isEmpty(holderValue)) {
 
                     DataHolderBuildConfig config = new DataHolderBuildConfig(holderId, holderInputId, holderOutId, holderRenderColor, holderValue);
-                    config.addAttribute("path", context.get("path"));
+                    if (context.get("path") != null)config.addAttribute("path", context.get("path"));
                     if (!StringUtils.isEmpty(holderSupportedType))
                         config.addAttribute(ATTR_SUPPORTED_TYPE, holderSupportedType);
 

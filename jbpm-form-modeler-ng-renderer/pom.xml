@@ -15,4 +15,10 @@
   <name>jBPM Form Modeler NG - Renderer</name>
   <description>jBPM Form Modeler NG - Renderer</description>
 
+  <modules>
+    <module>jbpm-form-modeler-ng-renderer-api</module>
+    <module>jbpm-form-modeler-ng-renderer-backend</module>
+    <module>jbpm-form-modeler-ng-renderer-client</module>
+  </modules>
+
 </project>

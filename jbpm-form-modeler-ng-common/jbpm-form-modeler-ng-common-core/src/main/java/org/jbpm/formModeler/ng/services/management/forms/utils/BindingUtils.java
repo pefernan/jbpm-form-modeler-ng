@@ -62,5 +62,38 @@ public class BindingUtils {
         return false;
     }
 
+    public static DataHolder getFormDataHolderForField(Field field) {
+        if (field == null || (field.getInputBinding() == null && field.getOutputBinding() == null)) return null;
 
+        for (DataHolder holder : field.getForm().getHolders()) {
+            if (holderSupportsExpression(holder, field.getInputBinding())){
+                return holder;
+            } else if (holderSupportsExpression(holder, field.getOutputBinding())){
+                return holder;
+            }
+        }
+        return null;
+    }
+
+    protected static boolean holderSupportsExpression(DataHolder holder, String bindingExpression) {
+        if (StringUtils.isEmpty(bindingExpression)) return false;
+
+        String[] parts = bindingExpression.split("/");
+
+        if (parts.length <= 2) return holderSupportsId(holder, parts[0]);
+
+        return false;
+    }
+
+    protected static boolean holderSupportsId(DataHolder holder, String holderId) {
+        if (StringUtils.isEmpty(holderId)) return false;
+        return holder.getUniqueId().equals(holderId) || holderId.equals(holder.getInputId()) || holderId.equals(holder.getOutputId());
+    }
+
+    public static String extractInputExpression(String expression) {
+        if (StringUtils.isEmpty(expression)) return "";
+        String[] parts = expression.split("/");
+        if (parts.length == 1) return parts[0];
+        return parts[1];
+    }
 }
