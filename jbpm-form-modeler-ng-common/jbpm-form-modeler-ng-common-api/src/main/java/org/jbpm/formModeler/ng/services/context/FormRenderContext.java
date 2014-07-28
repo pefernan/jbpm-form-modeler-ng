@@ -19,25 +19,27 @@ import org.jbpm.formModeler.ng.model.Form;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class FormRenderContext implements Serializable {
     private String UID;
     private Form form;
     private boolean readonly = false;
-    private Map<String, Object> data;
+    private Map<String, Object> inputData;
+    private Map<String, Object> outputData;
     private boolean submit = false;
     private int errors;
+    private Locale currentLocale;
     private Map<String, Object> contextForms = new HashMap<String, Object>();
     private Map<String, Object> attributes = new HashMap<String, Object>();
 
-    public FormRenderContext() {
-    }
-
-    public FormRenderContext(String uid, Form form, Map<String, Object> data) {
+    public FormRenderContext(String uid, Form form, Map<String, Object> inputData, Map<String, Object> outputData, Locale locale) {
         this.UID = uid;
         this.form = form;
-        this.data = data;
+        this.inputData = inputData;
+        this.outputData = outputData;
+        currentLocale = locale;
     }
 
     public String getUID() {
@@ -52,8 +54,12 @@ public class FormRenderContext implements Serializable {
         this.form = form;
     }
 
-    public Map<String, Object> getData() {
-        return data;
+    public Map<String, Object> getInputData() {
+        return inputData;
+    }
+
+    public Map<String, Object> getOutputData() {
+        return outputData;
     }
 
     public boolean isReadonly() {
@@ -82,6 +88,10 @@ public class FormRenderContext implements Serializable {
 
     public Map<String, Object> getContextForms() {
         return contextForms;
+    }
+
+    public Locale getCurrentLocale() {
+        return currentLocale;
     }
 
     public void setContextForms(Map<String, Object> contextForms) {

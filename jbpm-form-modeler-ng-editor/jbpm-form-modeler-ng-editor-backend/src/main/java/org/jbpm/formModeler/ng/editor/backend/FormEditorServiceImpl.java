@@ -105,7 +105,7 @@ public class FormEditorServiceImpl implements FormEditorService {
     }
 
     @Override
-    public FormEditorContextTO loadForm(Path path) {
+    public FormEditorContextTO loadForm(Path path, String localeName) {
         try {
             org.uberfire.java.nio.file.Path kiePath = Paths.convert(path);
 
@@ -123,7 +123,7 @@ public class FormEditorServiceImpl implements FormEditorService {
                 form = formManager.createForm(path.getFileName());
             }
 
-            ContextConfiguration config = new ContextConfiguration(form, new HashMap<String, Object>());
+            ContextConfiguration config = new ContextConfiguration(form, new HashMap<String, Object>(), new HashMap<String, Object>(), new Locale(localeName));
             config.addAttribute("path", path);
 
             FormRenderContext context = contextManager.newContext(config);

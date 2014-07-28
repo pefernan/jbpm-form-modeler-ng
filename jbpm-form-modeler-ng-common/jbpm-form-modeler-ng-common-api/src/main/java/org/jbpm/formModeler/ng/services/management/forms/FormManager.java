@@ -67,4 +67,6 @@ public interface FormManager extends Serializable {
     Form getFormByName(String name);
 
     void addDataHolderField(Form form, DataHolder holder, DataFieldHolder field);
+
+    void setSystemForms(List<Form> systemForms);
 }

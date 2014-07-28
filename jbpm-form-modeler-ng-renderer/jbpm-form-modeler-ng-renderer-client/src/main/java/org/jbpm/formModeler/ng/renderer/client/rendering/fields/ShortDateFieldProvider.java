@@ -26,7 +26,7 @@ public class ShortDateFieldProvider extends FieldProvider {
         final DateBox datepicker = new DateBox();
         datepicker.setId(description.getId());
         datepicker.setWidth("25");
-        datepicker.setValue(new Date(Long.decode(description.getValue())));
+        if (description.getValue() != null && !description.getValue().isEmpty()) datepicker.setValue(new Date(Long.decode(description.getValue())));
         datepicker.addValueChangeHandler(new ValueChangeHandler<Date>() {
             @Override
             public void onValueChange(ValueChangeEvent<Date> dateValueChangeEvent) {

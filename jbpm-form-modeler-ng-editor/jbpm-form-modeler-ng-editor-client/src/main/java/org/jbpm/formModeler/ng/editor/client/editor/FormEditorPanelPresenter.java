@@ -15,6 +15,7 @@
  */
 package org.jbpm.formModeler.ng.editor.client.editor;
 
+import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
@@ -134,7 +135,7 @@ public class FormEditorPanelPresenter {
                     }
                 });
             }
-        }).loadForm(path);
+        }).loadForm(path, LocaleInfo.getCurrentLocale().getLocaleName());
     }
 
     public void refreshDataHoldersTable() {

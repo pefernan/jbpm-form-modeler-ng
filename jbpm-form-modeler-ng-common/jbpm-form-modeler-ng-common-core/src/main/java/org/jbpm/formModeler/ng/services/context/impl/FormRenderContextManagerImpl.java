@@ -18,7 +18,7 @@ public class FormRenderContextManagerImpl implements FormRenderContextManager, S
     public FormRenderContext newContext(ContextConfiguration config) {
         String uid = CTX_PREFFIX + config.getForm().getId() + "_" + System.currentTimeMillis();
 
-        FormRenderContext ctx = new FormRenderContext(uid, config.getForm(), config.getLoadData());
+        FormRenderContext ctx = new FormRenderContext(uid, config.getForm(), config.getInputData(), config.getOutputData(), config.getLocale());
         ctx.setContextForms((Map<String, Object>) config.getAttribute("forms"));
 
         formRenderContextMap.put(uid, ctx);

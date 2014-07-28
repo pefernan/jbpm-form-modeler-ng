@@ -29,6 +29,10 @@ public class FormDisplayerViewImpl extends Composite implements FormDisplayerPre
 
     @Inject
     @DataField
+    private Button buttonEmpty;
+
+    @Inject
+    @DataField
     private Button submit;
 
     @Inject
@@ -68,10 +72,16 @@ public class FormDisplayerViewImpl extends Composite implements FormDisplayerPre
         presenter.startTest();
     }
 
+    @EventHandler("buttonEmpty")
+    public void startEmpty(ClickEvent event) {
+        presenter.startEmptyTest();
+    }
+
     @Override
     public void init(FormDisplayerPresenter presenter) {
         this.presenter = presenter;
         button.setText("Start Test");
+        buttonEmpty.setText("Start Empty Test");
         submit.setVisible(false);
         submit.setText("Submit");
     }

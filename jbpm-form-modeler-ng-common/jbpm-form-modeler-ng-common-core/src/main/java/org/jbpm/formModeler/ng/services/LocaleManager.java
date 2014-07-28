@@ -19,7 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-@SessionScoped
+@ApplicationScoped
 @Named("localeManager")
 public class LocaleManager implements Serializable {
 
@@ -81,6 +81,7 @@ public class LocaleManager implements Serializable {
      * @return a Locale whose toString() equals given localeId, or null if it doesn't exist
      */
     public Locale getLocaleById(String localeId) {
+        if ("default".equals(localeId)) localeId = defaultLocaleId;
         Locale[] allLocales = getAllLocales();
         for (int i = 0; i < allLocales.length; i++) {
             Locale locale = allLocales[i];
@@ -161,21 +162,6 @@ public class LocaleManager implements Serializable {
         return getPlatformAvailableLangs();
     }
 
-    /**
-     * Get the current language for displaying contents
-     */
-    public String getCurrentLang() {
-        return getCurrentLocale().toString();
-    }
-
-    /**
-     * Set the current language for displaying contents
-     */
-    public void setCurrentLang(String langId) {
-        Locale locale = getLocaleById(langId);
-        if (locale != null) setCurrentLocale(locale);
-        else log.error("Can't set current lang to {}", langId);
-    }
 
     /**
      * Get the default language for the platform
@@ -192,21 +178,11 @@ public class LocaleManager implements Serializable {
      * @param localizedData
      * @return appropiate value for given locale.
      */
-    public Object localize(Map localizedData) {
-        if (localizedData == null) return null;
-        String lang = getCurrentLocale().getLanguage();
+    public Object localize(Map localizedData, Locale currentLocale) {
+        if (localizedData == null || currentLocale == null) return null;
 
-        Object data = localizedData.get(lang);
+        Object data = localizedData.get(currentLocale.getLanguage());
         if (data != null && (!(data instanceof String) || !"".equals(data)))
-            return data;
-
-        Locale locale = getCurrentLocale();
-        data = localizedData.get(locale);
-        if (null != data && (!(data instanceof String) || !"".equals(data)))
-            return data;
-
-        data = localizedData.get(getDefaultLang());
-        if (null != data && (!(data instanceof String) || !"".equals(data)))
             return data;
 
         return localizedData.get(getDefaultLocale());

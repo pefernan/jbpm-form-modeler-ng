@@ -3,25 +3,38 @@ package org.jbpm.formModeler.ng.services.context;
 import org.jbpm.formModeler.ng.model.Form;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class ContextConfiguration {
     private Form form;
-    private Map<String, Object> loadData;
+    private Map<String, Object> inputData;
+    private Map<String, Object> outputData;
     private Map<String, Object> attributes;
+    private Locale locale;
 
-    public ContextConfiguration(Form form, Map<String, Object> loadData) {
+    public ContextConfiguration(Form form, Map<String, Object> inputData, Map<String, Object> outputData, Locale locale) {
         this.form = form;
-        this.loadData = loadData;
+        this.inputData = inputData;
+        this.outputData = outputData;
         this.attributes = new HashMap<String, Object>();
+        this.locale = locale;
     }
 
     public Form getForm() {
         return form;
     }
 
-    public Map<String, Object> getLoadData() {
-        return loadData;
+    public Map<String, Object> getInputData() {
+        return inputData;
+    }
+
+    public Map<String, Object> getOutputData() {
+        return outputData;
+    }
+
+    public Locale getLocale() {
+        return locale;
     }
 
     public Object getAttribute(String name) {

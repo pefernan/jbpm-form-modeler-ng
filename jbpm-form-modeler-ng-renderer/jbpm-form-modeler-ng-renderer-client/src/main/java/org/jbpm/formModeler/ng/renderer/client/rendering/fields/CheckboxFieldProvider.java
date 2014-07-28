@@ -31,7 +31,6 @@ public class CheckboxFieldProvider extends FieldProvider {
         checkBox.setName(description.getId());
         checkBox.setId(description.getId());
         checkBox.setValue(Boolean.valueOf(description.getValue()));
-
         checkBox.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent changeEvent) {

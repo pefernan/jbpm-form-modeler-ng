@@ -4,6 +4,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.jbpm.formModeler.ng.model.Form;
 import org.jbpm.formModeler.ng.renderer.backend.test.User;
 import org.jbpm.formModeler.ng.renderer.service.FormRendererService;
+import org.jbpm.formModeler.ng.services.LocaleManager;
 import org.jbpm.formModeler.ng.services.context.ContextConfiguration;
 import org.jbpm.formModeler.ng.services.context.FormRenderContext;
 import org.jbpm.formModeler.ng.services.context.FormRenderContextManager;
@@ -17,6 +18,7 @@ import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 @Service
@@ -33,6 +35,9 @@ public class FormRendererServiceImpl implements FormRendererService, Serializabl
 
     @Inject
     private FormRenderContextMarshaller formRenderContextMarshaller;
+
+    @Inject
+    private LocaleManager localeManager;
 
     private String json = "{"
             + "     \"id\": \"12345\","
@@ -111,7 +116,7 @@ public class FormRendererServiceImpl implements FormRendererService, Serializabl
     String testJSON;
 
     @Override
-    public String initTest() {
+    public String initTest(String locale) {
         try {
             User user = new User();
             user.setDbid(System.currentTimeMillis());
@@ -122,18 +127,33 @@ public class FormRendererServiceImpl implements FormRendererService, Serializabl
             user.setMarried(Boolean.TRUE);
             user.setAddress("Winterfell");
             user.setPhone("666 66 66 66");
-            Form form = formSerializationManager.loadFormFromXML(this.getClass().getResourceAsStream("test/user.form"));
             Map<String, Object> loadData = new HashMap<String, Object>();
             loadData.put("user", user);
-            ContextConfiguration configuration = new ContextConfiguration(form, loadData);
 
-            FormRenderContext context = contextManager.newContext(configuration);
-            return context.getUID();
+            return initContext(loadData, locale);
         } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            log.error("Error loading data {}", e);
         }
 
         return "error";
+    }
+
+    @Override
+    public String initEmptyTest(String locale) {
+        try {
+            return initContext(new HashMap<String, Object>(), locale);
+        } catch (Exception e) {
+            log.error("Error loading data {}", e);
+        }
+
+        return "error";
+    }
+
+    protected String initContext (Map<String, Object> loadData, String locale) throws Exception {
+        Form form = formSerializationManager.loadFormFromXML(this.getClass().getResourceAsStream("test/user.form"));
+        ContextConfiguration configuration = new ContextConfiguration(form, loadData, new HashMap<String, Object>(), localeManager.getLocaleById(locale));
+        FormRenderContext context = contextManager.newContext(configuration);
+        return context.getUID();
     }
 
     @Override
@@ -143,8 +163,10 @@ public class FormRendererServiceImpl implements FormRendererService, Serializabl
     }
 
     @Override
-    public void marshallContext(String ctxUID, String ctxJson) {
+    public void unMarshallContext(String ctxUID, String ctxJson) {
         log.warn("Original JSON: {}", testJSON);
         log.warn("New JSON: {}", ctxJson);
+
+        formRenderContextMarshaller.unmarshallContext(contextManager.getFormRenderContext(ctxUID), ctxJson);
     }
 }

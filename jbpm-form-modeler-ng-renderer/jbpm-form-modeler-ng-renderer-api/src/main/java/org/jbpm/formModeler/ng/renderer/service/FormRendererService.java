@@ -2,12 +2,16 @@ package org.jbpm.formModeler.ng.renderer.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
 
+import java.util.Locale;
+
 @Remote
 public interface FormRendererService {
 
-    String initTest();
+    String initTest(String locale);
 
     String getUnmarshalledContext(String ctxUID);
 
-    void marshallContext(String ctxUID, String ctxJson);
+    void unMarshallContext(String ctxUID, String ctxJson);
+
+    String initEmptyTest(String locale);
 }

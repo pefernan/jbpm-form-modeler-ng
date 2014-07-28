@@ -27,10 +27,10 @@
     <property name="cancelItemText" value=""/>
     <property name="fieldClass" value="java.lang.String"/>
   </field>
-  <field position="1" name="surname" type="InputText" id="3264544672712">
+  <field position="2" name="surname" type="InputText" id="3264544672712">
     <property name="fieldRequired" value="false"/>
     <property name="groupWithPrevious" value="true"/>
-    <property name="label" value="quot;enquot;,quot;Namequot;"/>
+    <property name="label" value="quot;enquot;,quot;Surnamequot;"/>
     <property name="readonly" value="false"/>
     <property name="inputBinding" value="user/surname"/>
     <property name="outputBinding" value="user/surname"/>
@@ -39,7 +39,7 @@
     <property name="cancelItemText" value=""/>
     <property name="fieldClass" value="java.lang.String"/>
   </field>
-  <field position="2" name="birthday" type="InputShortDate" id="578188446">
+  <field position="3" name="birthday" type="InputShortDate" id="578188446">
     <property name="fieldRequired" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="label" value="quot;enquot;,quot;Birthdayquot;"/>
@@ -51,7 +51,7 @@
     <property name="cancelItemText" value=""/>
     <property name="fieldClass" value="java.util.Date"/>
   </field>
-  <field position="3" name="startDate" type="InputDate" id="57818844646">
+  <field position="4" name="startDate" type="InputDate" id="57818844646">
     <property name="fieldRequired" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="label" value="quot;enquot;,quot;StartDatequot;"/>
@@ -63,7 +63,7 @@
     <property name="cancelItemText" value=""/>
     <property name="fieldClass" value="java.util.Date"/>
   </field>
-  <field position="4" name="married" type="CheckBox" id="1881018412">
+  <field position="5" name="married" type="CheckBox" id="1881018412">
     <property name="fieldRequired" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="label" value="quot;enquot;,quot;Marriedquot;"/>
@@ -75,7 +75,7 @@
     <property name="cancelItemText" value=""/>
     <property name="fieldClass" value="java.lang.Boolean"/>
   </field>
-  <field position="5" name="address" type="InputText" id="32645275412">
+  <field position="6" name="address" type="InputText" id="32645275412">
     <property name="fieldRequired" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="label" value="quot;enquot;,quot;Addressquot;"/>
@@ -87,7 +87,7 @@
     <property name="cancelItemText" value=""/>
     <property name="fieldClass" value="java.lang.String"/>
   </field>
-  <field position="6" name="phone" type="InputText" id="32645276512">
+  <field position="7" name="phone" type="InputText" id="32645276512">
     <property name="fieldRequired" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="label" value="quot;enquot;,quot;Phonequot;"/>

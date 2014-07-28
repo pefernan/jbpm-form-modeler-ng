@@ -12,7 +12,7 @@ public interface FormEditorService {
 
     Path createForm(Path packageMainResourcesPath, String formName);
 
-    FormEditorContextTO loadForm(Path path);
+    FormEditorContextTO loadForm(Path path, String localeName);
 
     void delete(Path path, String comment);
 

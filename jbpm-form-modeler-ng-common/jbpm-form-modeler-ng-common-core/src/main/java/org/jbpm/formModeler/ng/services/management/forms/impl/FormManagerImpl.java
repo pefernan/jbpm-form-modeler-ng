@@ -28,10 +28,8 @@ import org.jbpm.formModeler.ng.services.management.forms.utils.BindingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.io.InputStream;
 import java.util.*;
 
 @ApplicationScoped
@@ -49,56 +47,9 @@ public class FormManagerImpl implements FormManager {
 
     private List<Form> systemForms;
 
-    @PostConstruct
-    protected void init() {
-        Map<String, Properties> formResources = new HashMap<String, Properties>();
-
-        systemForms = new ArrayList<Form>();
-
-        for (String lang : localeManager.getPlatformAvailableLangs()) {
-            try {
-                String key = lang.equals(localeManager.getDefaultLang()) ? "" : "_" + lang;
-
-                InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(getFormResourcesPath(key));
-
-                if (in == null) continue;
-                Properties props = new Properties();
-                props.load(in);
-                formResources.put(lang, props);
-            } catch (Exception e) {
-                log.warn("Error loading resources form lang \"{}\": {}", lang, e);
-            }
-        }
-
-        deployFieldTypeForm("default", formResources);
-        deployFieldTypesForms(fieldManager.getFields(), formResources);
-    }
-
-    protected void deployFieldTypesForms(List<Field> fieldTypes, Map<String, Properties> formResources) {
-        if (fieldTypes == null) return;
-        for (Field fieldType : fieldTypes) {
-            deployFieldTypeForm(fieldType.getCode(), formResources);
-        }
-    }
-
-    protected void deployFieldTypeForm(String formName, Map<String, Properties> formResources) {
-        String formPath = getFormPath(formName);
-        try {
-            InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(formPath);
-            if (is == null) return;
-            Form systemForm = formSerializationManager.loadFormFromXML(is, formResources);
-            systemForms.add(systemForm);
-        } catch (Exception e) {
-            log.error("Error reading core form file: " + formPath, e);
-        }
-    }
-
-    public String getFormPath(String formName) {
-        return "org/jbpm/formModeler/ng/forms/" + formName + ".form";
-    }
-
-    public String getFormResourcesPath(String lang) {
-        return "org/jbpm/formModeler/ng/forms/forms-resources" + lang + ".properties";
+    @Override
+    public void setSystemForms(List<Form> systemForms) {
+        this.systemForms = systemForms;
     }
 
     @Override

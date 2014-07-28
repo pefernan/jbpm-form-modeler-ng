@@ -21,6 +21,7 @@ import org.jbpm.formModeler.ng.services.management.dataHolders.DataHolderBuildCo
 import org.jbpm.formModeler.ng.services.management.dataHolders.DataHolderManager;
 import org.jbpm.formModeler.ng.services.management.forms.FormManager;
 import org.jbpm.formModeler.ng.services.management.forms.FormSerializationManager;
+import org.jbpm.formModeler.ng.services.management.forms.impl.CoreFormsBuilder;
 import org.jbpm.formModeler.ng.utils.WeldJUnit4Runner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,9 +43,12 @@ public class FormModelerServicesTest {
     @Inject
     private FormSerializationManager formSerializationManager;
 
+    @Inject
+    private CoreFormsBuilder formsBuilder;
+
     @Test
     public void testSystemForms() throws Exception {
-
+        formsBuilder.start();
         formManager.getSystemForms();
         assertNotEquals("There are no forms on FormManager.", formManager.getSystemForms().size(), 0);
 

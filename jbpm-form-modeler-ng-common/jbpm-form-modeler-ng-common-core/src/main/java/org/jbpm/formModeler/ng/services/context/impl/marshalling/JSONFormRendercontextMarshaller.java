@@ -2,9 +2,8 @@ package org.jbpm.formModeler.ng.services.context.impl.marshalling;
 
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.JsonEncoding;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.*;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.jbpm.formModeler.ng.model.DataHolder;
 import org.jbpm.formModeler.ng.model.Field;
 import org.jbpm.formModeler.ng.model.Form;
@@ -20,12 +19,16 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 @Default
 @ApplicationScoped
 public class JSONFormRendercontextMarshaller implements FormRenderContextMarshaller {
     public static final String NAMESPACE_SEPARATOR = "-";
+
+    public static final String FIELDS = "fields";
 
     private Logger log = LoggerFactory.getLogger(JSONFormRendercontextMarshaller.class);
 
@@ -44,20 +47,18 @@ public class JSONFormRendercontextMarshaller implements FormRenderContextMarshal
 
             Form form = context.getForm();
 
+            Map<String, Object> inputData = context.getInputData();
+            Map<String, Object> outputData = context.getOutputData();
+
+            Map<String, Object> loadedObjects = new HashMap<String, Object>();
+
             generator.writeStartObject();
             generator.writeNumberField("id", form.getId());
             generator.writeStringField("name", form.getName());
             generator.writeStringField("displayMode", form.getDisplayMode());
             generator.writeStringField("labelMode", form.getLabelMode());
 
-            generator.writeArrayFieldStart("fields");
-            for (Field field : form.getFormFields()) {
-
-                DataHolder dataHolder = BindingUtils.getFormDataHolderForField(field);
-
-                marshallField(field, dataHolder, context.getData(), context, "", generator);
-            }
-            generator.writeEndArray();
+            marshallFields(form, inputData, outputData, loadedObjects, "", context, generator);
 
             generator.writeEndObject();
 
@@ -71,75 +72,140 @@ public class JSONFormRendercontextMarshaller implements FormRenderContextMarshal
         return result;
     }
 
-    private void marshallField(Field field, DataHolder dataHolder, Map<String, Object> data, FormRenderContext context, String namespace, JsonGenerator generator) throws IOException {
+    private void marshallFields(Form form, Map inputData, Map outputData, Map loadedObjects, String namespace, FormRenderContext context, JsonGenerator generator) throws IOException {
+        generator.writeArrayFieldStart(FIELDS);
+        for (Field field : form.getFormFields()) {
+
+            String inputExperession = field.getInputBinding();
+            String outputExpression = field.getOutputBinding();
+
+            boolean hasInput = !StringUtils.isEmpty(inputExperession);
+            boolean hasOutput = !StringUtils.isEmpty(outputExpression);
+
+            if (!hasInput && !hasOutput) continue;
+
+            boolean readFromInput = (hasInput && !hasOutput) || (hasInput && outputData.isEmpty());
+
+            DataHolder dataHolder = BindingUtils.getFormDataHolderForField(field);
+
+            Object value;
+
+            if (dataHolder == null) {
+                if (readFromInput) value = getUnbindedValue(inputExperession, inputData);
+                else value = getUnbindedValue(outputExpression, outputData);
+            } else {
+                Object loadedObject = loadedObjects.get(dataHolder.getUniqueId());
+                if (loadedObject == null) {
+                    if (outputData.isEmpty()) loadedObject = inputData.get(dataHolder.getInputId());
+                    else loadedObject = outputData.get(dataHolder.getOutputId());
+                    loadedObjects.put(dataHolder.getUniqueId(), loadedObject);
+                }
+                if (readFromInput) value = getBindedValue(field, dataHolder, inputExperession, inputData, loadedObjects, "");
+                else value = getBindedValue(field, dataHolder, outputExpression, outputData, loadedObjects, namespace);
+            }
+
+
+            marshallField(field, value, context, "", generator);
+        }
+        generator.writeEndArray();
+    }
+
+    private void marshallField(Field field, Object value, FormRenderContext context, String namespace, JsonGenerator generator) throws IOException {
         generator.writeStartObject();
 
         generator.writeStringField("id", StringUtils.isEmpty(namespace) ? field.getName() : namespace + NAMESPACE_SEPARATOR + field.getName());
-        generator.writeStringField("label", (String) localeManager.localize(field.getLabel()));
+        generator.writeStringField("label", (String) localeManager.localize(field.getLabel(), context.getCurrentLocale()));
         generator.writeStringField("type", field.getCode());
         generator.writeNumberField("position", field.getPosition());
         generator.writeBooleanField("grouped", field.getGroupWithPrevious());
-
-        Object value = null;
-
-        if (dataHolder != null) value = getBindedValue(field, dataHolder, data);
-        else value = getUnbindedValue(field, data);
 
         generator.writeObjectField("value", field.getMarshaller().marshallValue(value));
 
         generator.writeEndObject();
     }
 
-    protected Object getBindedValue(Field field, DataHolder holder, Map<String, Object> loadData) {
+    protected Object getBindedValue(Field field, DataHolder holder, String bindingExpression, Map<String, Object> bindingData, Map loadedObjects, String namespace) {
         Object value = null;
 
         try {
-            String expression = field.getOutputBinding();
-            Object bindingValue = loadData.get(holder.getUniqueId());
-            if (bindingValue == null) loadData.get(holder.getOutputId());
-            if (bindingValue == null) {
-                expression = field.getInputBinding();
-                loadData.get(holder.getInputId());
-            }
+            Object bindingValue = loadedObjects.get(holder.getUniqueId());
             if (bindingValue != null && holder.isAssignableValue(bindingValue)) {
-                value = holder.readValue(bindingValue, BindingUtils.extractInputExpression(expression));
+                if (!loadedObjects.containsKey(holder.getUniqueId())) loadedObjects.put(holder.getUniqueId(), bindingValue);
+                value =  holder.readValue(bindingValue, BindingUtils.extractInputExpression(bindingExpression));
             }
         } catch (Exception e) {
-            log.warn("Unable to read field value '{}' from {}. Error: {}", field, loadData, e);
-        }
-        return value;
-    }
-
-    protected Object getUnbindedValue(Field field, Map<String, Object> bindingData) {
-
-        Object value = null;
-
-        try {
-            if (!StringUtils.isEmpty(field.getOutputBinding())) value = getUnbindedValue(field.getOutputBinding(), bindingData);
-
-        } catch (Exception e) {
-            log.warn("Error getting value for xpath expression '{}': {}", field.getOutputBinding(), e);
-            if (value == null) value = getUnbindedValue(field.getInputBinding(), bindingData);
+            log.warn("Unable to read value from expression '" + bindingExpression + "'. Error: ", e);
+            value = bindingData.get(bindingExpression);
         }
         return value;
     }
 
     protected Object getUnbindedValue(String bindingExpression, Map<String, Object> bindingData) {
         if (bindingExpression.indexOf("/") != -1) {
+            try {
+                String root = bindingExpression.substring(0, bindingExpression.indexOf("/"));
+                String expression = bindingExpression.substring(root.length() + 1);
 
-            String root = bindingExpression.substring(0, bindingExpression.indexOf("/"));
-            String expression = bindingExpression.substring(root.length() + 1);
-
-            Object object = bindingData.get(root);
-            JXPathContext ctx = JXPathContext.newContext(object);
-            return ctx.getValue(expression);
-
+                Object object = bindingData.get(root);
+                JXPathContext ctx = JXPathContext.newContext(object);
+                return ctx.getValue(expression);
+            } catch (Exception e) {
+                log.warn("Error getting value for xpath xpression '{}': {}", bindingExpression, e);
+            }
         }
         return bindingData.get(bindingExpression);
     }
 
     @Override
     public void unmarshallContext(FormRenderContext context, String marshalledValues) {
-        //To change body of implemented methods use File | Settings | File Templates.
+
+        try {
+            Form form = context.getForm();
+
+            Map<String, Object> result = context.getOutputData();
+
+            ObjectMapper mapper = new ObjectMapper();
+
+            JsonNode node = mapper.readTree(marshalledValues);
+
+            JsonNode fields = node.get("fields");
+
+            for (int i = 0; i< fields.size(); i++) {
+                JsonNode jsonField = fields.get(i);
+                String fieldName = jsonField.get("id").getTextValue();
+
+                Field field = form.getField(fieldName);
+
+                if (field != null) {
+                    String bindingString = field.getOutputBinding();
+
+                    if (StringUtils.isEmpty(bindingString)) continue;
+
+                    boolean simpleBinding = StringUtils.isEmpty(bindingString) || bindingString.indexOf("/") == -1;
+
+                    DataHolder holder = BindingUtils.getFormDataHolderForField(field);
+
+                    Object value = field.getMarshaller().unMarshallValue(jsonField.get("value").getTextValue());
+
+                    if (holder == null || simpleBinding) result.put(bindingString, value);
+                    else {
+                        String holderFieldId = bindingString.substring((holder.getOutputId() + "/").length());
+
+                        Object holderOutputValue = result.get(holder.getOutputId());
+                        if (holderOutputValue == null || !holder.isAssignableValue(holderOutputValue)) {
+                            holderOutputValue = context.getInputData().get(holder.getInputId());
+                            if (holderOutputValue == null || !holder.isAssignableValue(holderOutputValue)) holderOutputValue = holder.createInstance(context);
+                            result.put(holder.getOutputId(), holderOutputValue);
+                        }
+
+                        holder.writeValue(holderOutputValue, holderFieldId, value);
+                    }
+                }
+
+            }
+
+        } catch (Exception e) {
+            log.error("Error unmarshalling values: {}", e);
+        }
     }
 }

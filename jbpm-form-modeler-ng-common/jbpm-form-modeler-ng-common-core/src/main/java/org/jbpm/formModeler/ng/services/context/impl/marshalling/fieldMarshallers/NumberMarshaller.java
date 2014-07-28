@@ -43,13 +43,13 @@ public class NumberMarshaller implements FieldValueMarshaller {
         } else if (desiredClassName.equals("long")) {
             return Long.decode(marshalledValue);
         } else if (desiredClassName.equals(Byte.class.getName())) {
-            Byte.decode(marshalledValue);
+            return Byte.decode(marshalledValue);
         } else if (desiredClassName.equals(Short.class.getName())) {
-            Short.decode(marshalledValue);
+            return Short.decode(marshalledValue);
         } else if (desiredClassName.equals(Integer.class.getName())) {
-            Integer.decode(marshalledValue);
+            return Integer.decode(marshalledValue);
         } else if (desiredClassName.equals(Long.class.getName())) {
-            Long.decode(marshalledValue);
+            return Long.decode(marshalledValue);
         } else if (desiredClassName.equals(Double.class.getName()) || desiredClassName.equals("double") ||
                 desiredClassName.equals(Float.class.getName())  || desiredClassName.equals("float") ||
                 desiredClassName.equals(BigDecimal.class.getName())) {

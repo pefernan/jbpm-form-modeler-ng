@@ -25,7 +25,7 @@ public class LongFieldProvider extends FieldProvider {
         longBox.setId(description.getId());
         longBox.setMaxLength(100);
         longBox.setWidth("25");
-        longBox.setValue(Long.decode(description.getValue()));
+        if (description.getValue() != null && !description.getValue().isEmpty()) longBox.setValue(Long.decode(description.getValue()));
         longBox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent changeEvent) {

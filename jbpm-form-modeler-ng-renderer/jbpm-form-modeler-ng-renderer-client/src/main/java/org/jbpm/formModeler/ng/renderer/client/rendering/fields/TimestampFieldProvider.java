@@ -26,6 +26,7 @@ public class TimestampFieldProvider extends FieldProvider {
         final DateTimeBox datetimepicker = new DateTimeBox();
         datetimepicker.setId(description.getId());
         datetimepicker.setWidth("25");
+        if (description.getValue() != null && !description.getValue().isEmpty()) datetimepicker.setValue(new Date(Long.decode(description.getValue())));
         datetimepicker.addValueChangeHandler(new ValueChangeHandler<Date>() {
             @Override
             public void onValueChange(ValueChangeEvent<Date> dateValueChangeEvent) {
