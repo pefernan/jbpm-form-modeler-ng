@@ -25,7 +25,9 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jbpm.formModeler.ng.editor.client.editor.dataHolders.DataHoldersView;
 import org.jbpm.formModeler.ng.editor.client.resources.i18n.Constants;
 import org.jbpm.formModeler.ng.editor.client.type.FormDefinitionResourceType;
-import org.jbpm.formModeler.ng.editor.model.DataHolderPageRow;
+import org.jbpm.formModeler.ng.editor.events.dataHolders.RefreshHoldersListEvent;
+import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderBuilderTO;
+import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderInfo;
 import org.jbpm.formModeler.ng.editor.model.FormEditorContextTO;
 import org.jbpm.formModeler.ng.editor.service.FormEditorService;
 import org.jbpm.formModeler.ng.editor.type.FormResourceTypeDefinition;
@@ -58,6 +60,7 @@ import org.uberfire.workbench.type.FileNameUtil;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
@@ -103,7 +106,7 @@ public class FormEditorPanelPresenter {
 
     private FormEditorContextTO ctx;
 
-    private AsyncDataProvider<DataHolderPageRow> dataProvider;
+    private AsyncDataProvider<DataHolderInfo> holdersProvider;
 
     @Inject
     private DataHoldersView holdersView;
@@ -120,13 +123,16 @@ public class FormEditorPanelPresenter {
 
         editorTabs = new MultiPageEditor(MultiPageEditor.TabPosition.ABOVE);
 
+        holdersView.init(this);
+
         editorService.call(new RemoteCallback<FormEditorContextTO>() {
             @Override
             public void callback(FormEditorContextTO context) {
                 ctx = context;
-                editorTabs.addPage(new Page(holdersView, "Data Holders") {
+                editorTabs.addPage(new Page(holdersView, "Data_Holders") {
                     @Override
                     public void onFocus() {
+                        initDataHoldersForm();
                         refreshDataHoldersTable();
                     }
 
@@ -138,23 +144,32 @@ public class FormEditorPanelPresenter {
         }).loadForm(path, LocaleInfo.getCurrentLocale().getLocaleName());
     }
 
-    public void refreshDataHoldersTable() {
-        dataProvider = new AsyncDataProvider<DataHolderPageRow>() {
-            protected void onRangeChanged( HasData<DataHolderPageRow> display ) {
+    protected void initDataHoldersForm() {
+        editorService.call(new RemoteCallback<DataHolderBuilderTO[]>() {
+            @Override
+            public void callback(DataHolderBuilderTO[] builders) {
+                holdersView.initDataHolderBuilders(builders);
+            }
+        }).getAvailableDataHolderBuilders(ctx.getCtxUID());
+    }
+
+    protected void refreshDataHoldersTable() {
+        holdersProvider = new AsyncDataProvider<DataHolderInfo>() {
+            protected void onRangeChanged( HasData<DataHolderInfo> display ) {
                 final Range range = display.getVisibleRange();
                 PageRequest request = new PageRequest( range.getStart(),
                         range.getLength() );
 
-                editorService.call( new RemoteCallback<PageResponse<DataHolderPageRow>>() {
+                editorService.call( new RemoteCallback<PageResponse<DataHolderInfo>>() {
                     @Override
-                    public void callback( final PageResponse<DataHolderPageRow> response ) {
+                    public void callback( final PageResponse<DataHolderInfo> response ) {
                         updateRowCount(response.getTotalRowSize(), response.isTotalRowSizeExact());
                         updateRowData(response.getStartRowIndex(), response.getPageRowList());
                     }
                 } ).listFormDataHolders(request, ctx.getCtxUID());
             }
         };
-        dataProvider.addDataDisplay(holdersView.getDataHoldersGrid());
+        holdersProvider.addDataDisplay(holdersView.getDataHoldersGrid());
     }
 
     @WorkbenchPartTitle
@@ -283,5 +298,13 @@ public class FormEditorPanelPresenter {
     @WorkbenchPartView
     public IsWidget getWidget() {
         return editorTabs;
+    }
+
+    public FormEditorContextTO getContext() {
+        return ctx;
+    }
+
+    public void refreshGrid(@Observes RefreshHoldersListEvent refreshHoldersListEvent) {
+        if (ctx != null && ctx.getCtxUID().equals(refreshHoldersListEvent.getContext().getCtxUID())) refreshDataHoldersTable();
     }
 }

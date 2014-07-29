@@ -33,7 +33,7 @@ public class BasicTypeDataHolder extends DataHolder {
 
     protected Set<DataFieldHolder> dataFieldHolders;
 
-    public BasicTypeDataHolder(String uniqueId, String inputId, String outputId, String className, String renderColor) {
+    BasicTypeDataHolder(String uniqueId, String inputId, String outputId, String className, String renderColor) {
         this.uniqueId = uniqueId;
         this.inputId = inputId;
         this.outputId = outputId;

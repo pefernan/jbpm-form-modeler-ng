@@ -12,6 +12,7 @@ public class ContextConfiguration {
     private Map<String, Object> outputData;
     private Map<String, Object> attributes;
     private Locale locale;
+    private Map<String, Object> contextForms;
 
     public ContextConfiguration(Form form, Map<String, Object> inputData, Map<String, Object> outputData, Locale locale) {
         this.form = form;
@@ -43,5 +44,17 @@ public class ContextConfiguration {
 
     public void addAttribute(String name, Object value) {
         attributes.put(name, value);
+    }
+
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+
+    public Map<String, Object> getContextForms() {
+        return contextForms;
+    }
+
+    public void setContextForms(Map<String, Object> contextForms) {
+        this.contextForms = contextForms;
     }
 }

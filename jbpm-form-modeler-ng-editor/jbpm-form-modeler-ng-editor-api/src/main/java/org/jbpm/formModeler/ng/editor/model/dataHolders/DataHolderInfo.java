@@ -1,11 +1,11 @@
-package org.jbpm.formModeler.ng.editor.model;
+package org.jbpm.formModeler.ng.editor.model.dataHolders;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.paging.AbstractPageRow;
 
 
 @Portable
-public class DataHolderPageRow extends AbstractPageRow {
+public class DataHolderInfo extends AbstractPageRow {
     private String type;
     private String uniqueId;
     private String inputId;
@@ -13,7 +13,7 @@ public class DataHolderPageRow extends AbstractPageRow {
     private String className;
     private String renderColor;
 
-    public DataHolderPageRow() {
+    public DataHolderInfo() {
     }
 
     public String getType() {

@@ -5,14 +5,23 @@ import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.jbpm.formModeler.ng.editor.model.DataHolderPageRow;
+import org.jbpm.formModeler.ng.editor.events.dataHolders.NewDataHolderEvent;
+import org.jbpm.formModeler.ng.editor.events.dataHolders.RefreshHoldersListEvent;
+import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderBuilderTO;
+import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderInfo;
 import org.jbpm.formModeler.ng.editor.model.FormEditorContextTO;
+import org.jbpm.formModeler.ng.editor.model.dataHolders.RangedDataHolderBuilderTO;
 import org.jbpm.formModeler.ng.editor.service.FormEditorService;
 import org.jbpm.formModeler.ng.model.DataHolder;
 import org.jbpm.formModeler.ng.model.Form;
+import org.jbpm.formModeler.ng.services.LocaleManager;
 import org.jbpm.formModeler.ng.services.context.ContextConfiguration;
 import org.jbpm.formModeler.ng.services.context.FormRenderContext;
 import org.jbpm.formModeler.ng.services.context.FormRenderContextManager;
+import org.jbpm.formModeler.ng.services.management.dataHolders.DataHolderBuildConfig;
+import org.jbpm.formModeler.ng.services.management.dataHolders.DataHolderBuilder;
+import org.jbpm.formModeler.ng.services.management.dataHolders.DataHolderManager;
+import org.jbpm.formModeler.ng.services.management.dataHolders.RangedDataHolderBuilder;
 import org.jbpm.formModeler.ng.services.management.forms.FormManager;
 import org.jbpm.formModeler.ng.services.management.forms.FormSerializationManager;
 import org.slf4j.Logger;
@@ -30,9 +39,9 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.File;
 import java.util.*;
 
 @Service
@@ -61,7 +70,16 @@ public class FormEditorServiceImpl implements FormEditorService {
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
 
     @Inject
+    private Event<RefreshHoldersListEvent> refreshHoldersListEvent;
+
+    @Inject
+    private LocaleManager localeManager;
+
+    @Inject
     private FormManager formManager;
+
+    @Inject
+    private DataHolderManager dataHolderManager;
 
     @Inject
     private FormSerializationManager formSerializationManager;
@@ -70,13 +88,13 @@ public class FormEditorServiceImpl implements FormEditorService {
     private FormRenderContextManager contextManager;
 
     @Override
-    public PageResponse<DataHolderPageRow> listFormDataHolders(PageRequest pageRequest, String ctxUID) {
+    public PageResponse<DataHolderInfo> listFormDataHolders(PageRequest pageRequest, String ctxUID) {
         FormRenderContext context = contextManager.getFormRenderContext(ctxUID);
 
         if (context == null) return null;
 
-        final PageResponse<DataHolderPageRow> response = new PageResponse<DataHolderPageRow>();
-        final List<DataHolderPageRow> tradeRatePageRowList = new ArrayList<DataHolderPageRow>();
+        final PageResponse<DataHolderInfo> response = new PageResponse<DataHolderInfo>();
+        final List<DataHolderInfo> tradeRatePageRowList = new ArrayList<DataHolderInfo>();
 
         int i = 0;
         for (DataHolder holder : context.getForm().getHolders()) {
@@ -84,7 +102,7 @@ public class FormEditorServiceImpl implements FormEditorService {
                 break;
             }
             if ( i >= pageRequest.getStartRowIndex() ) {
-                DataHolderPageRow to = new DataHolderPageRow();
+                DataHolderInfo to = new DataHolderInfo();
                 to.setType(holder.getTypeCode());
                 to.setUniqueId(holder.getUniqueId());
                 to.setInputId(holder.getInputId());
@@ -123,7 +141,7 @@ public class FormEditorServiceImpl implements FormEditorService {
                 form = formManager.createForm(path.getFileName());
             }
 
-            ContextConfiguration config = new ContextConfiguration(form, new HashMap<String, Object>(), new HashMap<String, Object>(), new Locale(localeName));
+            ContextConfiguration config = new ContextConfiguration(form, new HashMap<String, Object>(), new HashMap<String, Object>(), localeManager.getLocaleById(localeName));
             config.addAttribute("path", path);
 
             FormRenderContext context = contextManager.newContext(config);
@@ -187,5 +205,43 @@ public class FormEditorServiceImpl implements FormEditorService {
                 commitMessage,
                 when);
         return co;
+    }
+
+    public void createDataHolder(@Observes NewDataHolderEvent newDataHolderEvent) {
+        FormRenderContext context = contextManager.getFormRenderContext(newDataHolderEvent.getContext().getCtxUID());
+        if (context != null) {
+            DataHolderInfo info = newDataHolderEvent.getDataHolder();
+            DataHolderBuildConfig config = new DataHolderBuildConfig(info.getUniqueId(), info.getInputId(), info.getOutputId(), info.getRenderColor(), info.getClassName());
+            config.addAttribute("path", context.getAttributes().get("path"));
+            DataHolder holder = dataHolderManager.createDataHolderByType(info.getType(), config);
+
+            if (holder != null) {
+                formManager.addDataHolderToForm(context.getForm(), holder);
+                refreshHoldersListEvent.fire(new RefreshHoldersListEvent(newDataHolderEvent.getContext()));
+            }
+        }
+    }
+
+    @Override
+    public DataHolderBuilderTO[] getAvailableDataHolderBuilders(String ctxUID) {
+        FormRenderContext context = contextManager.getFormRenderContext(ctxUID);
+
+        if (context == null) return new DataHolderBuilderTO[0];
+
+        DataHolderBuilderTO[] response = new DataHolderBuilderTO[dataHolderManager.getHolderBuilders().size()];
+
+        int i = 0;
+        for (DataHolderBuilder builder : dataHolderManager.getHolderBuilders()) {
+            if (builder instanceof RangedDataHolderBuilder) {
+                RangedDataHolderBuilder rangedBuilder = (RangedDataHolderBuilder) builder;
+                Set<String> sources = rangedBuilder.getHolderSources(ctxUID).keySet();
+                String[] values = sources.toArray(new String[sources.size()]);
+                response[i] = new RangedDataHolderBuilderTO(builder.getId(), builder.getDataHolderName(context.getCurrentLocale()), values);
+            } else {
+                response[i] = new DataHolderBuilderTO(builder.getId(), builder.getDataHolderName(context.getCurrentLocale()));
+            }
+            i++;
+        }
+        return response;
     }
 }

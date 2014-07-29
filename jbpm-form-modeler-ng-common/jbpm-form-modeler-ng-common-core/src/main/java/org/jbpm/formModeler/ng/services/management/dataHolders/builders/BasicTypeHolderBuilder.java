@@ -72,7 +72,7 @@ public class BasicTypeHolderBuilder implements RangedDataHolderBuilder {
 
     @Override
     public String getDataHolderName(Locale locale) {
-        ResourceBundle bundle = ResourceBundle.getBundle("org.jbpm.formModeler.ng.dataHolder.messages", locale);
+        ResourceBundle bundle = ResourceBundle.getBundle("org.jbpm.formModeler.ng.dataHolders.messages", locale);
         return bundle.getString("dataHolder_basicType");
     }
 }

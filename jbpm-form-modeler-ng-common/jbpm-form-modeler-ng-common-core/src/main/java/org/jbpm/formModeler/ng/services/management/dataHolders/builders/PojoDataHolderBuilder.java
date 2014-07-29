@@ -44,7 +44,7 @@ public class PojoDataHolderBuilder implements DataHolderBuilder {
             Class.forName(config.getClassName());
             return new PojoDataHolder(config.getHolderId(), config.getInputId(), config.getOutputId(), config.getClassName(), config.getRenderColor());
         } catch (ClassNotFoundException e) {
-            log.warn("Unable to load class '{0}': {1}", config.getClassName(), e);
+            log.warn("Unable to load class '{}': {}", config.getClassName(), e);
         }
         return null;
     }
@@ -66,7 +66,7 @@ public class PojoDataHolderBuilder implements DataHolderBuilder {
 
     @Override
     public String getDataHolderName(Locale locale) {
-        ResourceBundle bundle = ResourceBundle.getBundle("org.jbpm.formModeler.ng.dataHolder.messages", locale);
+        ResourceBundle bundle = ResourceBundle.getBundle("org.jbpm.formModeler.ng.dataHolders.messages", locale);
         return bundle.getString("dataHolder_className");
     }
 }

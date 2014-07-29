@@ -7,6 +7,7 @@ import org.jbpm.formModeler.ng.services.context.FormRenderContextManager;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 @SessionScoped
@@ -19,7 +20,8 @@ public class FormRenderContextManagerImpl implements FormRenderContextManager, S
         String uid = CTX_PREFFIX + config.getForm().getId() + "_" + System.currentTimeMillis();
 
         FormRenderContext ctx = new FormRenderContext(uid, config.getForm(), config.getInputData(), config.getOutputData(), config.getLocale());
-        ctx.setContextForms((Map<String, Object>) config.getAttribute("forms"));
+        ctx.setContextForms(config.getContextForms());
+        ctx.getAttributes().putAll(config.getAttributes());
 
         formRenderContextMap.put(uid, ctx);
         return ctx;
