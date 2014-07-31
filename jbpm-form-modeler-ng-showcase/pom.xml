@@ -330,6 +330,10 @@
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-form-modeler-ng-common-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
       <artifactId>jbpm-form-modeler-ng-editor-api</artifactId>
     </dependency>
     <dependency>
@@ -417,6 +421,7 @@
             <compileSourcesArtifact>org.uberfire:uberfire-backend-api</compileSourcesArtifact>
 
             <!-- Form Modeler -->
+            <compileSourcesArtifact>org.jbpm:jbpm-form-modeler-ng-common-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.jbpm:jbpm-form-modeler-ng-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.jbpm:jbpm-form-modeler-ng-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.jbpm:jbpm-form-modeler-ng-renderer-api</compileSourcesArtifact>

@@ -318,29 +318,31 @@ public class FormManagerImpl implements FormManager {
             if (!form.containsHolder(holder)) return;
             Set<DataFieldHolder> holderFields = holder.getFieldHolders();
             for (DataFieldHolder fieldHolder : holderFields) {
-                if (!BindingUtils.isFieldBinded(form, fieldHolder)) addDataHolderField(form, holder, fieldHolder);
+                addDataHolderField(form, holder, fieldHolder);
             }
         }
     }
 
     @Override
-    public void addDataHolderField(Form form, DataHolder holder, DataFieldHolder field) {
-        if (form == null || holder == null || field == null) return;
+    public boolean addDataHolderField(Form form, DataHolder holder, DataFieldHolder holderField) {
+        if (form == null || holder == null || holderField == null) return false;
+
+        if (BindingUtils.isFieldBinded(form, holderField)) return false;
 
         Map label = new HashMap();
 
-        label.put(localeManager.getDefaultLang(), field.getId() + " (" + holder.getUniqueId() + ")");
+        label.put(localeManager.getDefaultLang(), holderField.getId() + " (" + holder.getUniqueId() + ")");
 
-        String inputBinging = BindingUtils.generateInputBinding(holder, field);
-        String outputBinding = BindingUtils.generateOutputBinding(holder, field);
+        String inputBinging = BindingUtils.generateInputBinding(holder, holderField);
+        String outputBinding = BindingUtils.generateOutputBinding(holder, holderField);
 
-        Field fieldType = fieldManager.getFieldByClass(field.getClassName());
+        Field field = fieldManager.getFieldByClass(holderField.getClassName());
 
         String fieldName;
         if (!holder.canHaveChildren()) {
             fieldName = holder.getUniqueId();
         } else {
-            fieldName = holder.getUniqueId() + "_" + field.getId();
+            fieldName = holder.getUniqueId() + "_" + holderField.getId();
         }
 
         int i = 0;
@@ -349,12 +351,13 @@ public class FormManagerImpl implements FormManager {
             tmpFName = fieldName + "_" + i;
         }
 
-        fieldType.setId(generateUniqueId());
-        fieldType.setName(tmpFName);
-        fieldType.setLabel(label);
-        fieldType.setInputBinding(inputBinging);
-        fieldType.setOutputBinding(outputBinding);
-        form.addField(fieldType);
+        field.setId(generateUniqueId());
+        field.setName(tmpFName);
+        field.setLabel(label);
+        field.setInputBinding(inputBinging);
+        field.setOutputBinding(outputBinding);
+        field.setForm(form);
+        return form.addField(field);
     }
 
 

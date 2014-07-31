@@ -33,6 +33,7 @@ public class FormRenderContext implements Serializable {
     private Locale currentLocale;
     private Map<String, Object> contextForms = new HashMap<String, Object>();
     private Map<String, Object> attributes = new HashMap<String, Object>();
+    private String marshalledCopy;
 
     public FormRenderContext(String uid, Form form, Map<String, Object> inputData, Map<String, Object> outputData, Locale locale) {
         this.UID = uid;
@@ -100,5 +101,13 @@ public class FormRenderContext implements Serializable {
 
     public Map<String, Object> getAttributes() {
         return attributes;
+    }
+
+    public void setMarshalledCopy(String marshalledCopy) {
+        this.marshalledCopy = marshalledCopy;
+    }
+
+    public String getMarshalledCopy() {
+        return marshalledCopy;
     }
 }

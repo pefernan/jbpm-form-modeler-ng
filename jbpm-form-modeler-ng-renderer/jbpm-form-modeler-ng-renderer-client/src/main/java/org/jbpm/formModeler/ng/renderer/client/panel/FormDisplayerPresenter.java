@@ -6,7 +6,7 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Window;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jbpm.formModeler.ng.renderer.client.rendering.FormDescription;
+import org.jbpm.formModeler.ng.common.client.rendering.FormDescription;
 import org.jbpm.formModeler.ng.renderer.service.FormRendererService;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;

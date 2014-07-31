@@ -23,18 +23,22 @@ import org.jbpm.formModeler.ng.model.Form;
 
 public class BindingUtils {
     public static String generateInputBinding(DataHolder holder, DataFieldHolder field) {
+        if (!holder.canHaveChildren()) return holder.getInputId();
         return holder.getUniqueId() + "/" + field.getId();
     }
 
     public static String generateOutputBinding(DataHolder holder, DataFieldHolder field) {
+        if (!holder.canHaveChildren()) return holder.getOutputId();
         return holder.getUniqueId() + "/" + field.getId();
     }
 
     public static String generateBackGuardsInputBinding(DataHolder holder, DataFieldHolder field) {
+        if (!holder.canHaveChildren()) return holder.getInputId();
         return holder.getInputId() + "/" + field.getId();
     }
 
     public static String generateBackGuardsOutputBinding(DataHolder holder, DataFieldHolder field) {
+        if (!holder.canHaveChildren()) return holder.getOutputId();
         return holder.getOutputId() + "/" + field.getId();
     }
 

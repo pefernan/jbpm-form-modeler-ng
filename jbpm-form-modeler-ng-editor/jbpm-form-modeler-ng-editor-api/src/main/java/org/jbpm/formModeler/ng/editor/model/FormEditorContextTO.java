@@ -22,6 +22,7 @@ import java.io.Serializable;
 @Portable
 public class FormEditorContextTO implements Serializable {
     private String ctxUID;
+    private String marshalledContext;
     private boolean loadError;
 
     public FormEditorContextTO() {
@@ -45,5 +46,13 @@ public class FormEditorContextTO implements Serializable {
 
     public void setLoadError(boolean loadError) {
         this.loadError = loadError;
+    }
+
+    public String getMarshalledContext() {
+        return marshalledContext;
+    }
+
+    public void setMarshalledContext(String marshalledContext) {
+        this.marshalledContext = marshalledContext;
     }
 }

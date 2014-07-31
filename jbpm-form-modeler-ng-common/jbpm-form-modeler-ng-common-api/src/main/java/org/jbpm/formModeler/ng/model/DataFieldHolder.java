@@ -22,14 +22,15 @@ public class DataFieldHolder implements Comparable, Serializable {
     String id;
     String className;
     String bag;
+    String icon;
 
-    public DataFieldHolder(DataHolder holder, String id, String className) {
+    public DataFieldHolder(DataHolder holder, String id, String className, String icon) {
         this.holder = holder;
         this.id = id;
         this.className = className;
     }
 
-    public DataFieldHolder(DataHolder holder, String id, String className, String bag) {
+    public DataFieldHolder(DataHolder holder, String id, String className, String bag, String icon) {
         this.holder = holder;
         this.id = id;
         this.className = className;
@@ -58,6 +59,14 @@ public class DataFieldHolder implements Comparable, Serializable {
 
     public void setClassName(String className) {
         this.className = className;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     @Override

@@ -1,6 +1,8 @@
 package org.jbpm.formModeler.ng.services.context;
 
-public interface FormRenderContextMarshaller {
+import java.io.Serializable;
+
+public interface FormRenderContextMarshaller extends Serializable {
     String marshallContext(FormRenderContext context);
     void unmarshallContext(FormRenderContext context, String marshalledValues);
 }

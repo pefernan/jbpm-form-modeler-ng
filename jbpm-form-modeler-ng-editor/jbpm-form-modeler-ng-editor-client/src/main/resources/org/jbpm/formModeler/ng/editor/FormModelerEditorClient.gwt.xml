@@ -35,6 +35,7 @@
   <inherits name="org.kie.workbench.common.widgets.metadata.KieWorkbenchMetadataWidget"/>
   <inherits name="org.kie.workbench.common.services.KieWorkbenchCommonServicesAPI"/>
 
+  <inherits name="org.jbpm.formModeler.ng.common.FormModelerCommonClient" />
   <inherits name="org.jbpm.formModeler.ng.editor.FormModelerEditorAPI"/>
 
   <source path="client"/>

@@ -8,9 +8,10 @@ import com.google.gwt.user.client.ui.*;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.jbpm.formModeler.ng.renderer.client.rendering.FormDescription;
-import org.jbpm.formModeler.ng.renderer.client.rendering.FormRendererManager;
-import org.jbpm.formModeler.ng.renderer.client.rendering.renderers.FormRenderer;
+import org.jbpm.formModeler.ng.common.client.rendering.FormDescription;
+import org.jbpm.formModeler.ng.common.client.rendering.FormRendererManager;
+import org.jbpm.formModeler.ng.common.client.rendering.Renderer;
+import org.jbpm.formModeler.ng.common.client.rendering.renderers.FormRenderer;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -36,6 +37,7 @@ public class FormDisplayerViewImpl extends Composite implements FormDisplayerPre
     private Button submit;
 
     @Inject
+    @Renderer
     private FormRendererManager formRendererManager;
 
     private FormDisplayerPresenter presenter;

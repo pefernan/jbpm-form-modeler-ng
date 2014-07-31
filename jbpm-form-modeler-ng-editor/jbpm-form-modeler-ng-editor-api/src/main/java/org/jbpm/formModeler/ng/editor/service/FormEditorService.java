@@ -2,8 +2,8 @@ package org.jbpm.formModeler.ng.editor.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderBuilderTO;
-import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderInfo;
-import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderInfo;
+import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderFieldTO;
+import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderTO;
 import org.jbpm.formModeler.ng.editor.model.FormEditorContextTO;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.paging.PageRequest;
@@ -24,7 +24,11 @@ public interface FormEditorService {
 
     void changeContextPath(String ctxUID, Path path);
 
-    PageResponse<DataHolderInfo> listFormDataHolders(PageRequest pageRequest, String ctxUID);
+    PageResponse<DataHolderTO> listFormDataHolders(PageRequest pageRequest, String ctxUID);
+
+    DataHolderTO[] getAvailableDataHolders(String ctxUID);
+
+    DataHolderTO[] addFieldFromHolder(String ctxUID, DataHolderFieldTO fieldTO);
 
     DataHolderBuilderTO[] getAvailableDataHolderBuilders(String ctxUID);
 }

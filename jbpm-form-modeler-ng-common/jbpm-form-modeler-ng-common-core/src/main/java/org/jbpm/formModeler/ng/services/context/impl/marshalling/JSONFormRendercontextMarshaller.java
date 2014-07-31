@@ -53,8 +53,9 @@ public class JSONFormRendercontextMarshaller implements FormRenderContextMarshal
             Map<String, Object> loadedObjects = new HashMap<String, Object>();
 
             generator.writeStartObject();
-            generator.writeNumberField("id", form.getId());
-            generator.writeStringField("name", form.getName());
+            generator.writeStringField("ctxUID", context.getUID());
+            generator.writeNumberField("formId", form.getId());
+            generator.writeStringField("formName", form.getName());
             generator.writeStringField("displayMode", form.getDisplayMode());
             generator.writeStringField("labelMode", form.getLabelMode());
 
@@ -66,7 +67,7 @@ public class JSONFormRendercontextMarshaller implements FormRenderContextMarshal
 
             result = baos.toString("UTF-8");
         } catch (Exception ex) {
-            log.warn("Error marshalling form: {}", ex);
+            log.warn("Error marshalling form:", ex);
         }
 
         return result;
@@ -117,7 +118,7 @@ public class JSONFormRendercontextMarshaller implements FormRenderContextMarshal
         generator.writeStringField("label", (String) localeManager.localize(field.getLabel(), context.getCurrentLocale()));
         generator.writeStringField("type", field.getCode());
         generator.writeNumberField("position", field.getPosition());
-        generator.writeBooleanField("grouped", field.getGroupWithPrevious());
+        generator.writeBooleanField("grouped", Boolean.TRUE.equals(field.getGroupWithPrevious()));
 
         generator.writeObjectField("value", field.getMarshaller().marshallValue(value));
 

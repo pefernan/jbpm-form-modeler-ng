@@ -28,6 +28,8 @@
   <inherits name="org.jboss.errai.ui.UI"/>
 
   <inherits name="org.uberfire.UberfireClientAll"/>
+
+  <inherits name="org.jbpm.formModeler.ng.common.FormModelerCommonClient" />
   <inherits name="org.jbpm.formModeler.ng.renderer.FormModelerRendererAPI"/>
 
   <inherits name="com.github.gwtbootstrap.datetimepicker.Datetimepicker" />

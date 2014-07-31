@@ -3,8 +3,10 @@ package org.jbpm.formModeler.ng.services.context.impl;
 import org.jbpm.formModeler.ng.services.context.ContextConfiguration;
 import org.jbpm.formModeler.ng.services.context.FormRenderContext;
 import org.jbpm.formModeler.ng.services.context.FormRenderContextManager;
+import org.jbpm.formModeler.ng.services.context.FormRenderContextMarshaller;
 
 import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,7 +15,11 @@ import java.util.Map;
 @SessionScoped
 public class FormRenderContextManagerImpl implements FormRenderContextManager, Serializable {
 
+    @Inject
+    private FormRenderContextMarshaller contextMarshaller;
+
     protected Map<String, FormRenderContext> formRenderContextMap = new HashMap<String, FormRenderContext>();
+
 
     @Override
     public FormRenderContext newContext(ContextConfiguration config) {
@@ -22,7 +28,7 @@ public class FormRenderContextManagerImpl implements FormRenderContextManager, S
         FormRenderContext ctx = new FormRenderContext(uid, config.getForm(), config.getInputData(), config.getOutputData(), config.getLocale());
         ctx.setContextForms(config.getContextForms());
         ctx.getAttributes().putAll(config.getAttributes());
-
+        ctx.setMarshalledCopy(contextMarshaller.marshallContext(ctx));
         formRenderContextMap.put(uid, ctx);
         return ctx;
     }

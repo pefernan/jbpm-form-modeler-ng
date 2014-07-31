@@ -17,17 +17,10 @@ package org.jbpm.formModeler.ng.editor.client.editor;
 
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.view.client.AsyncDataProvider;
-import com.google.gwt.view.client.HasData;
-import com.google.gwt.view.client.Range;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jbpm.formModeler.ng.editor.client.editor.dataHolders.DataHoldersView;
 import org.jbpm.formModeler.ng.editor.client.resources.i18n.Constants;
 import org.jbpm.formModeler.ng.editor.client.type.FormDefinitionResourceType;
-import org.jbpm.formModeler.ng.editor.events.dataHolders.RefreshHoldersListEvent;
-import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderBuilderTO;
-import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderInfo;
 import org.jbpm.formModeler.ng.editor.model.FormEditorContextTO;
 import org.jbpm.formModeler.ng.editor.service.FormEditorService;
 import org.jbpm.formModeler.ng.editor.type.FormResourceTypeDefinition;
@@ -46,21 +39,19 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.mvp.UberView;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnSave;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.paging.PageRequest;
-import org.uberfire.paging.PageResponse;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.type.FileNameUtil;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
@@ -68,10 +59,18 @@ import javax.inject.Inject;
 @WorkbenchEditor(identifier = "FormModelerEditor", supportedTypes = { FormDefinitionResourceType.class })
 public class FormEditorPanelPresenter {
 
+    public interface FormEditorView
+            extends
+            UberView<FormEditorPanelPresenter> {
+
+        void setContext(FormEditorContextTO context);
+    }
+
     @Inject
     private PlaceManager placeManager;
 
-    private MultiPageEditor editorTabs;
+    @Inject
+    private MultiPageEditor multiPage;
 
     @Inject
     private BusyIndicatorView busyIndicatorView;
@@ -106,10 +105,11 @@ public class FormEditorPanelPresenter {
 
     private FormEditorContextTO ctx;
 
-    private AsyncDataProvider<DataHolderInfo> holdersProvider;
+
 
     @Inject
-    private DataHoldersView holdersView;
+    private FormEditorView view;
+
 
     @OnStartup
     public void onStartup( final ObservablePath path,
@@ -121,19 +121,16 @@ public class FormEditorPanelPresenter {
         this.isReadOnly = place.getParameter( "readOnly", null ) != null;
         this.version = place.getParameter( "version", null );
 
-        editorTabs = new MultiPageEditor(MultiPageEditor.TabPosition.ABOVE);
-
-        holdersView.init(this);
+        view.init(this);
 
         editorService.call(new RemoteCallback<FormEditorContextTO>() {
             @Override
             public void callback(FormEditorContextTO context) {
                 ctx = context;
-                editorTabs.addPage(new Page(holdersView, "Data_Holders") {
+                view.setContext(context);
+                multiPage.addPage(new Page(view, CommonConstants.INSTANCE.MetadataTabTitle()) {
                     @Override
                     public void onFocus() {
-                        initDataHoldersForm();
-                        refreshDataHoldersTable();
                     }
 
                     @Override
@@ -142,34 +139,6 @@ public class FormEditorPanelPresenter {
                 });
             }
         }).loadForm(path, LocaleInfo.getCurrentLocale().getLocaleName());
-    }
-
-    protected void initDataHoldersForm() {
-        editorService.call(new RemoteCallback<DataHolderBuilderTO[]>() {
-            @Override
-            public void callback(DataHolderBuilderTO[] builders) {
-                holdersView.initDataHolderBuilders(builders);
-            }
-        }).getAvailableDataHolderBuilders(ctx.getCtxUID());
-    }
-
-    protected void refreshDataHoldersTable() {
-        holdersProvider = new AsyncDataProvider<DataHolderInfo>() {
-            protected void onRangeChanged( HasData<DataHolderInfo> display ) {
-                final Range range = display.getVisibleRange();
-                PageRequest request = new PageRequest( range.getStart(),
-                        range.getLength() );
-
-                editorService.call( new RemoteCallback<PageResponse<DataHolderInfo>>() {
-                    @Override
-                    public void callback( final PageResponse<DataHolderInfo> response ) {
-                        updateRowCount(response.getTotalRowSize(), response.isTotalRowSizeExact());
-                        updateRowData(response.getStartRowIndex(), response.getPageRowList());
-                    }
-                } ).listFormDataHolders(request, ctx.getCtxUID());
-            }
-        };
-        holdersProvider.addDataDisplay(holdersView.getDataHoldersGrid());
     }
 
     @WorkbenchPartTitle
@@ -297,14 +266,10 @@ public class FormEditorPanelPresenter {
 
     @WorkbenchPartView
     public IsWidget getWidget() {
-        return editorTabs;
+        return multiPage;
     }
 
     public FormEditorContextTO getContext() {
         return ctx;
-    }
-
-    public void refreshGrid(@Observes RefreshHoldersListEvent refreshHoldersListEvent) {
-        if (ctx != null && ctx.getCtxUID().equals(refreshHoldersListEvent.getContext().getCtxUID())) refreshDataHoldersTable();
     }
 }

@@ -151,9 +151,9 @@ public class Form implements Serializable, Comparable {
         return false;
     }
 
-    public void addField(Field field) {
+    public boolean addField(Field field) {
         field.setPosition(formFields.size());
-        formFields.add(field);
+        return formFields.add(field);
     }
 
     public Long getId() {

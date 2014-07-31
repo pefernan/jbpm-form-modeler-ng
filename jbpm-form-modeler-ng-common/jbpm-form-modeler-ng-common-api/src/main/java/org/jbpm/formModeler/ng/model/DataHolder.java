@@ -81,7 +81,15 @@ public abstract class DataHolder implements Comparable<DataHolder>, Serializable
 
     public abstract Set<DataFieldHolder> getFieldHolders();
 
-    public abstract DataFieldHolder getDataFieldHolderById(String id);
+    public DataFieldHolder getDataFieldHolderById(String fieldHolderId) {
+        if (getFieldHolders() != null) {
+            for (DataFieldHolder dataFieldHolder : getFieldHolders()) {
+                if (dataFieldHolder.getId().equals(fieldHolderId))
+                    return dataFieldHolder;
+            }
+        }
+        return null;
+    }
 
     @Override
     public int compareTo(DataHolder holder) {

@@ -2,14 +2,14 @@ package org.jbpm.formModeler.ng.editor.events.dataHolders;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jbpm.formModeler.ng.editor.events.FormModelerEvent;
-import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderInfo;
+import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderTO;
 import org.jbpm.formModeler.ng.editor.model.FormEditorContextTO;
 
 @Portable
 public class NewDataHolderEvent extends FormModelerEvent {
-    protected DataHolderInfo dataHolder;
+    protected DataHolderTO dataHolder;
 
-    public NewDataHolderEvent(FormEditorContextTO context, DataHolderInfo dataHolder) {
+    public NewDataHolderEvent(FormEditorContextTO context, DataHolderTO dataHolder) {
         this.context = context;
         this.dataHolder = dataHolder;
     }
@@ -18,11 +18,11 @@ public class NewDataHolderEvent extends FormModelerEvent {
         super();
     }
 
-    public DataHolderInfo getDataHolder() {
+    public DataHolderTO getDataHolder() {
         return dataHolder;
     }
 
-    public void setDataHolder(DataHolderInfo dataHolder) {
+    public void setDataHolder(DataHolderTO dataHolder) {
         this.dataHolder = dataHolder;
     }
 }

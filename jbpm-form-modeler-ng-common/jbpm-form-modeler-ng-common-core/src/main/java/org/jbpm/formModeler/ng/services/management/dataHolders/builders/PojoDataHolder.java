@@ -96,17 +96,6 @@ public class PojoDataHolder extends DataHolder {
         return PojoDataHolderBuilder.HOLDER_TYPE_POJO_CLASSNAME;
     }
 
-    @Override
-    public DataFieldHolder getDataFieldHolderById(String fieldHolderId) {
-        if (getFieldHolders() != null) {
-            for (DataFieldHolder dataFieldHolder : getFieldHolders()) {
-                if (dataFieldHolder.getId().equals(fieldHolderId))
-                    return dataFieldHolder;
-            }
-        }
-        return null;
-    }
-
     protected Class getHolderClass() throws ClassNotFoundException {
         if (!StringUtils.isEmpty(className)) return Class.forName(className);
         return null;
@@ -157,7 +146,8 @@ public class PojoDataHolder extends DataHolder {
                 if (clazzValues[0].booleanValue() && clazzValues[1].booleanValue()) {
                     try {
                         String className = methodClazz.getName();
-                        fieldHolder = new DataFieldHolder(this, propertyName, className);
+                        org.jbpm.formModeler.ng.model.Field formField = fieldManager.getFieldByClass(className);
+                        fieldHolder = new DataFieldHolder(this, propertyName, className, formField.getIcon());
                         dataFieldHolders.add(fieldHolder);
                     } catch (Exception e) {
                         //The

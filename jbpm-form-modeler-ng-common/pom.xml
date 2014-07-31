@@ -19,5 +19,6 @@
   <modules>
     <module>jbpm-form-modeler-ng-common-api</module>
     <module>jbpm-form-modeler-ng-common-core</module>
+    <module>jbpm-form-modeler-ng-common-client</module>
   </modules>
 </project>

@@ -66,7 +66,7 @@ public class BasicTypeDataHolder extends DataHolder {
         try {
             if (dataFieldHolders == null || dataFieldHolders.size() == 0) {
                 dataFieldHolders = new TreeSet<DataFieldHolder>();
-                DataFieldHolder datafieldHolder = new DataFieldHolder(this, StringUtils.defaultIfEmpty(inputId, outputId), field.getFieldClass());
+                DataFieldHolder datafieldHolder = new DataFieldHolder(this, StringUtils.defaultIfEmpty(inputId, outputId), field.getFieldClass(), field.getIcon());
                 dataFieldHolders.add(datafieldHolder);
 
             }
@@ -79,17 +79,6 @@ public class BasicTypeDataHolder extends DataHolder {
     @Override
     public String getTypeCode() {
         return BasicTypeHolderBuilder.HOLDER_TYPE_BASIC_TYPE;
-    }
-
-    @Override
-    public DataFieldHolder getDataFieldHolderById(String fieldHolderId) {
-        if (getFieldHolders() != null) {
-            for (DataFieldHolder dataFieldHolder : getFieldHolders()) {
-                if (dataFieldHolder.getId().equals(fieldHolderId))
-                    return dataFieldHolder;
-            }
-        }
-        return null;
     }
 
 
