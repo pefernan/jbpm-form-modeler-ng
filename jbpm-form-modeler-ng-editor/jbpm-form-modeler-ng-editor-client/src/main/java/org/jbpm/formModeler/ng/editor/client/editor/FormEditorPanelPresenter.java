@@ -39,7 +39,6 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.mvp.UberView;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnSave;
@@ -58,13 +57,6 @@ import javax.inject.Inject;
 @Dependent
 @WorkbenchEditor(identifier = "FormModelerEditor", supportedTypes = { FormDefinitionResourceType.class })
 public class FormEditorPanelPresenter {
-
-    public interface FormEditorView
-            extends
-            UberView<FormEditorPanelPresenter> {
-
-        void setContext(FormEditorContextTO context);
-    }
 
     @Inject
     private PlaceManager placeManager;

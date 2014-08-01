@@ -2,8 +2,6 @@ package org.jbpm.formModeler.ng.renderer.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
 
-import java.util.Locale;
-
 @Remote
 public interface FormRendererService {
 

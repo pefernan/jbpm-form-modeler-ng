@@ -58,7 +58,7 @@ public class FormManagerImpl implements FormManager {
     }
 
     @Override
-    public Form getFormForFieldEdition(String code) throws Exception {
+    public Form getFormForFieldEdition(String code) {
         if (StringUtils.isEmpty(code)) {
             log.error("Found field type without code.");
         } else {

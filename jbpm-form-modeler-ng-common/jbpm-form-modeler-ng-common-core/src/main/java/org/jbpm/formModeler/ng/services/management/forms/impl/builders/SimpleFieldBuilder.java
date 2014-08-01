@@ -30,6 +30,8 @@ public class SimpleFieldBuilder implements FieldBuilder {
         List<Field> result = new ArrayList<Field>();
 
         Field field = new Field("InputText", "java.lang.String", new StringMarshaller(), "textbox.png");
+        field.setSize(25);
+        field.setMaxLength(4000);
         result.add(field);
 
         field = new Field("InputTextArea", "java.lang.String", new StringMarshaller(), "scroll_zone.png");

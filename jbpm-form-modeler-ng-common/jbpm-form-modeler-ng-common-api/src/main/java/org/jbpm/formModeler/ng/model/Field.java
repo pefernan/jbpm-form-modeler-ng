@@ -32,6 +32,11 @@ public class Field extends FormElement {
     private Boolean readonly = Boolean.FALSE;
 
     private String fieldClass;
+
+    private Integer size;
+
+    private Integer maxLength;
+
     private FieldValueMarshaller marshaller;
 
     private String inputBinding;
@@ -70,6 +75,22 @@ public class Field extends FormElement {
 
     public void setLabel(Map label) {
         this.label = label;
+    }
+
+    public Integer getMaxLength() {
+        return maxLength;
+    }
+
+    public void setMaxLength(Integer maxLength) {
+        this.maxLength = maxLength;
+    }
+
+    public Integer getSize() {
+        return size;
+    }
+
+    public void setSize(Integer size) {
+        this.size = size;
     }
 
     public Boolean getFieldRequired() {
@@ -114,6 +135,9 @@ public class Field extends FormElement {
 
     @Override
     public Field clone() {
-        return new Field(code, fieldClass, marshaller, icon);
+        Field clone = new Field(code, fieldClass, marshaller, icon);
+        clone.setSize(this.size);
+        clone.setMaxLength(this.maxLength);
+        return clone;
     }
 }

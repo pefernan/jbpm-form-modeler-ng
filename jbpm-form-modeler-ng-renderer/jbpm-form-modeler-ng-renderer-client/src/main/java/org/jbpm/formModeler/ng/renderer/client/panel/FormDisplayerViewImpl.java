@@ -1,17 +1,16 @@
 package org.jbpm.formModeler.ng.renderer.client.panel;
 
-import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.jbpm.formModeler.ng.common.client.rendering.FormDescription;
+import org.jbpm.formModeler.ng.common.client.renderer.FormRendererComponent;
 import org.jbpm.formModeler.ng.common.client.rendering.FormRendererManager;
-import org.jbpm.formModeler.ng.common.client.rendering.Renderer;
-import org.jbpm.formModeler.ng.common.client.rendering.renderers.FormRenderer;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -22,7 +21,7 @@ import java.util.ArrayList;
 public class FormDisplayerViewImpl extends Composite implements FormDisplayerPresenter.FormDisplayerView {
     @Inject
     @DataField
-    public FormPanel formContent;
+    public SimplePanel formContent;
 
     @Inject
     @DataField
@@ -37,7 +36,9 @@ public class FormDisplayerViewImpl extends Composite implements FormDisplayerPre
     private Button submit;
 
     @Inject
-    @Renderer
+    FormRendererComponent rendererComponent;
+
+    @Inject
     private FormRendererManager formRendererManager;
 
     private FormDisplayerPresenter presenter;
@@ -46,23 +47,19 @@ public class FormDisplayerViewImpl extends Composite implements FormDisplayerPre
     private ArrayList<Widget> inputs;
 
     @Override
-    public void load(FormDescription formDescription) {
-        formContent.clear();
+    public void load(String formDescription) {
         if (formDescription == null) {
             Window.alert("Description not found!");
             return;
         }
 
-        FormRenderer renderer = formRendererManager.getRendererByType(formDescription.getDisplayMode());
-
-        Panel content = renderer.generateForm(formDescription);
-
-        if (content != null) {
-            formContent.add(content);
-            submit.setVisible(true);
-        }
+        if (rendererComponent.renderFormContent(formDescription)) submit.setVisible(true);
     }
 
+    @Override
+    public String getMarshalledForm() {
+        return rendererComponent.getFormContent();
+    }
 
     @EventHandler("submit")
     public void submit(ClickEvent event) {
@@ -86,5 +83,6 @@ public class FormDisplayerViewImpl extends Composite implements FormDisplayerPre
         buttonEmpty.setText("Start Empty Test");
         submit.setVisible(false);
         submit.setText("Submit");
+        formContent.add(rendererComponent);
     }
 }

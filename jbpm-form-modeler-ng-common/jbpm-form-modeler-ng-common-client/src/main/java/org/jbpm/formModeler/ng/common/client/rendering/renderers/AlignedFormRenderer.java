@@ -6,13 +6,11 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.jbpm.formModeler.ng.common.client.rendering.FieldDescription;
 import org.jbpm.formModeler.ng.common.client.rendering.FormDescription;
-import org.jbpm.formModeler.ng.common.client.rendering.Renderer;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
 
 @ApplicationScoped
-@Renderer
 public class AlignedFormRenderer extends FormRenderer {
     @Override
     public String getCode() {

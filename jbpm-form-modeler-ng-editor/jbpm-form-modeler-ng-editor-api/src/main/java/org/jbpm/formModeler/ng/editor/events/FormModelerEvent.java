@@ -1,17 +1,16 @@
 package org.jbpm.formModeler.ng.editor.events;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.jbpm.formModeler.ng.editor.model.FormEditorContextTO;
 
 @Portable
 public class FormModelerEvent {
-    protected FormEditorContextTO context;
+    protected String context;
 
-    public FormEditorContextTO getContext() {
+    public String getContext() {
         return context;
     }
 
-    public void setContext(FormEditorContextTO context) {
+    public void setContext(String context) {
         this.context = context;
     }
 }

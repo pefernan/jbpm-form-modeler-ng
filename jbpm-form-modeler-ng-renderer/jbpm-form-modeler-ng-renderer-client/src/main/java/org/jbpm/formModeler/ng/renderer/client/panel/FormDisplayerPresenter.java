@@ -1,12 +1,10 @@
 package org.jbpm.formModeler.ng.renderer.client.panel;
 
-import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.i18n.client.LocaleInfo;
-import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Window;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jbpm.formModeler.ng.common.client.rendering.FormDescription;
+import org.jbpm.formModeler.ng.common.client.renderer.FormRendererComponent;
 import org.jbpm.formModeler.ng.renderer.service.FormRendererService;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -27,13 +25,15 @@ public class FormDisplayerPresenter {
             extends
             UberView<FormDisplayerPresenter> {
 
-        void load(FormDescription description);
+        void load(String marshalledForm);
+        String getMarshalledForm();
     }
-
-    private FormDescription description;
 
     @Inject
     private FormDisplayerView view;
+
+    @Inject
+    FormRendererComponent rendererComponent;
 
     @Inject
     private Event<NotificationEvent> notification;
@@ -50,7 +50,7 @@ public class FormDisplayerPresenter {
     }
 
     public void submitForm() {
-        includerService.call().unMarshallContext(context, new JSONObject(description).toString());
+        includerService.call().unMarshallContext(context, view.getMarshalledForm());
     }
 
     public void startTest() {
@@ -63,8 +63,7 @@ public class FormDisplayerPresenter {
 
                     @Override
                     public void callback(String formJSON) {
-                        description = JsonUtils.safeEval(formJSON);
-                        view.load(description);
+                        view.load(formJSON);
                     }
                 }).getUnmarshalledContext(context);
             }
@@ -81,8 +80,7 @@ public class FormDisplayerPresenter {
 
                     @Override
                     public void callback(String formJSON) {
-                        description = JsonUtils.safeEval(formJSON);
-                        view.load(description);
+                        view.load(formJSON);
                     }
                 }).getUnmarshalledContext(context);
             }

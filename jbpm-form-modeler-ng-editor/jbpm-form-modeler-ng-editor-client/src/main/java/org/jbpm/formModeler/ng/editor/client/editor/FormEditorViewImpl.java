@@ -4,7 +4,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.TabBar;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.jbpm.formModeler.ng.editor.client.editor.dataHolders.DataHoldersEditor;
@@ -14,7 +13,7 @@ import org.jbpm.formModeler.ng.editor.model.FormEditorContextTO;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-public class FormEditorViewImpl extends Composite implements FormEditorPanelPresenter.FormEditorView {
+public class FormEditorViewImpl extends Composite implements FormEditorView {
 
     interface FormEditorViewBinder
             extends

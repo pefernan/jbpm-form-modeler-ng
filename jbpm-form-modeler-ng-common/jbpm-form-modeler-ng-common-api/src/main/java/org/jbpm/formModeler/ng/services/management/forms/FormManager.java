@@ -30,7 +30,7 @@ public interface FormManager extends Serializable {
 
     List<Form> getSystemForms();
 
-    Form getFormForFieldEdition(String code) throws Exception;
+    Form getFormForFieldEdition(String code);
 
     Form getFormById(Long id);
 

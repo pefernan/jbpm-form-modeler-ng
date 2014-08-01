@@ -8,6 +8,10 @@ public class FormDescription extends JavaScriptObject {
     protected FormDescription() {
     }
 
+    public final native String getCtxUID() /*-{
+        return this.ctxUID;
+    }-*/;
+
     public final native Long getFormId() /*-{
         return this.formId;
     }-*/;

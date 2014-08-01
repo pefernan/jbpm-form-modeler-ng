@@ -15,10 +15,6 @@
  */
 package org.jbpm.formModeler.ng.services.context;
 
-import org.jbpm.formModeler.ng.model.Form;
-
-import java.util.Map;
-
 public interface FormRenderContextManager {
     public static final String CTX_PREFFIX = "formRenderCtx_";
 
@@ -30,8 +26,9 @@ public interface FormRenderContextManager {
 
     void removeContext(FormRenderContext context);
 
-    void persistContext(FormRenderContext ctx) throws Exception;
+    void persistContext(FormRenderContext ctx, String ctxJson) throws Exception;
 
-    void persistContext(String ctxUID) throws Exception;
+    void persistContext(String ctxUID, String ctxJson) throws Exception;
 
+    String marshallContext(FormRenderContext context);
 }

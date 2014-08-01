@@ -6,6 +6,10 @@ public class FieldDescription extends JavaScriptObject {
     protected FieldDescription() {
     }
 
+    public final native String getUid() /*-{
+        return this.uid;
+    }-*/;
+
     public final native String getId() /*-{
         return this.id;
     }-*/;
@@ -14,12 +18,28 @@ public class FieldDescription extends JavaScriptObject {
         return this.label;
     }-*/;
 
+    public final native int getSize() /*-{
+        return this.size;
+    }-*/;
+
+    public final native int getMaxLength() /*-{
+        return this.maxLength;
+    }-*/;
+
     public final native String getType() /*-{
         return this.type;
     }-*/;
 
     public final native int getPosition() /*-{
         return this.position;
+    }-*/;
+
+    public final native String getHolderColor() /*-{
+        return this.holderColor;
+    }-*/;
+
+    public final native boolean isRequired() /*-{
+        return this.required;
     }-*/;
 
     public final native boolean isGrouped() /*-{

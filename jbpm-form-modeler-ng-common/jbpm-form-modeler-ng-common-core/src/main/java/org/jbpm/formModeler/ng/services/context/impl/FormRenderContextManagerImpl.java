@@ -9,7 +9,6 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 @SessionScoped
@@ -28,9 +27,19 @@ public class FormRenderContextManagerImpl implements FormRenderContextManager, S
         FormRenderContext ctx = new FormRenderContext(uid, config.getForm(), config.getInputData(), config.getOutputData(), config.getLocale());
         ctx.setContextForms(config.getContextForms());
         ctx.getAttributes().putAll(config.getAttributes());
-        ctx.setMarshalledCopy(contextMarshaller.marshallContext(ctx));
+        marshallContext(ctx);
         formRenderContextMap.put(uid, ctx);
         return ctx;
+    }
+
+    @Override
+    public String marshallContext(FormRenderContext context) {
+        if (context == null) return null;
+
+        String marshalledContext = contextMarshaller.marshallContext(context);
+        context.setMarshalledCopy(marshalledContext);
+
+        return marshalledContext;
     }
 
     @Override
@@ -40,23 +49,27 @@ public class FormRenderContextManagerImpl implements FormRenderContextManager, S
 
     @Override
     public void removeContext(String ctxUID) {
-        formRenderContextMap.remove(ctxUID);
+        removeContext(formRenderContextMap.get(ctxUID));
     }
 
     @Override
     public void removeContext(FormRenderContext context) {
         if (context != null) {
-            removeContext(context.getUID());
+            formRenderContextMap.remove(context.getUID());
+            if (context.getAttributes() != null) context.getAttributes().clear();
+            if (context.getContextForms() != null) context.getContextForms().clear();
+            if (context.getInputData() != null) context.getInputData().clear();
+            if (context.getOutputData() != null) context.getOutputData().clear();
         }
     }
 
     @Override
-    public void persistContext(FormRenderContext ctx) throws Exception {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void persistContext(FormRenderContext ctx, String ctxJson) throws Exception {
+        if (ctx != null) contextMarshaller.unmarshallContext(ctx, ctxJson);
     }
 
     @Override
-    public void persistContext(String ctxUID) throws Exception {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void persistContext(String ctxUID, String ctxJson) throws Exception {
+        persistContext(formRenderContextMap.get(ctxUID), ctxJson);
     }
 }

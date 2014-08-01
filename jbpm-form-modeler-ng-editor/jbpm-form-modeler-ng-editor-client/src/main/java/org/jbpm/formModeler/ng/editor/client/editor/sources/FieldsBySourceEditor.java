@@ -1,7 +1,6 @@
 package org.jbpm.formModeler.ng.editor.client.editor.sources;
 
 
-import com.github.gwtbootstrap.client.ui.Label;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -113,6 +112,6 @@ public class FieldsBySourceEditor extends Composite {
     }
 
     public void refreshGrid(@Observes RefreshHoldersListEvent refreshHoldersListEvent) {
-        if (context != null && context.getCtxUID().equals(refreshHoldersListEvent.getContext().getCtxUID())) loadFormSources();
+        if (context != null && context.getCtxUID().equals(refreshHoldersListEvent.getContext())) loadFormSources();
     }
 }

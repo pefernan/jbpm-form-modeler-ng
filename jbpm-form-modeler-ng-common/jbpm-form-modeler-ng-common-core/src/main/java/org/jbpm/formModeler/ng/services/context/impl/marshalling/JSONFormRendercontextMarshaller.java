@@ -2,7 +2,10 @@ package org.jbpm.formModeler.ng.services.context.impl.marshalling;
 
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.*;
+import org.codehaus.jackson.JsonEncoding;
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.jbpm.formModeler.ng.model.DataHolder;
 import org.jbpm.formModeler.ng.model.Field;
@@ -20,7 +23,6 @@ import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 @Default
@@ -83,7 +85,10 @@ public class JSONFormRendercontextMarshaller implements FormRenderContextMarshal
             boolean hasInput = !StringUtils.isEmpty(inputExperession);
             boolean hasOutput = !StringUtils.isEmpty(outputExpression);
 
-            if (!hasInput && !hasOutput) continue;
+            if (!hasInput && !hasOutput) {
+                marshallField(field, null, context, "", generator);
+                continue;
+            }
 
             boolean readFromInput = (hasInput && !hasOutput) || (hasInput && outputData.isEmpty());
 
@@ -114,11 +119,24 @@ public class JSONFormRendercontextMarshaller implements FormRenderContextMarshal
     private void marshallField(Field field, Object value, FormRenderContext context, String namespace, JsonGenerator generator) throws IOException {
         generator.writeStartObject();
 
+        generator.writeStringField("uid", String.valueOf(field.getId()));
         generator.writeStringField("id", StringUtils.isEmpty(namespace) ? field.getName() : namespace + NAMESPACE_SEPARATOR + field.getName());
         generator.writeStringField("label", (String) localeManager.localize(field.getLabel(), context.getCurrentLocale()));
         generator.writeStringField("type", field.getCode());
+        if (field.getSize() != null) generator.writeNumberField("size", field.getSize());
+        if (field.getMaxLength() != null) generator.writeNumberField("maxLength", field.getMaxLength());
         generator.writeNumberField("position", field.getPosition());
+        generator.writeBooleanField("required", Boolean.TRUE.equals(field.getFieldRequired()));
         generator.writeBooleanField("grouped", Boolean.TRUE.equals(field.getGroupWithPrevious()));
+
+        String holderColor = "";
+
+        DataHolder holder = BindingUtils.getFormDataHolderForField(field);
+        if (holder != null) {
+            holderColor = holder.getRenderColor();
+        }
+
+        generator.writeStringField("holderColor", StringUtils.defaultIfEmpty(holderColor, "#444444"));
 
         generator.writeObjectField("value", field.getMarshaller().marshallValue(value));
 

@@ -4,15 +4,25 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jbpm.formModeler.ng.editor.events.FormModelerEvent;
 
 @Portable
-public class RefreshCanvasEvent extends FormModelerEvent {
+public class LoadFieldEditionContextEvent extends FormModelerEvent {
+    private String editionContext;
     private String marshalledContext;
 
-    public RefreshCanvasEvent(String context, String marshalledContext) {
+    public LoadFieldEditionContextEvent() {
+    }
+
+    public LoadFieldEditionContextEvent(String context, String editionContext, String marshalledContext) {
         this.context = context;
+        this.editionContext = editionContext;
         this.marshalledContext = marshalledContext;
     }
 
-    public RefreshCanvasEvent() {
+    public String getEditionContext() {
+        return editionContext;
+    }
+
+    public void setEditionContext(String editionContext) {
+        this.editionContext = editionContext;
     }
 
     public String getMarshalledContext() {

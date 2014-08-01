@@ -5,18 +5,22 @@ import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jbpm.formModeler.ng.editor.events.canvas.EndFieldEditionEvent;
+import org.jbpm.formModeler.ng.editor.events.canvas.LoadFieldEditionContextEvent;
 import org.jbpm.formModeler.ng.editor.events.canvas.RefreshCanvasEvent;
+import org.jbpm.formModeler.ng.editor.events.canvas.StartEditFieldPropertyEvent;
 import org.jbpm.formModeler.ng.editor.events.dataHolders.DeleteDataHolderEvent;
 import org.jbpm.formModeler.ng.editor.events.dataHolders.NewDataHolderEvent;
 import org.jbpm.formModeler.ng.editor.events.dataHolders.RefreshHoldersListEvent;
+import org.jbpm.formModeler.ng.editor.model.FormEditorContextTO;
 import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderBuilderTO;
 import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderFieldTO;
 import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderTO;
-import org.jbpm.formModeler.ng.editor.model.FormEditorContextTO;
 import org.jbpm.formModeler.ng.editor.model.dataHolders.RangedDataHolderBuilderTO;
 import org.jbpm.formModeler.ng.editor.service.FormEditorService;
 import org.jbpm.formModeler.ng.model.DataFieldHolder;
 import org.jbpm.formModeler.ng.model.DataHolder;
+import org.jbpm.formModeler.ng.model.Field;
 import org.jbpm.formModeler.ng.model.Form;
 import org.jbpm.formModeler.ng.services.LocaleManager;
 import org.jbpm.formModeler.ng.services.context.ContextConfiguration;
@@ -80,6 +84,9 @@ public class FormEditorServiceImpl implements FormEditorService {
 
     @Inject
     private Event<RefreshCanvasEvent> refreshCanvasEvent;
+
+    @Inject
+    private Event<LoadFieldEditionContextEvent> loadEditionEvent;
 
     @Inject
     private LocaleManager localeManager;
@@ -148,10 +155,7 @@ public class FormEditorServiceImpl implements FormEditorService {
         if (holder != null) {
             DataFieldHolder field = holder.getDataFieldHolderById(fieldTO.getId());
             if (formManager.addDataHolderField(context.getForm(), holder, field)) {
-                FormEditorContextTO contextTO = new FormEditorContextTO(ctxUID);
-                contextTO.setLoadError(false);
-                contextTO.setMarshalledContext(contextMarshaller.marshallContext(context));
-                refreshCanvasEvent.fire(new RefreshCanvasEvent(contextTO));
+                refreshCanvasEvent.fire(new RefreshCanvasEvent(ctxUID, contextMarshaller.marshallContext(context)));
             }
         }
 
@@ -284,7 +288,7 @@ public class FormEditorServiceImpl implements FormEditorService {
     }
 
     public void createDataHolder(@Observes NewDataHolderEvent event) {
-        FormRenderContext context = contextManager.getFormRenderContext(event.getContext().getCtxUID());
+        FormRenderContext context = contextManager.getFormRenderContext(event.getContext());
         if (context != null) {
             DataHolderTO info = event.getDataHolder();
             DataHolderBuildConfig config = new DataHolderBuildConfig(info.getUniqueId(), info.getInputId(), info.getOutputId(), info.getRenderColor(), info.getClassName());
@@ -299,12 +303,47 @@ public class FormEditorServiceImpl implements FormEditorService {
     }
 
     public void deleteDataHolder(@Observes DeleteDataHolderEvent event) {
-        FormRenderContext context = contextManager.getFormRenderContext(event.getContext().getCtxUID());
+        FormRenderContext context = contextManager.getFormRenderContext(event.getContext());
         if (context != null) {
             formManager.removeDataHolderFromForm(context.getForm(), event.getDataHolder().getUniqueId());
             refreshHoldersListEvent.fire(new RefreshHoldersListEvent(event.getContext()));
         }
     }
+
+    public void editFieldProperties(@Observes StartEditFieldPropertyEvent event) {
+        FormRenderContext context = contextManager.getFormRenderContext(event.getContext());
+        if (context != null) {
+            Field field = context.getForm().getFieldById(Long.decode(event.getFieldUid()));
+            Form editionForm = formManager.getFormForFieldEdition(field.getCode());
+            if (editionForm != null) {
+                Map<String, Object> data = new HashMap<String, Object>();
+                data.put("field", field);
+                ContextConfiguration config = new ContextConfiguration(editionForm, data, new HashMap<String, Object>(), context.getCurrentLocale());
+                FormRenderContext editionContext = contextManager.newContext(config);
+                loadEditionEvent.fire(new LoadFieldEditionContextEvent(event.getContext(), editionContext.getUID(), editionContext.getMarshalledCopy()));
+            }
+        }
+    }
+
+    public void endFieldEdition(@Observes EndFieldEditionEvent event) {
+        FormRenderContext context = contextManager.getFormRenderContext(event.getContext());
+        FormRenderContext editionContext = contextManager.getFormRenderContext(event.getEditionContext());
+        if (context != null && editionContext != null) {
+
+            try {
+                if (event.isPersist()) {
+                    contextManager.persistContext(editionContext, event.getMarshalledContext());
+                    String ctxJson = contextManager.marshallContext(context);
+                    refreshCanvasEvent.fire(new RefreshCanvasEvent(event.getContext(), ctxJson));
+                }
+            } catch (Exception ex) {
+                log.warn("Unable to persist context {}", editionContext.getUID(), ex);
+            }
+
+            contextManager.removeContext(editionContext);
+        }
+    }
+
     @Override
     public DataHolderBuilderTO[] getAvailableDataHolderBuilders(String ctxUID) {
         FormRenderContext context = contextManager.getFormRenderContext(ctxUID);

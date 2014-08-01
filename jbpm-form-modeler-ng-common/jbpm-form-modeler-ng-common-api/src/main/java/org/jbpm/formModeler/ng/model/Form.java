@@ -104,10 +104,21 @@ public class Form implements Serializable, Comparable {
      */
     public Field getField(String name) {
         if (name == null || name.trim().length() == 0) return null;
-        if (getFormFields() != null) {
-
+        if (formFields != null) {
             for (Field field : formFields) {
                 if (name.equals(field.getName()))
+                    return field;
+            }
+        }
+        return null;
+    }
+
+
+    public Field getFieldById(Long id) {
+        if (id == null || id < 0) return null;
+        if (formFields != null) {
+            for (Field field : formFields) {
+                if (id.equals(field.getId()))
                     return field;
             }
         }

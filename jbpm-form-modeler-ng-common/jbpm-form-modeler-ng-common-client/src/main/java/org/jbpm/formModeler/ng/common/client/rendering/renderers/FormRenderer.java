@@ -3,11 +3,11 @@ package org.jbpm.formModeler.ng.common.client.rendering.renderers;
 import com.github.gwtbootstrap.client.ui.FormLabel;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import org.jbpm.formModeler.ng.common.client.rendering.fields.FieldProvider;
-import org.jbpm.formModeler.ng.model.Form;
 import org.jbpm.formModeler.ng.common.client.rendering.FieldDescription;
 import org.jbpm.formModeler.ng.common.client.rendering.FieldProviderManager;
 import org.jbpm.formModeler.ng.common.client.rendering.FormDescription;
+import org.jbpm.formModeler.ng.common.client.rendering.fields.FieldProvider;
+import org.jbpm.formModeler.ng.model.Form;
 
 import javax.inject.Inject;
 
@@ -31,29 +31,34 @@ public abstract class FormRenderer {
 
         if (provider.supportsLabel() || form.getLabelMode().equals(Form.LABEL_MODE_HIDDEN)) return input;
 
-        FormLabel fieldLabel = new FormLabel(field.getLabel());
-        fieldLabel.setFor(field.getId());
-
         CellPanel fieldBox;
 
         if (form.getLabelMode().equals(Form.LABEL_MODE_AFTER)) {
             fieldBox = new VerticalPanel();
             fieldBox.add(input);
-            fieldBox.add(fieldLabel);
+            fieldBox.add(getFieldLabel(field));
         } else if (form.getLabelMode().equals(Form.LABEL_MODE_LEFT)) {
             fieldBox = new HorizontalPanel();
-            fieldBox.add(fieldLabel);
+            fieldBox.add(getFieldLabel(field));
             fieldBox.add(input);
         } else if (form.getLabelMode().equals(Form.LABEL_MODE_RIGHT)) {
             fieldBox = new HorizontalPanel();
             fieldBox.add(input);
-            fieldBox.add(fieldLabel);
+            fieldBox.add(getFieldLabel(field));
         } else {
             fieldBox = new VerticalPanel();
-            fieldBox.add(fieldLabel);
+            fieldBox.add(getFieldLabel(field));
             fieldBox.add(input);
         }
 
         return fieldBox;
+    }
+
+    protected Widget getFieldLabel(FieldDescription field) {
+        String label = field.getLabel();
+        if (field.isRequired()) label = "* " + label;
+        FormLabel fieldLabel = new FormLabel(label);
+        fieldLabel.setFor(field.getId());
+        return fieldLabel;
     }
 }

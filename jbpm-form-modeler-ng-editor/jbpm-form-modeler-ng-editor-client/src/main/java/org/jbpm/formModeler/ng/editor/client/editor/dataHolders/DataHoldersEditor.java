@@ -124,7 +124,7 @@ public class DataHoldersEditor extends Composite {
                 info.setType(holderType);
                 info.setClassName(className);
                 info.setRenderColor(color.getText());
-                formModelerEvent.fire(new NewDataHolderEvent(context, info));
+                formModelerEvent.fire(new NewDataHolderEvent(context.getCtxUID(), info));
             }
         });
 
@@ -135,7 +135,7 @@ public class DataHoldersEditor extends Composite {
 
             @Override
             public void execute(DataHolderTO row) {
-                formModelerEvent.fire(new DeleteDataHolderEvent(context, row));
+                formModelerEvent.fire(new DeleteDataHolderEvent(context.getCtxUID(), row));
             }
         }));
 
@@ -313,6 +313,6 @@ public class DataHoldersEditor extends Composite {
     }
 
     public void refreshGrid(@Observes RefreshHoldersListEvent refreshHoldersListEvent) {
-        if (context != null && context.getCtxUID().equals(refreshHoldersListEvent.getContext().getCtxUID())) refreshDataHoldersTable();
+        if (context != null && context.getCtxUID().equals(refreshHoldersListEvent.getContext())) refreshDataHoldersTable();
     }
 }
