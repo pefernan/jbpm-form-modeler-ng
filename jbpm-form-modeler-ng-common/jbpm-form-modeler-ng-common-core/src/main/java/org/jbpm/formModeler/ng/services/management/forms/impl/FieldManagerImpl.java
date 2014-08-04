@@ -15,10 +15,10 @@
  */
 package org.jbpm.formModeler.ng.services.management.forms.impl;
 
+import org.apache.commons.lang.SerializationUtils;
+import org.jbpm.formModeler.ng.model.BasicTypeField;
 import org.jbpm.formModeler.ng.model.Field;
-import org.jbpm.formModeler.ng.services.management.forms.FieldBuilder;
 import org.jbpm.formModeler.ng.services.management.forms.FieldManager;
-import org.jbpm.formModeler.ng.services.management.forms.impl.builders.SimpleFieldBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,14 +37,14 @@ import java.util.Map;
 @ApplicationScoped
 public class FieldManagerImpl implements FieldManager {
 
-    private List<Field> fieldTypes;
+    private List<BasicTypeField> fieldTypes;
     private List<Field> decoratorTypes;
     private List<Field> complexTypes;
 
     private Logger log = LoggerFactory.getLogger(FieldManager.class);
 
     @Inject
-    protected Instance<SimpleFieldBuilder> builders;
+    protected Instance<BasicTypeField> basicFields;
 
     private Map<String, String> iconsMappings = new HashMap<String, String>();
     private String defaultIcon = "fieldTypes/default.png";
@@ -57,10 +57,10 @@ public class FieldManagerImpl implements FieldManager {
     @PostConstruct
     protected void init() {
 
-        fieldTypes = new ArrayList<Field>();
+        fieldTypes = new ArrayList<BasicTypeField>();
 
-        for (FieldBuilder builder : builders) {
-            fieldTypes.addAll(builder.buildList());
+        for (BasicTypeField field : basicFields) {
+            fieldTypes.add(field);
         }
 
         iconsMappings.put("InputTextShort", "fieldTypes/box_number.png");
@@ -118,13 +118,8 @@ public class FieldManagerImpl implements FieldManager {
     }
 
     @Override
-    public List<Field> getFields() {
+    public List<BasicTypeField> getBasicFields() {
         return fieldTypes;
-    }
-
-    @Override
-    public void setFields(List<Field> fieldTypes) {
-        this.fieldTypes = fieldTypes;
     }
 
     @Override
@@ -132,7 +127,7 @@ public class FieldManagerImpl implements FieldManager {
         List<Field> result = new ArrayList<Field>();
 
         for (Field typeField : fieldTypes) {
-            if (typeField.getClass().equals(field.getClass())) result.add(typeField.clone());
+            if (typeField.getClass().equals(field.getClass())) result.add(typeField);
         }
 
         return result;
@@ -141,7 +136,7 @@ public class FieldManagerImpl implements FieldManager {
     @Override
     public Field getFieldByCode(String typeCode) {
         for (Field field : fieldTypes) {
-            if (field.getCode().equals(typeCode)) return field.clone();
+            if (field.getCode().equals(typeCode)) return (Field) SerializationUtils.clone(field);
         }
         return null;
     }
@@ -149,7 +144,7 @@ public class FieldManagerImpl implements FieldManager {
     @Override
     public Field getFieldByClass(String classType) {
         for (Field field : fieldTypes) {
-            if (field.getFieldClass().equals(classType)) return field.clone();
+            if (field.getFieldClass().equals(classType)) return (Field)SerializationUtils.clone(field);
         }
         return null;
     }

@@ -39,6 +39,7 @@
       <groupId>commons-jxpath</groupId>
       <artifactId>commons-jxpath</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -47,6 +48,7 @@
       <groupId>org.apache.deltaspike.core</groupId>
       <artifactId>deltaspike-core-api</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-form-modeler-ng-common-api</artifactId>

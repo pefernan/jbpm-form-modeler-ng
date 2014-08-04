@@ -15,6 +15,7 @@
  */
 package org.jbpm.formModeler.ng.services.management.dataHolders.builders;
 
+import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.jbpm.formModeler.ng.model.DataFieldHolder;
@@ -58,21 +59,16 @@ public class PojoDataHolder extends DataHolder {
     @Override
     public void writeValue(Object destination, String propName, Object value) throws Exception {
         if (destination == null) return;
-        Field field = destination.getClass().getDeclaredField(propName);
-
-        Method setterMethod = destination.getClass().getMethod("set" + capitalize(propName), new Class[]{field.getType()});
-        setterMethod.invoke(destination, new Object[]{value});
+        JXPathContext ctx = JXPathContext.newContext(destination);
+        ctx.setValue(propName, value);
     }
 
 
     @Override
     public Object readValue(Object source, String propName) throws Exception {
         if (source == null) return null;
-
-        Method getter = source.getClass().getMethod("get" + capitalize(propName));
-        Object value = getter.invoke(source);
-
-        return value;
+        JXPathContext ctx = JXPathContext.newContext(source);
+        return ctx.getValue(propName);
     }
 
     private String capitalize(String string) {

@@ -123,11 +123,17 @@ public class JSONFormRendercontextMarshaller implements FormRenderContextMarshal
         generator.writeStringField("id", StringUtils.isEmpty(namespace) ? field.getName() : namespace + NAMESPACE_SEPARATOR + field.getName());
         generator.writeStringField("label", (String) localeManager.localize(field.getLabel(), context.getCurrentLocale()));
         generator.writeStringField("type", field.getCode());
-        if (field.getSize() != null) generator.writeNumberField("size", field.getSize());
-        if (field.getMaxLength() != null) generator.writeNumberField("maxLength", field.getMaxLength());
         generator.writeNumberField("position", field.getPosition());
         generator.writeBooleanField("required", Boolean.TRUE.equals(field.getFieldRequired()));
         generator.writeBooleanField("grouped", Boolean.TRUE.equals(field.getGroupWithPrevious()));
+
+        Map<String, String> properties = field.getCustomProperties();
+
+        if (properties != null) {
+            for (String key : properties.keySet()) {
+                generator.writeStringField(key, properties.get(key));
+            }
+        }
 
         String holderColor = "";
 

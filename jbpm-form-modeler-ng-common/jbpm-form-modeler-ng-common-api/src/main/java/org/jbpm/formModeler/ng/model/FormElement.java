@@ -1,6 +1,7 @@
 package org.jbpm.formModeler.ng.model;
 
 import java.io.Serializable;
+import java.util.Map;
 
 public abstract class FormElement implements Serializable, Comparable<FormElement> {
     protected Long id;
@@ -58,4 +59,7 @@ public abstract class FormElement implements Serializable, Comparable<FormElemen
                 return (int) (f1.getId().longValue() - f2.getId().longValue());
         }
     }
+
+    public abstract Map<String, String> getCustomProperties();
+    public abstract void setCustomProperties(Map<String, String> properties);
 }

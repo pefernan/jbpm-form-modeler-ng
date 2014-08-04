@@ -1,8 +1,11 @@
 package org.jbpm.formModeler.ng.editor.client.editor.rendering.renderers;
 
+import com.github.gwtbootstrap.client.ui.base.IconAnchor;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.ui.*;
+import com.github.gwtbootstrap.client.ui.Button;
 import org.jbpm.formModeler.ng.common.client.rendering.FieldDescription;
 import org.jbpm.formModeler.ng.common.client.rendering.FormDescription;
 import org.jbpm.formModeler.ng.common.client.rendering.renderers.DefaultFormRenderer;
@@ -25,16 +28,33 @@ public class EditorDefaultFormRenderer extends DefaultFormRenderer {
     @Override
     protected Widget getFieldBox(final FormDescription form, final FieldDescription field) {
         final HorizontalPanel propertyButtons = new HorizontalPanel();
+        propertyButtons.getElement().getStyle().setBackgroundColor("#F5F5F5");
 
-        Button edit = new Button("Edit");
+
+        IconAnchor move = new IconAnchor();
+        move.setIcon(IconType.MOVE);
+        move.getElement().getStyle().setPaddingLeft(3, Style.Unit.PX);
+        move.getElement().getStyle().setPaddingRight(3, Style.Unit.PX);
+
+        IconAnchor edit = new IconAnchor();
+        edit.setIcon(IconType.PENCIL);
         edit.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 fieldPropertyEvent.fire(new StartEditFieldPropertyEvent(form.getCtxUID(), field.getUid()));
             }
         });
+        edit.getElement().getStyle().setPaddingLeft(3, Style.Unit.PX);
+        edit.getElement().getStyle().setPaddingRight(3, Style.Unit.PX);
 
+        IconAnchor trash = new IconAnchor();
+        trash.setIcon(IconType.TRASH);
+        trash.getElement().getStyle().setPaddingLeft(3, Style.Unit.PX);
+        trash.getElement().getStyle().setPaddingRight(3, Style.Unit.PX);
+
+        propertyButtons.add(move);
         propertyButtons.add(edit);
+        propertyButtons.add(trash);
 
         final FlowPanel panel = new FlowPanel();
         panel.add(super.getFieldBox(form, field));

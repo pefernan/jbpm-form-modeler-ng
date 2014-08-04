@@ -53,11 +53,11 @@ public class CoreFormsBuilder implements Startable {
         }
 
         deployFieldTypeForm("default", formResources);
-        deployFieldTypesForms(fieldManager.getFields(), formResources);
+        deployFieldTypesForms(fieldManager.getBasicFields(), formResources);
         formManager.setSystemForms(systemForms);
     }
 
-    protected void deployFieldTypesForms(List<Field> fieldTypes, Map<String, Properties> formResources) {
+    protected void deployFieldTypesForms(List<? extends Field> fieldTypes, Map<String, Properties> formResources) {
         if (fieldTypes == null) return;
         for (Field fieldType : fieldTypes) {
             deployFieldTypeForm(fieldType.getCode(), formResources);

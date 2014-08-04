@@ -15,6 +15,7 @@
  */
 package org.jbpm.formModeler.ng.services.management.forms.impl;
 
+import org.apache.commons.lang.SerializationUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.xerces.parsers.DOMParser;
@@ -249,6 +250,8 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
         field.setName(nodeField.getAttributes().getNamedItem(ATTR_NAME).getNodeValue());
         field.setPosition(Integer.parseInt(nodeField.getAttributes().getNamedItem(ATTR_POSITION).getNodeValue()));
 
+        Map<String, String> properties = new HashMap<String, String>();
+
         NodeList fieldPropsNodes = nodeField.getChildNodes();
         for (int j = 0; j < fieldPropsNodes.getLength(); j++) {
             Node nodeFieldProp = fieldPropsNodes.item(j);
@@ -268,10 +271,14 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
                         field.setInputBinding(value);
                     } else if ("outputBinding".equals(propName)) {
                         field.setOutputBinding(value);
+                    } else {
+                        properties.put(propName, value);
                     }
                 }
             }
         }
+
+        field.setCustomProperties(properties);
 
         if (resources != null) {
             field.setLabel(new HashMap());
@@ -313,7 +320,13 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
         if (!StringUtils.isEmpty(field.getOutputBinding()))
             addXMLNode("outputBinding", field.getOutputBinding(), rootNode);
 
+        Map<String, String> properties = field.getCustomProperties();
 
+        if (properties != null) {
+            for (String key : properties.keySet()) {
+                addXMLNode(key, properties.get(key), rootNode);
+            }
+        }
         parent.addChild(rootNode);
     }
 

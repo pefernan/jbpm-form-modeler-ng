@@ -10,10 +10,21 @@ import java.text.ParsePosition;
 
 public class NumberMarshaller implements FieldValueMarshaller {
     private String desiredClassName;
-    private final String pattern;
-    
-    public NumberMarshaller(String desiredClassName, String pattern) {
+    private String pattern;
+
+    public String getDesiredClassName() {
+        return desiredClassName;
+    }
+
+    public void setDesiredClassName(String desiredClassName) {
         this.desiredClassName = desiredClassName;
+    }
+
+    public String getPattern() {
+        return pattern;
+    }
+
+    public void setPattern(String pattern) {
         this.pattern = pattern;
     }
 

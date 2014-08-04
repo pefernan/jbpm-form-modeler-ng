@@ -1,7 +1,10 @@
 package org.jbpm.formModeler.ng.editor.client.editor.sources;
 
 
+import com.github.gwtbootstrap.client.ui.base.IconAnchor;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -74,41 +77,57 @@ public class FieldsBySourceEditor extends Composite {
         for (DataHolderTO holder : holders) {
             TreeItem currentNode = null;
             if (holder.isCanHaveChild()) {
-                SafeHtmlBuilder htmlBuilder = new SafeHtmlBuilder();
-                String html = "<div style='width: 20px; height: 20px; background-color:" + holder.getRenderColor() + ";'></div>";
-                htmlBuilder.appendEscaped(holder.getInputId());
-                htmlBuilder.appendHtmlConstant(html);
-                currentNode = holdersTree.addItem(htmlBuilder.toSafeHtml());
+                currentNode = holdersTree.addItem(getSourceAddWidget(holder.getUniqueId(), holder.getRenderColor(), null));
             }
 
-            for (DataHolderFieldTO field : holder.getFields()) {
-                HolderFieldWidget fieldWidget = new HolderFieldWidget(field, holder.getRenderColor());
-                if (currentNode != null) currentNode.addItem(fieldWidget);
-                else holdersTree.add(fieldWidget);
+            for (final DataHolderFieldTO field : holder.getFields()) {
+
+                ClickHandler handler = new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        editorService.call(new RemoteCallback<DataHolderTO[]>() {
+                            @Override
+                            public void callback(DataHolderTO[] holders) {
+                                loadFormSources(holders);
+                            }
+                        }).addFieldFromHolder(context.getCtxUID(), field);
+                    }
+                };
+
+                if (currentNode != null) currentNode.addItem(getSourceAddWidget(field.getId(), holder.getRenderColor(), handler));
+                else holdersTree.add(getSourceAddWidget(field.getId(), holder.getRenderColor(), handler));
             }
         }
     }
 
-    private class HolderFieldWidget extends Composite {
-        private HolderFieldWidget(final DataHolderFieldTO fieldTO, String color) {
-            HorizontalPanel horizontalPanel = new HorizontalPanel();
-            horizontalPanel.add(new HTML(fieldTO.getId()));
-            horizontalPanel.add(new HTML("<div style='width: 20px; height: 20px; background-color:" + color + ";'></div>"));
-            Button action = new Button("add");
-            action.addClickHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent event) {
-                    editorService.call(new RemoteCallback<DataHolderTO[]>() {
-                        @Override
-                        public void callback(DataHolderTO[] holders) {
-                            loadFormSources(holders);
-                        }
-                    }).addFieldFromHolder(context.getCtxUID(), fieldTO);
-                }
-            });
-            horizontalPanel.add(action);
-            initWidget(horizontalPanel);
+    protected Widget getSourceAddWidget(String label, String renderColor, ClickHandler handler) {
+        HorizontalPanel fieldWidget = new HorizontalPanel();
+        fieldWidget.setWidth("100%");
+
+        fieldWidget.add(new HTML(label));
+
+        SimplePanel color = new SimplePanel();
+        color.setWidth("20px");
+        color.setHeight("20px");
+        color.getElement().getStyle().setBackgroundColor(renderColor);
+
+        SimplePanel colorPanel = new SimplePanel();
+        colorPanel.add(color);
+        colorPanel.getElement().getStyle().setPadding(3, Style.Unit.PX);
+
+        fieldWidget.add(colorPanel);
+        fieldWidget.setCellWidth(colorPanel, "20px");
+
+        if (handler != null) {
+            IconAnchor action = new IconAnchor();
+            action.setIcon(IconType.PLAY);
+            action.addClickHandler(handler);
+            action.getElement().getStyle().setPadding(3, Style.Unit.PX);
+
+            fieldWidget.add(action);
+            fieldWidget.setCellWidth(action, "20px");
         }
+        return fieldWidget;
     }
 
     public void refreshGrid(@Observes RefreshHoldersListEvent refreshHoldersListEvent) {

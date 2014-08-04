@@ -17,49 +17,26 @@ package org.jbpm.formModeler.ng.model;
 
 import java.util.Map;
 
-public class Field extends FormElement {
+public abstract class Field extends FormElement {
 
-    private String code;
+    protected String name;
 
-    private String icon;
+    protected Map label;
 
-    private String name;
+    protected Boolean fieldRequired = Boolean.FALSE;
 
-    private Map label;
+    protected Boolean readonly = Boolean.FALSE;
 
-    private Boolean fieldRequired = Boolean.FALSE;
+    protected String inputBinding;
+    protected String outputBinding;
 
-    private Boolean readonly = Boolean.FALSE;
+    public abstract String getCode();
 
-    private String fieldClass;
+    public abstract String getFieldClass();
 
-    private Integer size;
+    public abstract FieldValueMarshaller getMarshaller();
 
-    private Integer maxLength;
-
-    private FieldValueMarshaller marshaller;
-
-    private String inputBinding;
-    private String outputBinding;
-
-    public Field(String code, String fieldClass, FieldValueMarshaller marshaller, String icon) {
-        this.code = code;
-        this.fieldClass = fieldClass;
-        this.marshaller = marshaller;
-        this.icon = icon;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
+    public abstract String getIcon();
 
     public String getName() {
         return name;
@@ -75,22 +52,6 @@ public class Field extends FormElement {
 
     public void setLabel(Map label) {
         this.label = label;
-    }
-
-    public Integer getMaxLength() {
-        return maxLength;
-    }
-
-    public void setMaxLength(Integer maxLength) {
-        this.maxLength = maxLength;
-    }
-
-    public Integer getSize() {
-        return size;
-    }
-
-    public void setSize(Integer size) {
-        this.size = size;
     }
 
     public Boolean getFieldRequired() {
@@ -109,10 +70,6 @@ public class Field extends FormElement {
         this.readonly = readonly;
     }
 
-    public String getFieldClass() {
-        return fieldClass;
-    }
-
     public String getInputBinding() {
         return inputBinding;
     }
@@ -127,17 +84,5 @@ public class Field extends FormElement {
 
     public void setOutputBinding(String outputBinding) {
         this.outputBinding = outputBinding;
-    }
-
-    public FieldValueMarshaller getMarshaller() {
-        return marshaller;
-    }
-
-    @Override
-    public Field clone() {
-        Field clone = new Field(code, fieldClass, marshaller, icon);
-        clone.setSize(this.size);
-        clone.setMaxLength(this.maxLength);
-        return clone;
     }
 }
