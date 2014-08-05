@@ -302,6 +302,17 @@ public class FormEditorServiceImpl implements FormEditorService {
         }
     }
 
+    @Override
+    public String removeFieldFromForm(String ctxUID, int fieldPosition) {
+        FormRenderContext context = contextManager.getFormRenderContext(ctxUID);
+        String ctxJson = null;
+        if (context != null) {
+            formManager.deleteField(context.getForm(), fieldPosition);
+            ctxJson = contextManager.marshallContext(context);
+        }
+        return ctxJson;
+    }
+
     public void deleteDataHolder(@Observes DeleteDataHolderEvent event) {
         FormRenderContext context = contextManager.getFormRenderContext(event.getContext());
         if (context != null) {

@@ -267,7 +267,7 @@ public class FormManagerImpl implements FormManager {
     }
 
     @Override
-    public void deleteField(Form pForm, int fieldPos) throws Exception {
+    public void deleteField(Form pForm, int fieldPos) {
         Set fields = pForm.getFormFields();
         if (fieldPos < 0 || fieldPos >= fields.size()) {
             log.warn("Cannot delete field in position " + fieldPos);

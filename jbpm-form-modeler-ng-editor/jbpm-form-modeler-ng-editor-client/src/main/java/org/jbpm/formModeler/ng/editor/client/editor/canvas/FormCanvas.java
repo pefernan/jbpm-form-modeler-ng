@@ -60,9 +60,12 @@ public class FormCanvas extends Composite {
     public void initContext(FormEditorContextTO context) {
         this.context = context;
 
-        formContent.clear();
+        initContext(context.getMarshalledContext());
+    }
 
-        description = JsonUtils.safeEval(context.getMarshalledContext());
+    public void initContext(String ctxJson) {
+        formContent.clear();
+        description = JsonUtils.safeEval(ctxJson);
 
         FormRenderer renderer = formRendererManager.getRendererByType("editor-" + description.getDisplayMode());
 
@@ -73,10 +76,10 @@ public class FormCanvas extends Composite {
         }
     }
 
+
     protected void refreshContext(@Observes RefreshCanvasEvent event) {
-        if (event.getContext().equals(context.getCtxUID())) {
-            context.setMarshalledContext(event.getMarshalledContext());
-            initContext(context);
+        if (context != null && event.getContext().equals(context.getCtxUID())) {
+            initContext(event.getMarshalledContext());
         }
     }
 

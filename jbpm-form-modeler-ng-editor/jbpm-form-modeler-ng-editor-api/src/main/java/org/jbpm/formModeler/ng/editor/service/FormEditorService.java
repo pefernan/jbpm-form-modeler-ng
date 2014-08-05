@@ -31,4 +31,6 @@ public interface FormEditorService {
     DataHolderTO[] addFieldFromHolder(String ctxUID, DataHolderFieldTO fieldTO);
 
     DataHolderBuilderTO[] getAvailableDataHolderBuilders(String ctxUID);
+
+    String removeFieldFromForm(String ctxUID,  int fieldPosition);
 }

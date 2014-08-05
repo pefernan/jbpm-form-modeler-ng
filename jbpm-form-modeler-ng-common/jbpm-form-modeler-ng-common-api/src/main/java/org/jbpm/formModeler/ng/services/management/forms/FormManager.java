@@ -54,7 +54,7 @@ public interface FormManager extends Serializable {
 
     void moveDown(Form pForm, int fieldPos) throws Exception;
 
-    void deleteField(Form pForm, int fieldPos) throws Exception;
+    void deleteField(Form pForm, int fieldPos);
 
     public void addDataHolderToForm(Form form, DataHolder holder);
 
