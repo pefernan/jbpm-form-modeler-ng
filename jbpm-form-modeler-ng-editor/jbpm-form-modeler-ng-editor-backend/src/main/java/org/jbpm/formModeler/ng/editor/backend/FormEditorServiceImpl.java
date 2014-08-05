@@ -293,12 +293,13 @@ public class FormEditorServiceImpl implements FormEditorService {
             DataHolderTO info = event.getDataHolder();
             DataHolderBuildConfig config = new DataHolderBuildConfig(info.getUniqueId(), info.getInputId(), info.getOutputId(), info.getRenderColor(), info.getClassName());
             config.addAttribute("path", context.getAttributes().get("path"));
+            config.addAttribute("context", context);
             DataHolder holder = dataHolderManager.createDataHolderByType(info.getType(), config);
 
             if (holder != null) {
                 formManager.addDataHolderToForm(context.getForm(), holder);
-                refreshHoldersListEvent.fire(new RefreshHoldersListEvent(event.getContext()));
             }
+            refreshHoldersListEvent.fire(new RefreshHoldersListEvent(event.getContext()));
         }
     }
 

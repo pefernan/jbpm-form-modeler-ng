@@ -36,6 +36,7 @@
     <module>jbpm-form-modeler-ng-editor</module>
     <module>jbpm-form-modeler-ng-renderer</module>
     <module>jbpm-form-modeler-ng-showcase</module>
+    <module>jbpm-form-modeler-ng-integration</module>
   </modules>
 
   <repositories>

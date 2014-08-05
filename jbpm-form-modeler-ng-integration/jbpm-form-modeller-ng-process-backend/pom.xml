@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.jbpm</groupId>
+    <artifactId>jbpm-form-modeler-ng-integration</artifactId>
+    <version>6.2.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>jbpm-form-modeller-ng-process-backend</artifactId>
+  <packaging>jar</packaging>
+  <name>jBPM Form Modeler NG - Integration Process Backend</name>
+  <description>jBPM Form Modeler NG - Integration Process Backend</description>
+  <dependencies>
+
+    
+    
+     <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-services-backend</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-form-modeler-ng-common-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-kie-services</artifactId>
+    </dependency>
+  </dependencies>
+  
+  
+</project>

@@ -367,6 +367,10 @@
       <artifactId>jbpm-form-modeler-ng-renderer-client</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-form-modeller-ng-process-backend</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
