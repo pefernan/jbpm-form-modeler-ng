@@ -26,12 +26,12 @@ public class FormResourceTypeDefinition implements ResourceTypeDefinition {
 
     @Override
     public String getShortName() {
-        return "Form Definition";
+        return "Form Definition (NG)";
     }
 
     @Override
     public String getDescription() {
-        return "Form Definitions";
+        return "Form Definitions (NG)";
     }
 
     @Override
@@ -41,7 +41,7 @@ public class FormResourceTypeDefinition implements ResourceTypeDefinition {
 
     @Override
     public String getSuffix() {
-        return "form";
+        return "ngform";
     }
 
     @Override
@@ -56,6 +56,6 @@ public class FormResourceTypeDefinition implements ResourceTypeDefinition {
 
     @Override
     public String getSimpleWildcardPattern() {
-        return "*.form";
+        return "*.ngform";
     }
 }

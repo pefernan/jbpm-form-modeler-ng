@@ -73,7 +73,7 @@ public class NewFormDefinitionlHandler extends DefaultNewResourceHandler {
     public void create( org.guvnor.common.services.project.model.Package pkg,
                         String baseFileName,
                         final NewResourcePresenter presenter ) {
-        BusyPopup.showMessage( "Creating New Form" );
+        BusyPopup.showMessage( "Creating New Form (NG)" );
 
         modelerService.call( new RemoteCallback<Path>() {
                                  @Override
@@ -81,7 +81,7 @@ public class NewFormDefinitionlHandler extends DefaultNewResourceHandler {
                                      BusyPopup.close();
                                      presenter.complete();
                                      notifySuccess();
-                                     PlaceRequest place = new PathPlaceRequest( path, "FormModelerEditor" );
+                                     PlaceRequest place = new PathPlaceRequest( path, "FormModelerNGEditor" );
                                      placeManager.goTo( place );
 
                                  }

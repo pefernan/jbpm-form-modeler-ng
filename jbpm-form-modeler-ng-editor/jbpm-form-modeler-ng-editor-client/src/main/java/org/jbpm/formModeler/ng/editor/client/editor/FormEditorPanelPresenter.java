@@ -65,7 +65,7 @@ import static org.kie.uberfire.client.common.ConcurrentChangePopup.newConcurrent
 import static org.kie.uberfire.client.common.ConcurrentChangePopup.newConcurrentUpdate;
 
 @Dependent
-@WorkbenchEditor(identifier = "FormModelerEditor", supportedTypes = { FormDefinitionResourceType.class })
+@WorkbenchEditor(identifier = "FormModelerNGEditor", supportedTypes = { FormDefinitionResourceType.class })
 public class FormEditorPanelPresenter {
 
     @Inject
