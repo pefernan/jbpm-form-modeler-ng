@@ -8,7 +8,7 @@ public abstract class FormElement implements Serializable, Comparable<FormElemen
 
     protected int position;
 
-    protected Boolean groupWithPrevious;
+    protected Boolean groupWithPrevious = Boolean.FALSE;
 
     protected Form form;
 

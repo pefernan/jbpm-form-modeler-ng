@@ -16,7 +16,9 @@
 package org.jbpm.formModeler.ng.editor.client.editor;
 
 import com.google.gwt.i18n.client.LocaleInfo;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jbpm.formModeler.ng.editor.client.resources.i18n.Constants;
@@ -32,6 +34,8 @@ import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.*;
 import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSuccessCallback;
+import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -39,11 +43,13 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnSave;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
@@ -53,6 +59,10 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
+
+import static org.kie.uberfire.client.common.ConcurrentChangePopup.newConcurrentDelete;
+import static org.kie.uberfire.client.common.ConcurrentChangePopup.newConcurrentRename;
+import static org.kie.uberfire.client.common.ConcurrentChangePopup.newConcurrentUpdate;
 
 @Dependent
 @WorkbenchEditor(identifier = "FormModelerEditor", supportedTypes = { FormDefinitionResourceType.class })
@@ -69,6 +79,15 @@ public class FormEditorPanelPresenter {
 
     @Inject
     private Event<NotificationEvent> notification;
+
+    @Inject
+    private Event<ChangeTitleWidgetEvent> changeTitleNotification;
+
+    @Inject
+    private Caller<MetadataService> metadataService;
+
+    @Inject
+    private MetadataWidget metadataWidget;
 
     @Inject
     @New
@@ -97,8 +116,6 @@ public class FormEditorPanelPresenter {
 
     private FormEditorContextTO ctx;
 
-
-
     @Inject
     private FormEditorView view;
 
@@ -115,12 +132,77 @@ public class FormEditorPanelPresenter {
 
         view.init(this);
 
+        this.path.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
+            @Override
+            public void execute( final ObservablePath.OnConcurrentUpdateEvent eventInfo ) {
+                concurrentUpdateSessionInfo = eventInfo;
+            }
+        } );
+
+        this.path.onConcurrentDelete( new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
+            @Override
+            public void execute( final ObservablePath.OnConcurrentDelete info ) {
+                newConcurrentDelete( info.getPath(),
+                        info.getIdentity(),
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                disableMenus();
+                            }
+                        },
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                placeManager.closePlace( place );
+                            }
+                        }
+                ).show();
+            }
+        } );
+
+        this.path.onConcurrentRename( new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
+            @Override
+            public void execute( final ObservablePath.OnConcurrentRenameEvent info ) {
+                newConcurrentRename( info.getSource(),
+                        info.getTarget(),
+                        info.getIdentity(),
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                disableMenus();
+                            }
+                        },
+                        new Command() {
+                            @Override
+                            public void execute() {
+
+                            }
+                        }
+                ).show();
+            }
+        } );
+
+        this.path.onRename( new Command() {
+            @Override
+            public void execute() {
+                changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
+            }
+        } );
+        this.path.onDelete( new Command() {
+            @Override
+            public void execute() {
+                placeManager.forceClosePlace( place );
+            }
+        } );
+
         editorService.call(new RemoteCallback<FormEditorContextTO>() {
             @Override
             public void callback(FormEditorContextTO context) {
                 ctx = context;
                 view.setContext(context);
-                multiPage.addPage(new Page(view, CommonConstants.INSTANCE.MetadataTabTitle()) {
+
+                multiPage.addPage( new Page( view,
+                        CommonConstants.INSTANCE.SourceTabTitle() ) {
                     @Override
                     public void onFocus() {
                     }
@@ -128,7 +210,24 @@ public class FormEditorPanelPresenter {
                     @Override
                     public void onLostFocus() {
                     }
-                });
+                } );
+
+                multiPage.addPage( new Page( metadataWidget,
+                        CommonConstants.INSTANCE.MetadataTabTitle() ) {
+                    @Override
+                    public void onFocus() {
+                        metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+                        metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                isReadOnly ),
+                                new HasBusyIndicatorDefaultErrorCallback( metadataWidget )
+                        ).getMetadata( path );
+                    }
+
+                    @Override
+                    public void onLostFocus() {
+                        //Nothing to do
+                    }
+                } );
             }
         }).loadForm(path, LocaleInfo.getCurrentLocale().getLocaleName());
     }
@@ -204,7 +303,34 @@ public class FormEditorPanelPresenter {
 
     @OnSave
     private void onSave() {
-
+        if ( isReadOnly ) {
+            Window.alert(CommonConstants.INSTANCE.CantSaveReadOnly());
+        } else {
+            if ( concurrentUpdateSessionInfo != null ) {
+                newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
+                        concurrentUpdateSessionInfo.getIdentity(),
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                save();
+                            }
+                        },
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                //cancel?
+                            }
+                        },new Command() {
+                            @Override
+                            public void execute() {
+                               //reopen
+                            }
+                        }
+                ).show();
+            } else {
+                save();
+            }
+        }
     }
 
     public void save() {
@@ -212,7 +338,20 @@ public class FormEditorPanelPresenter {
                 new CommandWithCommitMessage() {
                     @Override
                     public void execute( final String commitMessage ) {
-                       //TODO implement this
+                        busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+                        try {
+                            editorService.call(new RemoteCallback<Path>() {
+                                @Override
+                                public void callback(Path formPath) {
+                                    busyIndicatorView.hideBusyIndicator();
+                                    notification.fire(new NotificationEvent(Constants.INSTANCE.form_modeler_successfully_saved(path.getFileName()), NotificationEvent.NotificationType.SUCCESS));
+                                }
+                            }).save( path, ctx.getCtxUID(), metadataWidget.getContent(), commitMessage );
+                        } catch ( Exception e ) {
+                            notification.fire( new NotificationEvent( Constants.INSTANCE.form_modeler_cannot_save( path.getFileName() ), NotificationEvent.NotificationType.ERROR ) );
+                        } finally {
+                            busyIndicatorView.hideBusyIndicator();
+                        }
                     }
                 }
         );
@@ -238,6 +377,10 @@ public class FormEditorPanelPresenter {
         } );
 
         popup.show();
+    }
+
+    private void disableMenus() {
+        menus.getItemsMap().get( FileMenuBuilder.MenuItems.DELETE ).setEnabled( false );
     }
 
     @OnOpen

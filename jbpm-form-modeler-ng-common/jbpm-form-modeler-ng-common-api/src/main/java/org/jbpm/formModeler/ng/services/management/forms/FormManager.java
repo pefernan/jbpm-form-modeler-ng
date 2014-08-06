@@ -42,11 +42,11 @@ public interface FormManager extends Serializable {
 
     void degradeField(Form pForm, int fieldPos, int destPos, boolean groupWithPrevious, boolean nextFieldGrouped) throws Exception;
 
-    void changeFieldPosition(Form pForm, int fieldPos, int destPos, boolean groupWithPrevious, boolean nextFieldGrouped) throws Exception;
+    void changeFieldPosition(Form pForm, int fieldPos, int destPos, boolean groupWithPrevious, boolean groupNextField);
 
-    void moveTop(Form pForm, int fieldPos) throws Exception;
+    void moveTop(Form pForm, int fieldPos);
 
-    void moveBottom(Form pForm, int fieldPos) throws Exception;
+    void moveBottom(Form pForm, int fieldPos);
 
     void moveUp(Form pForm, int fieldPos) throws Exception;
 

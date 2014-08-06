@@ -2,6 +2,7 @@ package org.jbpm.formModeler.ng.editor.client.editor.canvas.rendering.renderers;
 
 import com.github.gwtbootstrap.client.ui.base.IconAnchor;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.Window;
@@ -21,6 +22,8 @@ import org.jbpm.formModeler.ng.editor.service.FormEditorService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 @ApplicationScoped
 public class EditorDefaultFormRenderer extends DefaultFormRenderer {
@@ -33,9 +36,105 @@ public class EditorDefaultFormRenderer extends DefaultFormRenderer {
     @Inject
     private Event<FormModelerEvent> modelerEvent;
 
+    private List<Panel> dropAreas = new ArrayList<Panel>();
+
+    private String ctxUID;
+    private FieldDescription selectedField;
+
     @Override
     public String getCode() {
         return "editor-" + super.getCode();
+    }
+
+    @Override
+    public Panel generateForm(FormDescription formDescription) {
+        VerticalPanel formContent = new VerticalPanel();
+        if (formDescription != null) {
+            ctxUID = formDescription.getCtxUID();
+            boolean first = true;
+            HorizontalPanel horizontalPanel = new HorizontalPanel();
+            JsArray<FieldDescription> fields = formDescription.getFields();
+
+            if (fields != null && fields.length() > 0) {
+                for (int i = 0; i < formDescription.getFields().length(); i++) {
+                    FieldDescription fieldDescription = formDescription.getFields().get(i);
+                    Widget fieldBox = getFieldBox(formDescription, fieldDescription);
+                    if (fieldBox != null) {
+                        int position = fieldDescription.getPosition();
+                        if (first) {
+                            formContent.add(getHorizontalDropArea(0));
+                            first = false;
+                            formContent.add(horizontalPanel);
+                        } else if (!fieldDescription.isGrouped()) {
+                            horizontalPanel.add(getVerticalDropArea("grouped", position));
+                            formContent.add(getHorizontalDropArea(position));
+                            horizontalPanel = new HorizontalPanel();
+                            formContent.add(horizontalPanel);
+                        }
+
+                        horizontalPanel.add(getVerticalDropArea("pre", position));
+                        horizontalPanel.add(fieldBox);
+                    }
+                }
+                horizontalPanel.add(getVerticalDropArea("grouped", fields.length()));
+                formContent.add(getHorizontalDropArea(fields.length()));
+            }
+        }
+        return formContent;
+    }
+
+    protected Panel getHorizontalDropArea(final int position) {
+        SimpleLayoutPanel dropArea = new SimpleLayoutPanel();
+        dropArea.addDomHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+               Window.alert("adding field to row: newLine-" + position);
+                doMoveField(position, "newLine");
+            }
+        }, ClickEvent.getType());
+        dropArea.setWidth("100%");
+        dropArea.setHeight("10px");
+        dropArea.getElement().getStyle().setBackgroundColor("green");
+        dropArea.setVisible(false);
+        dropAreas.add(dropArea);
+        return dropArea;
+    }
+
+    protected Panel getVerticalDropArea(final String modifier, final int position) {
+        SimpleLayoutPanel dropArea = new SimpleLayoutPanel();
+        dropArea.addDomHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                Window.alert("adding field to : " + modifier + "-" + position);
+                doMoveField(position, modifier);
+            }
+        }, ClickEvent.getType());
+        dropArea.setWidth("10px");
+        dropArea.setHeight("30px");
+        dropArea.getElement().getStyle().setBackgroundColor("green");
+        dropArea.setVisible(false);
+        dropAreas.add(dropArea);
+        return dropArea;
+    }
+
+    protected void doMoveField(int destinationPosition, String modifier) {
+        if (selectedField != null) {
+            editorService.call(new RemoteCallback<String>() {
+                @Override
+                public void callback(String jsonResponse) {
+                    if (jsonResponse != null) {
+                        modelerEvent.fire(new RefreshCanvasEvent(ctxUID, jsonResponse));
+                        modelerEvent.fire(new RefreshHoldersListEvent(ctxUID));
+                    }
+                }
+            }, new ErrorCallback<Object>() {
+                @Override
+                public boolean error(Object message, Throwable throwable) {
+                    Window.alert("Something wong happened: " + message);
+                    return false;
+                }
+            }).moveSelectedFieldToFieldPosition(ctxUID, selectedField.getPosition(), destinationPosition, modifier);
+        }
     }
 
     @Override
@@ -44,6 +143,12 @@ public class EditorDefaultFormRenderer extends DefaultFormRenderer {
         propertyButtons.getElement().getStyle().setBackgroundColor("#F5F5F5");
         IconAnchor move = new IconAnchor();
         move.setIcon(IconType.MOVE);
+        move.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                showDropAreas(field);
+            }
+        });
         move.getElement().getStyle().setPaddingLeft(3, Style.Unit.PX);
         move.getElement().getStyle().setPaddingRight(3, Style.Unit.PX);
 
@@ -65,20 +170,21 @@ public class EditorDefaultFormRenderer extends DefaultFormRenderer {
             public void onClick(ClickEvent event) {
                 if (Window.confirm("!!Are you sure?")) {
                     editorService.call(new RemoteCallback<String>() {
-                        @Override
-                        public void callback(String jsonResponse) {
-                            if (jsonResponse != null) {
-                                modelerEvent.fire(new RefreshCanvasEvent(form.getCtxUID(), jsonResponse));
-                                modelerEvent.fire(new RefreshHoldersListEvent(form.getCtxUID()));
-                            }
-                        }
-                    }, new ErrorCallback<Object>() {
+                                           @Override
+                                           public void callback(String jsonResponse) {
+                                               if (jsonResponse != null) {
+                                                   modelerEvent.fire(new RefreshCanvasEvent(form.getCtxUID(), jsonResponse));
+                                                   modelerEvent.fire(new RefreshHoldersListEvent(form.getCtxUID()));
+                                               }
+                                           }
+                                       }, new ErrorCallback<Object>() {
                                            @Override
                                            public boolean error(Object message, Throwable throwable) {
                                                Window.alert("Something wong happened: " + message);
                                                return false;
                                            }
-                   }).removeFieldFromForm(form.getCtxUID(), field.getPosition());
+                                       }
+                    ).removeFieldFromForm(form.getCtxUID(), field.getPosition());
                 }
             }
         });
@@ -108,6 +214,13 @@ public class EditorDefaultFormRenderer extends DefaultFormRenderer {
             }
         }, MouseOutEvent.getType());
         return panel;
+    }
+
+    private void showDropAreas(FieldDescription field) {
+        selectedField = field;
+        for (Panel dropArea : dropAreas) {
+            dropArea.setVisible(true);
+        }
     }
 
     @Override

@@ -15,7 +15,6 @@
  */
 package org.jbpm.formModeler.ng.services.management.forms.impl;
 
-import org.apache.commons.lang.SerializationUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.xerces.parsers.DOMParser;
@@ -143,7 +142,7 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
         Form form = formManager.createForm();
         form.setId(Long.valueOf(StringEscapeUtils.unescapeXml(nodeForm.getAttributes().getNamedItem(ATTR_ID).getNodeValue())));
 
-        Set<Field> fields = new TreeSet<Field>();
+        List<Field> fields = new ArrayList<Field>();
         NodeList childNodes = nodeForm.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node node = childNodes.item(i);
@@ -335,7 +334,8 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
         rootNode.addAttribute(ATTR_ID, dataHolder.getUniqueId());
         rootNode.addAttribute(ATTR_INPUT_ID, dataHolder.getInputId());
         rootNode.addAttribute(ATTR_OUT_ID, dataHolder.getOutputId());
-        rootNode.addAttribute(ATTR_TYPE, dataHolder.getClassName());
+        rootNode.addAttribute(ATTR_TYPE, dataHolder.getTypeCode());
+        rootNode.addAttribute(ATTR_VALUE, dataHolder.getClassName());
         rootNode.addAttribute(ATTR_NAME, dataHolder.getRenderColor());
 
         parent.addChild(rootNode);

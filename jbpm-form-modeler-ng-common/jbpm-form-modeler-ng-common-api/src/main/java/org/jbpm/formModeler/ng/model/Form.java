@@ -1,8 +1,7 @@
 package org.jbpm.formModeler.ng.model;
 
 import java.io.Serializable;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 public class Form implements Serializable, Comparable {
     public static final String RENDER_MODE_FORM = "form";
@@ -36,7 +35,7 @@ public class Form implements Serializable, Comparable {
 
     private String showMode;
 
-    private Set<Field> formFields = new TreeSet<Field>();
+    private List<Field> formFields = new ArrayList<Field>();
 
     private Set<DataHolder> holders = new TreeSet<DataHolder>();
 
@@ -216,11 +215,15 @@ public class Form implements Serializable, Comparable {
         this.showMode = showMode;
     }
 
-    public Set<Field> getFormFields() {
+    public List<Field> getFormFields() {
         return this.formFields;
     }
 
-    public void setFormFields(Set<Field> formFields) {
-        this.formFields = formFields;
+    public void setFormFields(List<Field> formFields) {
+        this.formFields.clear();
+        if (formFields != null) {
+            this.formFields = new ArrayList<Field>(formFields);
+            Collections.sort(this.formFields, new FormElement.Comparator());
+        }
     }
 }

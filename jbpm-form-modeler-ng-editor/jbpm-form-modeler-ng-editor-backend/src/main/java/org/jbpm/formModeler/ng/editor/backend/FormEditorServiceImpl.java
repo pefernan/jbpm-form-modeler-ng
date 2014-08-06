@@ -4,6 +4,8 @@ import org.apache.commons.lang.StringUtils;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
+import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jbpm.formModeler.ng.editor.events.canvas.EndFieldEditionEvent;
 import org.jbpm.formModeler.ng.editor.events.canvas.LoadFieldEditionContextEvent;
@@ -37,6 +39,7 @@ import org.jbpm.formModeler.ng.services.management.forms.utils.BindingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
+import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
@@ -75,6 +78,9 @@ public class FormEditorServiceImpl implements FormEditorService {
 
     @Inject
     private DeleteService deleteService;
+
+    @Inject
+    private MetadataService metadataService;
 
     @Inject
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
@@ -314,6 +320,35 @@ public class FormEditorServiceImpl implements FormEditorService {
         return ctxJson;
     }
 
+    @Override
+    public String moveSelectedFieldToFieldPosition(String ctxUID, int fieldPosition, int destinationPosition, String modifier) {
+        FormRenderContext context = contextManager.getFormRenderContext(ctxUID);
+        String ctxJson = null;
+        if (context != null) {
+            Form form = context.getForm();
+            if (destinationPosition == 0 && modifier.equals("newLine")) {
+                formManager.moveTop(form, fieldPosition);
+            } else if (destinationPosition == form.getFormFields().size() && modifier.equals("newLine")) {
+                formManager.moveBottom(form, fieldPosition);
+            } else {
+                boolean grouped = false;
+                boolean nextGrouped = false;
+
+                if (fieldPosition < destinationPosition) destinationPosition --;
+
+                if (modifier.equals("grouped")) {
+                    grouped = true;
+                } else if (modifier.equals("pre")) {
+                    nextGrouped = true;
+                }
+
+                formManager.changeFieldPosition(form, fieldPosition, destinationPosition, grouped, nextGrouped);
+            }
+            ctxJson = contextManager.marshallContext(context);
+        }
+        return ctxJson;
+    }
+
     public void deleteDataHolder(@Observes DeleteDataHolderEvent event) {
         FormRenderContext context = contextManager.getFormRenderContext(event.getContext());
         if (context != null) {
@@ -377,5 +412,14 @@ public class FormEditorServiceImpl implements FormEditorService {
             i++;
         }
         return response;
+    }
+
+    @Override
+    public Path save(ObservablePath path, String ctxUID, Metadata metadata, String comment) {
+        FormRenderContext context = contextManager.getFormRenderContext(ctxUID);
+        if (ctxUID != null) {
+            ioService.write(Paths.convert(path), formSerializationManager.generateFormXML(context.getForm()), metadataService.setUpAttributes(path, metadata), makeCommentedOption(comment));
+        }
+        return path;
     }
 }

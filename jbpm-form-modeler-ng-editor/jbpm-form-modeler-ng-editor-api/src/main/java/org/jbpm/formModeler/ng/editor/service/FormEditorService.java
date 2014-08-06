@@ -1,10 +1,12 @@
 package org.jbpm.formModeler.ng.editor.service;
 
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.jbpm.formModeler.ng.editor.model.FormEditorContextTO;
 import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderBuilderTO;
 import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderFieldTO;
 import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderTO;
+import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.paging.PageRequest;
 import org.uberfire.paging.PageResponse;
@@ -33,4 +35,8 @@ public interface FormEditorService {
     DataHolderBuilderTO[] getAvailableDataHolderBuilders(String ctxUID);
 
     String removeFieldFromForm(String ctxUID,  int fieldPosition);
+
+    String moveSelectedFieldToFieldPosition(String ctxUID, int fieldPosition, int destinationPosition, String modifier);
+
+    Path save(ObservablePath path, String ctxUID, Metadata content, String commitMessage);
 }

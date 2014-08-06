@@ -16,10 +16,7 @@
 package org.jbpm.formModeler.ng.services.management.forms.impl;
 
 import org.apache.commons.lang.StringUtils;
-import org.jbpm.formModeler.ng.model.DataFieldHolder;
-import org.jbpm.formModeler.ng.model.DataHolder;
-import org.jbpm.formModeler.ng.model.Field;
-import org.jbpm.formModeler.ng.model.Form;
+import org.jbpm.formModeler.ng.model.*;
 import org.jbpm.formModeler.ng.services.LocaleManager;
 import org.jbpm.formModeler.ng.services.management.forms.FieldManager;
 import org.jbpm.formModeler.ng.services.management.forms.FormManager;
@@ -153,50 +150,55 @@ public class FormManagerImpl implements FormManager {
     }
 
     @Override
-    public void changeFieldPosition(Form pForm, int fieldPos, int destPos, boolean groupWithPrevious, boolean nextFieldGrouped) throws Exception {
-        final List<Field> fields = new ArrayList(pForm.getFormFields());
+    public void changeFieldPosition(Form pForm, int fieldPos, int destPos, boolean groupWithPrevious, boolean groupNextField) {
+        final List<Field> fields = pForm.getFormFields();
         Collections.sort(fields, new Field.Comparator());
 
-        boolean promote = destPos < fieldPos;
-
-        boolean checkGroup = false;
+        Field origField = null;
         Boolean wasGrouped = false;
 
-        for (Field formField : fields) {
-            int position = formField.getPosition();
+        if (fieldPos <= destPos) {
+            for (Field formField : fields) {
+                int currentFieldPosition = formField.getPosition();
 
-            if (position == fieldPos) {
-                formField.setPosition(destPos);
-                checkGroup = true;
-                wasGrouped = formField.getGroupWithPrevious();
-                formField.setGroupWithPrevious(Boolean.valueOf(groupWithPrevious));
-            } else if (promote) {
-                if (position >= destPos && position < fieldPos) {
-                    formField.setPosition(formField.getPosition() + 1);
-                    if (position == destPos) formField.setGroupWithPrevious(Boolean.valueOf(nextFieldGrouped));
-                    if (checkGroup) {
-                        if (formField.getGroupWithPrevious()) {
-                            formField.setGroupWithPrevious(wasGrouped);
-                        }
-                    }
-                }
-            } else {
-                if (position > fieldPos && position <= destPos) {
-                    formField.setPosition(formField.getPosition() - 1);
-                    if (position == destPos) formField.setGroupWithPrevious(Boolean.valueOf(nextFieldGrouped));
-                    if (checkGroup) {
-                        if (formField.getGroupWithPrevious()) {
-                            formField.setGroupWithPrevious(wasGrouped);
-                        }
+                if (currentFieldPosition == fieldPos) {
+                    origField = formField;
+                    formField.setPosition(destPos);
+                    wasGrouped = formField.getGroupWithPrevious();
+                    formField.setGroupWithPrevious(groupWithPrevious);
+                } else {
+                    if (currentFieldPosition > fieldPos && currentFieldPosition <= destPos) {
+                        if (currentFieldPosition == fieldPos + 1 && !wasGrouped) formField.setGroupWithPrevious(false);
+                        formField.setPosition(formField.getPosition() - 1);
+                    } else if (currentFieldPosition == destPos + 1) {
+                        if (origField != null && Boolean.TRUE.equals(formField.getGroupWithPrevious())) origField.setGroupWithPrevious(true);
+                        formField.setGroupWithPrevious(groupNextField);
                     }
                 }
             }
+        } else {
+            for (Field formField : fields) {
+                int currentFieldPosition = formField.getPosition();
+                if (currentFieldPosition == fieldPos) {
+                    origField = formField;
+                    formField.setPosition(destPos);
+                    wasGrouped = formField.getGroupWithPrevious();
+                } else  if (destPos <= currentFieldPosition && currentFieldPosition < fieldPos) {
+                    if (currentFieldPosition == destPos) {
+                        if (groupNextField) groupWithPrevious = Boolean.TRUE.equals(formField.getGroupWithPrevious());
+                        formField.setGroupWithPrevious(groupNextField);
+                    }
+                    formField.setPosition(formField.getPosition() + 1);
+                } else if (formField.getPosition() == currentFieldPosition +1 && !wasGrouped) formField.setGroupWithPrevious(false);
+            }
+            if (origField != null) origField.setGroupWithPrevious(groupWithPrevious);
         }
+        Collections.sort(fields, new Field.Comparator());
     }
 
     @Override
-    public void moveTop(Form pForm, int fieldPos) throws Exception {
-        Set<Field> fields = pForm.getFormFields();
+    public void moveTop(Form pForm, int fieldPos) {
+        List<Field> fields = pForm.getFormFields();
         for (Field formField : fields) {
             if (formField.getPosition() == fieldPos) {
                 formField.setPosition(0);
@@ -205,11 +207,12 @@ public class FormManagerImpl implements FormManager {
                 formField.setPosition(formField.getPosition() + 1);
             }
         }
+        Collections.sort(fields, new FormElement.Comparator());
     }
 
     @Override
-    public void moveBottom(Form pForm, int fieldPos) throws Exception {
-        Set<Field> fields = pForm.getFormFields();
+    public void moveBottom(Form pForm, int fieldPos) {
+        List<Field> fields = pForm.getFormFields();
         for (Field formField : fields) {
             if (formField.getPosition() == fieldPos) {
                 formField.setPosition(fields.size() - 1);
@@ -218,11 +221,12 @@ public class FormManagerImpl implements FormManager {
                 formField.setPosition(formField.getPosition() - 1);
             }
         }
+        Collections.sort(fields, new FormElement.Comparator());
     }
 
     @Override
     public void moveUp(Form pForm, int fieldPos) throws Exception {
-        Set<Field> fields = pForm.getFormFields();
+        List<Field> fields = pForm.getFormFields();
         if (fieldPos < 1 || fieldPos >= fields.size()) {
             log.error("Cannot move up field in position " + fieldPos);
         } else {
@@ -234,11 +238,12 @@ public class FormManagerImpl implements FormManager {
                 }
             }
         }
+        Collections.sort(fields, new FormElement.Comparator());
     }
 
     @Override
     public void groupWithPrevious(Form pForm, int fieldPos, boolean value) throws Exception {
-        Set<Field> fields = pForm.getFormFields();
+        List<Field> fields = pForm.getFormFields();
         if (fieldPos < 1 || fieldPos >= fields.size()) {
             log.warn("Cannot change field in position " + fieldPos);
         } else {
@@ -248,11 +253,12 @@ public class FormManagerImpl implements FormManager {
                 }
             }
         }
+        Collections.sort(fields, new FormElement.Comparator());
     }
 
     @Override
     public void moveDown(Form pForm, int fieldPos) throws Exception {
-        Set<Field> fields = pForm.getFormFields();
+        List<Field> fields = pForm.getFormFields();
         if (fieldPos < 0 || fieldPos >= fields.size() - 1) {
             log.warn("Cannot move down field in position " + fieldPos);
         } else {
@@ -264,11 +270,12 @@ public class FormManagerImpl implements FormManager {
                 }
             }
         }
+        Collections.sort(fields, new FormElement.Comparator());
     }
 
     @Override
     public void deleteField(Form pForm, int fieldPos) {
-        Set fields = pForm.getFormFields();
+        List fields = pForm.getFormFields();
         if (fieldPos < 0 || fieldPos >= fields.size()) {
             log.warn("Cannot delete field in position " + fieldPos);
         } else {
@@ -281,6 +288,7 @@ public class FormManagerImpl implements FormManager {
                 }
             }
         }
+        Collections.sort(fields, new FormElement.Comparator());
     }
 
     @Override
