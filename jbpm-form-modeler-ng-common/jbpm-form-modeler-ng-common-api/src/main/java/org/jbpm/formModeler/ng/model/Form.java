@@ -35,7 +35,9 @@ public class Form implements Serializable, Comparable {
 
     private String showMode;
 
-    private List<Field> formFields = new ArrayList<Field>();
+    private LinkedList<LinkedList<Field>> elementsGrid = new LinkedList<LinkedList<Field>>();
+
+    private int fieldsCount = 0;
 
     private Set<DataHolder> holders = new TreeSet<DataHolder>();
 
@@ -103,10 +105,12 @@ public class Form implements Serializable, Comparable {
      */
     public Field getField(String name) {
         if (name == null || name.trim().length() == 0) return null;
-        if (formFields != null) {
-            for (Field field : formFields) {
-                if (name.equals(field.getName()))
-                    return field;
+        if (!elementsGrid.isEmpty()) {
+            for (LinkedList<Field> fields : elementsGrid) {
+                for (Field field : fields) {
+                    if (name.equals(field.getName()))
+                        return field;
+                }
             }
         }
         return null;
@@ -115,10 +119,12 @@ public class Form implements Serializable, Comparable {
 
     public Field getFieldById(Long id) {
         if (id == null || id < 0) return null;
-        if (formFields != null) {
-            for (Field field : formFields) {
-                if (id.equals(field.getId()))
-                    return field;
+        if (!elementsGrid.isEmpty()) {
+            for (LinkedList<Field> fields : elementsGrid) {
+                for (Field field : fields) {
+                    if (id.equals(field.getId()))
+                        return field;
+                }
             }
         }
         return null;
@@ -126,27 +132,6 @@ public class Form implements Serializable, Comparable {
 
     public Set<DataHolder> getHolders() {
         return holders;
-    }
-
-    public boolean containsField(String fieldName) {
-        if (formFields != null && fieldName != null && !"".equals(fieldName))
-            for (Field formField : formFields) {
-                if (formField.getName().equals(fieldName)) return true;
-            }
-        return false;
-    }
-
-    /**
-     * Get a Set with all field names (Strings) present in this form
-     *
-     * @return a Set with all field names present in this form
-     */
-    public Set getFieldNames() {
-        Set s = new TreeSet();
-        for (Field formField : formFields) {
-            s.add(formField.getName());
-        }
-        return s;
     }
 
     @Override
@@ -162,8 +147,32 @@ public class Form implements Serializable, Comparable {
     }
 
     public boolean addField(Field field) {
-        field.setPosition(formFields.size());
-        return formFields.add(field);
+        LinkedList<Field> fieldRow;
+        if (elementsGrid.size() == 0 || !field.getGroupWithPrevious()) {
+            fieldRow = new LinkedList<Field>();
+            elementsGrid.add(fieldRow);
+        } else {
+            fieldRow = elementsGrid.getLast();
+        }
+        field.setForm(this);
+        field.setPosition(fieldsCount);
+        fieldsCount ++;
+        return fieldRow.add(field);
+    }
+
+    public Field deleteField(Long fieldId) {
+        if (fieldId != null) {
+            for (LinkedList<Field> fields : elementsGrid) {
+                for (Field field : fields) {
+                    if (fieldId.equals(field.getId())) {
+                        fields.remove(field);
+                        if (fields.isEmpty()) elementsGrid.remove(fields);
+                        return field;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     public Long getId() {
@@ -215,15 +224,17 @@ public class Form implements Serializable, Comparable {
         this.showMode = showMode;
     }
 
-    public List<Field> getFormFields() {
-        return this.formFields;
+    public LinkedList<LinkedList<Field>> getElementsGrid() {
+        return elementsGrid;
     }
 
-    public void setFormFields(List<Field> formFields) {
-        this.formFields.clear();
-        if (formFields != null) {
-            this.formFields = new ArrayList<Field>(formFields);
-            Collections.sort(this.formFields, new FormElement.Comparator());
+    public int getFieldsCount() {
+        int fieldsCount = 0;
+
+        for (LinkedList<Field> fields : elementsGrid) {
+            fieldsCount += fields.size();
         }
+
+        return fieldsCount;
     }
 }

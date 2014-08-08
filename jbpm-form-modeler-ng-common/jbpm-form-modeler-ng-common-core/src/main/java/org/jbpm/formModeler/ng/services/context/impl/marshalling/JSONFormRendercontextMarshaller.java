@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 @Default
@@ -77,46 +78,50 @@ public class JSONFormRendercontextMarshaller implements FormRenderContextMarshal
 
     private void marshallFields(Form form, Map inputData, Map outputData, Map loadedObjects, String namespace, FormRenderContext context, JsonGenerator generator) throws IOException {
         generator.writeArrayFieldStart(FIELDS);
-        for (Field field : form.getFormFields()) {
+        int row = 0;
+        for (LinkedList<Field> fields : form.getElementsGrid()) {
+            int column = 0;
+            for (Field field : fields) {
+                String inputExperession = field.getInputBinding();
+                String outputExpression = field.getOutputBinding();
 
-            String inputExperession = field.getInputBinding();
-            String outputExpression = field.getOutputBinding();
+                boolean hasInput = !StringUtils.isEmpty(inputExperession);
+                boolean hasOutput = !StringUtils.isEmpty(outputExpression);
 
-            boolean hasInput = !StringUtils.isEmpty(inputExperession);
-            boolean hasOutput = !StringUtils.isEmpty(outputExpression);
-
-            if (!hasInput && !hasOutput) {
-                marshallField(field, null, context, "", generator);
-                continue;
-            }
-
-            boolean readFromInput = (hasInput && !hasOutput) || (hasInput && outputData.isEmpty());
-
-            DataHolder dataHolder = BindingUtils.getFormDataHolderForField(field);
-
-            Object value;
-
-            if (dataHolder == null) {
-                if (readFromInput) value = getUnbindedValue(inputExperession, inputData);
-                else value = getUnbindedValue(outputExpression, outputData);
-            } else {
-                Object loadedObject = loadedObjects.get(dataHolder.getUniqueId());
-                if (loadedObject == null) {
-                    if (outputData.isEmpty()) loadedObject = inputData.get(dataHolder.getInputId());
-                    else loadedObject = outputData.get(dataHolder.getOutputId());
-                    loadedObjects.put(dataHolder.getUniqueId(), loadedObject);
+                if (!hasInput && !hasOutput) {
+                    marshallField(field, null, row, column, context, "", generator);
+                    column ++;
+                    continue;
                 }
-                if (readFromInput) value = getBindedValue(field, dataHolder, inputExperession, inputData, loadedObjects, "");
-                else value = getBindedValue(field, dataHolder, outputExpression, outputData, loadedObjects, namespace);
+
+                boolean readFromInput = (hasInput && !hasOutput) || (hasInput && outputData.isEmpty());
+
+                DataHolder dataHolder = BindingUtils.getFormDataHolderForField(field);
+
+                Object value;
+
+                if (dataHolder == null) {
+                    if (readFromInput) value = getUnbindedValue(inputExperession, inputData);
+                    else value = getUnbindedValue(outputExpression, outputData);
+                } else {
+                    Object loadedObject = loadedObjects.get(dataHolder.getUniqueId());
+                    if (loadedObject == null) {
+                        if (outputData.isEmpty()) loadedObject = inputData.get(dataHolder.getInputId());
+                        else loadedObject = outputData.get(dataHolder.getOutputId());
+                        loadedObjects.put(dataHolder.getUniqueId(), loadedObject);
+                    }
+                    if (readFromInput) value = getBindedValue(field, dataHolder, inputExperession, inputData, loadedObjects, "");
+                    else value = getBindedValue(field, dataHolder, outputExpression, outputData, loadedObjects, namespace);
+                }
+                marshallField(field, value, row, column, context, "", generator);
+                column ++;
             }
-
-
-            marshallField(field, value, context, "", generator);
+            row ++;
         }
         generator.writeEndArray();
     }
 
-    private void marshallField(Field field, Object value, FormRenderContext context, String namespace, JsonGenerator generator) throws IOException {
+    private void marshallField(Field field, Object value, int row, int column, FormRenderContext context, String namespace, JsonGenerator generator) throws IOException {
         generator.writeStartObject();
 
         String fieldId = String.valueOf(field.getId());
@@ -126,16 +131,19 @@ public class JSONFormRendercontextMarshaller implements FormRenderContextMarshal
         generator.writeStringField("id", StringUtils.isEmpty(namespace) ? field.getName() : namespace + NAMESPACE_SEPARATOR + field.getName());
         generator.writeStringField("label", (String) localeManager.localize(field.getLabel(), context.getCurrentLocale()));
         generator.writeStringField("type", field.getCode());
-        generator.writeNumberField("position", field.getPosition());
+        generator.writeNumberField("row", row);
+        generator.writeNumberField("column", column);
         generator.writeBooleanField("required", Boolean.TRUE.equals(field.getFieldRequired()));
         generator.writeBooleanField("grouped", Boolean.TRUE.equals(field.getGroupWithPrevious()));
 
         Map<String, String> properties = field.getCustomProperties();
 
         if (properties != null) {
+            generator.writeObjectFieldStart("options");
             for (String key : properties.keySet()) {
                 generator.writeStringField(key, properties.get(key));
             }
+            generator.writeEndObject();
         }
 
         String holderColor = "";

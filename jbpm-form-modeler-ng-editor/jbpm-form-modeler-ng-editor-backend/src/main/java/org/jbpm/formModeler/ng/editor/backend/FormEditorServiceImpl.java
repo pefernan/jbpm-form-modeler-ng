@@ -310,39 +310,28 @@ public class FormEditorServiceImpl implements FormEditorService {
     }
 
     @Override
-    public String removeFieldFromForm(String ctxUID, int fieldPosition) {
+    public String removeFieldFromForm(String ctxUID, Long fieldId) {
         FormRenderContext context = contextManager.getFormRenderContext(ctxUID);
         String ctxJson = null;
         if (context != null) {
-            formManager.deleteField(context.getForm(), fieldPosition);
+            context.getForm().deleteField(fieldId);
             ctxJson = contextManager.marshallContext(context);
         }
         return ctxJson;
     }
 
     @Override
-    public String moveSelectedFieldToFieldPosition(String ctxUID, int fieldPosition, int destinationPosition, String modifier) {
+    public String moveSelectedFieldToFieldPosition(String ctxUID, Long fieldId, int row, int column, boolean newLine) {
         FormRenderContext context = contextManager.getFormRenderContext(ctxUID);
         String ctxJson = null;
         if (context != null) {
             Form form = context.getForm();
-            if (destinationPosition == 0 && modifier.equals("newLine")) {
-                formManager.moveTop(form, fieldPosition);
-            } else if (destinationPosition == form.getFormFields().size() && modifier.equals("newLine")) {
-                formManager.moveBottom(form, fieldPosition);
+            if (row == 0 && newLine) {
+                formManager.moveFirst(form, fieldId);
+            } else if (row == -1) {
+                formManager.moveLast(form, fieldId);
             } else {
-                boolean grouped = false;
-                boolean nextGrouped = false;
-
-                if (fieldPosition < destinationPosition) destinationPosition --;
-
-                if (modifier.equals("grouped")) {
-                    grouped = true;
-                } else if (modifier.equals("pre")) {
-                    nextGrouped = true;
-                }
-
-                formManager.changeFieldPosition(form, fieldPosition, destinationPosition, grouped, nextGrouped);
+                formManager.changeFieldPosition(form, fieldId, row, column, newLine);
             }
             ctxJson = contextManager.marshallContext(context);
         }

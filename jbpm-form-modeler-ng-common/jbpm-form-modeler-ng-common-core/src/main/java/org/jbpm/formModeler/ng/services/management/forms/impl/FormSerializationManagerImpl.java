@@ -142,7 +142,6 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
         Form form = formManager.createForm();
         form.setId(Long.valueOf(StringEscapeUtils.unescapeXml(nodeForm.getAttributes().getNamedItem(ATTR_ID).getNodeValue())));
 
-        List<Field> fields = new ArrayList<Field>();
         NodeList childNodes = nodeForm.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node node = childNodes.item(i);
@@ -161,11 +160,7 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
                     form.setShowMode(value);
                 }
             } else if (node.getNodeName().equals(NODE_FIELD)) {
-                Field field = deserializeField(form, node, resources);
-                if (field != null) {
-                    field.setForm(form);
-                    fields.add(field);
-                }
+                deserializeField(form, node, resources);
             } else if (node.getNodeName().equals(NODE_DATA_HOLDER)) {
                 String holderId = getNodeAttributeValue(node, ATTR_ID);
                 String holderInputId = getNodeAttributeValue(node, ATTR_INPUT_ID);
@@ -188,7 +183,6 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
                 }
             }
         }
-        if (fields != null) form.setFormFields(fields);
         return form;
     }
 
@@ -220,8 +214,12 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
         addXMLNode("labelMode", form.getLabelMode(), rootNode);
         addXMLNode("showMode", form.getShowMode(), rootNode);
 
-        for (Field field : form.getFormFields()) {
-            generateFieldXML(field, rootNode);
+        int index = 0;
+        for (LinkedList<Field> fields : form.getElementsGrid()) {
+            for (Field field : fields) {
+                generateFieldXML(field, index, rootNode);
+                index ++;
+            }
         }
 
         for (DataHolder dataHolder : form.getHolders()) {
@@ -234,16 +232,16 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
         return sw.toString();
     }
 
-    public Field deserializeField(Form form, Node nodeField, Map<String, Properties> resources) throws Exception {
-        if (!nodeField.getNodeName().equals(NODE_FIELD)) return null;
+    public void deserializeField(Form form, Node nodeField, Map<String, Properties> resources) throws Exception {
+        if (!nodeField.getNodeName().equals(NODE_FIELD)) return;
 
         String code = nodeField.getAttributes().getNamedItem(ATTR_TYPE).getNodeValue();
 
-        if (StringUtils.isEmpty(code)) return null;
+        if (StringUtils.isEmpty(code)) return;
 
         Field field = fieldManager.getFieldByCode(code);
 
-        if (field == null) return null;
+        if (field == null) return;
 
         field.setId(Long.valueOf(nodeField.getAttributes().getNamedItem(ATTR_ID).getNodeValue()));
         field.setName(nodeField.getAttributes().getNamedItem(ATTR_NAME).getNodeValue());
@@ -290,7 +288,8 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
                 if (!StringUtils.isEmpty(value)) field.getLabel().put(lang, value);
             }
         }
-        return field;
+
+        form.addField(field);
     }
 
     private String getFieldProperty(String formName, String fieldName, String selector, Properties props) {
@@ -303,10 +302,10 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
         return value;
     }
 
-    public void generateFieldXML(Field field, XMLNode parent) {
+    public void generateFieldXML(Field field, int index, XMLNode parent) {
         XMLNode rootNode = new XMLNode(NODE_FIELD, parent);
         rootNode.addAttribute(ATTR_ID, String.valueOf(field.getId()));
-        rootNode.addAttribute(ATTR_POSITION, String.valueOf(field.getPosition()));
+        rootNode.addAttribute(ATTR_POSITION, String.valueOf(index));
         rootNode.addAttribute(ATTR_NAME, field.getName());
         rootNode.addAttribute(ATTR_TYPE, field.getCode());
 

@@ -25,15 +25,15 @@ public class TextBoxFieldRenderer extends FieldRenderer {
         final TextBox text = new TextBox();
         text.setName(description.getId());
         text.setId(description.getId());
-        JSONObject json = new JSONObject(description);
+        JSONObject options = new JSONObject(description.getOptions());
 
-        JSONValue maxLength = json.get("maxLength");
+        JSONValue maxLength = options.get("maxLength");
 
         if (maxLength != null) {
             text.setMaxLength(Integer.decode(maxLength.isString().stringValue()));
         }
 
-        JSONValue size = json.get("size");
+        JSONValue size = options.get("size");
         if (size != null) {
             text.setWidth(size.isString().stringValue() + "em");
         }

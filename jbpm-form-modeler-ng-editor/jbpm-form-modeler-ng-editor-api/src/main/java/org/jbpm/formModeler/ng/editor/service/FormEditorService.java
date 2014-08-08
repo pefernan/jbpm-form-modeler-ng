@@ -34,9 +34,9 @@ public interface FormEditorService {
 
     DataHolderBuilderTO[] getAvailableDataHolderBuilders(String ctxUID);
 
-    String removeFieldFromForm(String ctxUID,  int fieldPosition);
+    String removeFieldFromForm(String ctxUID,  Long fieldId);
 
-    String moveSelectedFieldToFieldPosition(String ctxUID, int fieldPosition, int destinationPosition, String modifier);
+    String moveSelectedFieldToFieldPosition(String ctxUID, Long fieldId, int row, int column, boolean newLine);
 
     Path save(ObservablePath path, String ctxUID, Metadata content, String commitMessage);
 }

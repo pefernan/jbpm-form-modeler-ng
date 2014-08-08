@@ -38,23 +38,11 @@ public interface FormManager extends Serializable {
 
     Form createForm(String name);
 
-    void promoteField(Form pForm, int fieldPos, int destPos, boolean groupWithPrevious, boolean nextFieldGrouped) throws Exception;
+    void changeFieldPosition(Form form, Long fieldId, int row, int column, boolean newLine);
 
-    void degradeField(Form pForm, int fieldPos, int destPos, boolean groupWithPrevious, boolean nextFieldGrouped) throws Exception;
+    void moveFirst(Form pForm, Long fieldId);
 
-    void changeFieldPosition(Form pForm, int fieldPos, int destPos, boolean groupWithPrevious, boolean groupNextField);
-
-    void moveTop(Form pForm, int fieldPos);
-
-    void moveBottom(Form pForm, int fieldPos);
-
-    void moveUp(Form pForm, int fieldPos) throws Exception;
-
-    void groupWithPrevious(Form pForm, int fieldPos, boolean value) throws Exception;
-
-    void moveDown(Form pForm, int fieldPos) throws Exception;
-
-    void deleteField(Form pForm, int fieldPos);
+    void moveLast(Form pForm, Long fieldId);
 
     public void addDataHolderToForm(Form form, DataHolder holder);
 

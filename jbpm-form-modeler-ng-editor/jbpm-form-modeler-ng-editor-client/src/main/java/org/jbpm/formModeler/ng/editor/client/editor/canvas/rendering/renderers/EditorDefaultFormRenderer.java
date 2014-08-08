@@ -57,39 +57,38 @@ public class EditorDefaultFormRenderer extends DefaultFormRenderer {
             JsArray<FieldDescription> fields = formDescription.getFields();
 
             if (fields != null && fields.length() > 0) {
+                FieldDescription fieldDescription = null;
                 for (int i = 0; i < formDescription.getFields().length(); i++) {
-                    FieldDescription fieldDescription = formDescription.getFields().get(i);
+                    fieldDescription = formDescription.getFields().get(i);
                     Widget fieldBox = getFieldBox(formDescription, fieldDescription);
                     if (fieldBox != null) {
-                        int position = fieldDescription.getPosition();
                         if (first) {
                             formContent.add(getHorizontalDropArea(0));
                             first = false;
                             formContent.add(horizontalPanel);
-                        } else if (!fieldDescription.isGrouped()) {
-                            horizontalPanel.add(getVerticalDropArea("grouped", position));
-                            formContent.add(getHorizontalDropArea(position));
+                        } else if (fieldDescription.getColumn() == 0) {
+                            horizontalPanel.add(getVerticalDropArea(fieldDescription.getRow() - 1, fieldDescription.getColumn()));
+                            formContent.add(getHorizontalDropArea(fieldDescription.getRow()));
                             horizontalPanel = new HorizontalPanel();
                             formContent.add(horizontalPanel);
                         }
-
-                        horizontalPanel.add(getVerticalDropArea("pre", position));
+                        horizontalPanel.add(getVerticalDropArea(fieldDescription.getRow(), fieldDescription.getColumn()));
                         horizontalPanel.add(fieldBox);
                     }
                 }
-                horizontalPanel.add(getVerticalDropArea("grouped", fields.length()));
-                formContent.add(getHorizontalDropArea(fields.length()));
+                if (fieldDescription !=null) horizontalPanel.add(getVerticalDropArea(fieldDescription.getRow(), fieldDescription.getColumn()));
+                formContent.add(getHorizontalDropArea(-1));
             }
         }
         return formContent;
     }
 
-    protected Panel getHorizontalDropArea(final int position) {
+    protected Panel getHorizontalDropArea(final int row) {
         SimpleLayoutPanel dropArea = new SimpleLayoutPanel();
         dropArea.addDomHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                doMoveField(position, "newLine");
+                doMoveField(row, 0, true);
             }
         }, ClickEvent.getType());
         dropArea.setWidth("100%");
@@ -100,12 +99,12 @@ public class EditorDefaultFormRenderer extends DefaultFormRenderer {
         return dropArea;
     }
 
-    protected Panel getVerticalDropArea(final String modifier, final int position) {
+    protected Panel getVerticalDropArea(final int row, final int column) {
         SimpleLayoutPanel dropArea = new SimpleLayoutPanel();
         dropArea.addDomHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                doMoveField(position, modifier);
+                doMoveField(row, column, false);
             }
         }, ClickEvent.getType());
         dropArea.setWidth("10px");
@@ -116,7 +115,8 @@ public class EditorDefaultFormRenderer extends DefaultFormRenderer {
         return dropArea;
     }
 
-    protected void doMoveField(int destinationPosition, String modifier) {
+
+    protected void doMoveField(int row, int column, boolean newLine) {
         if (selectedField != null) {
             editorService.call(new RemoteCallback<String>() {
                 @Override
@@ -132,7 +132,7 @@ public class EditorDefaultFormRenderer extends DefaultFormRenderer {
                     Window.alert("Something wong happened: " + message);
                     return false;
                 }
-            }).moveSelectedFieldToFieldPosition(ctxUID, selectedField.getPosition(), destinationPosition, modifier);
+            }).moveSelectedFieldToFieldPosition(ctxUID, Long.decode(selectedField.getUid()), row, column, newLine);
         }
     }
 
@@ -183,7 +183,7 @@ public class EditorDefaultFormRenderer extends DefaultFormRenderer {
                                                return false;
                                            }
                                        }
-                    ).removeFieldFromForm(form.getCtxUID(), field.getPosition());
+                    ).removeFieldFromForm(form.getCtxUID(), Long.decode(field.getUid()));
                 }
             }
         });

@@ -18,20 +18,16 @@ public class FieldDescription extends JavaScriptObject {
         return this.label;
     }-*/;
 
-    public final native int getSize() /*-{
-        return this.size;
-    }-*/;
-
-    public final native int getMaxLength() /*-{
-        return this.maxLength;
-    }-*/;
-
     public final native String getType() /*-{
         return this.type;
     }-*/;
 
-    public final native int getPosition() /*-{
-        return this.position;
+    public final native int getRow() /*-{
+        return this.row;
+    }-*/;
+
+    public final native int getColumn() /*-{
+        return this.column;
     }-*/;
 
     public final native String getHolderColor() /*-{
@@ -52,5 +48,9 @@ public class FieldDescription extends JavaScriptObject {
 
     public final native void setValue(String value) /*-{
         this.value = value;
+    }-*/;
+
+    public final native JavaScriptObject getOptions() /*-{
+        return this.options;
     }-*/;
 }

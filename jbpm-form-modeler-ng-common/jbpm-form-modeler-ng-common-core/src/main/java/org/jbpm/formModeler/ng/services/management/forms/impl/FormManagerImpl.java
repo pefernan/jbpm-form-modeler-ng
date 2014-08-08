@@ -108,187 +108,39 @@ public class FormManagerImpl implements FormManager {
     }
 
     @Override
-    public void promoteField(Form pForm, int fieldPos, int destPos, boolean groupWithPrevious, boolean nextFieldGrouped) throws Exception {
-        final List<Field> fields = new ArrayList(pForm.getFormFields());
-        Collections.sort(fields, new Field.Comparator());
-
-        boolean wasGrouped = false;
-        for (Field formField : fields) {
-            int position = formField.getPosition();
-            if (position == fieldPos) {
-                formField.setPosition(destPos);
-                wasGrouped = Boolean.TRUE.equals(formField.getGroupWithPrevious());
-                formField.setGroupWithPrevious(Boolean.valueOf(groupWithPrevious));
-            } else if (position >= destPos && position < fieldPos) {
-                formField.setPosition(formField.getPosition() + 1);
-                if (position == destPos && !Boolean.TRUE.equals(formField.getGroupWithPrevious()))
-                    formField.setGroupWithPrevious(Boolean.valueOf(nextFieldGrouped));
-            } else if (position == fieldPos + 1 && Boolean.TRUE.equals(formField.getGroupWithPrevious()))
-                formField.setGroupWithPrevious(Boolean.valueOf(wasGrouped));
-        }
-    }
-
-    @Override
-    public void degradeField(Form pForm, int fieldPos, int destPos, boolean groupWithPrevious, boolean nextFieldGrouped) throws Exception {
-        List<Field> fields = new ArrayList(pForm.getFormFields());
-        Collections.sort(fields, new Field.Comparator());
-
-        boolean wasGrouped = false;
-        for (Field formField : fields) {
-            int position = formField.getPosition();
-            if (position == fieldPos) {
-                formField.setPosition(destPos);
-                wasGrouped = Boolean.TRUE.equals(formField.getGroupWithPrevious());
-                formField.setGroupWithPrevious(Boolean.valueOf(groupWithPrevious));
-            } else if (position <= destPos && position > fieldPos) {
-                formField.setPosition(formField.getPosition() - 1);
-                if (position == fieldPos + 1 && Boolean.TRUE.equals(formField.getGroupWithPrevious()))
-                    formField.setGroupWithPrevious(Boolean.valueOf(wasGrouped));
-            } else if (position == destPos + 1 && !Boolean.TRUE.equals(formField.getGroupWithPrevious()))
-                formField.setGroupWithPrevious(Boolean.valueOf(nextFieldGrouped));
-        }
-    }
-
-    @Override
-    public void changeFieldPosition(Form pForm, int fieldPos, int destPos, boolean groupWithPrevious, boolean groupNextField) {
-        final List<Field> fields = pForm.getFormFields();
-        Collections.sort(fields, new Field.Comparator());
-
-        Field origField = null;
-        Boolean wasGrouped = false;
-
-        if (fieldPos <= destPos) {
-            for (Field formField : fields) {
-                int currentFieldPosition = formField.getPosition();
-
-                if (currentFieldPosition == fieldPos) {
-                    origField = formField;
-                    formField.setPosition(destPos);
-                    wasGrouped = formField.getGroupWithPrevious();
-                    formField.setGroupWithPrevious(groupWithPrevious);
-                } else {
-                    if (currentFieldPosition > fieldPos && currentFieldPosition <= destPos) {
-                        if (currentFieldPosition == fieldPos + 1 && !wasGrouped) formField.setGroupWithPrevious(false);
-                        formField.setPosition(formField.getPosition() - 1);
-                    } else if (currentFieldPosition == destPos + 1) {
-                        if (origField != null && Boolean.TRUE.equals(formField.getGroupWithPrevious())) origField.setGroupWithPrevious(true);
-                        formField.setGroupWithPrevious(groupNextField);
-                    }
-                }
-            }
+    public void changeFieldPosition(Form form, Long fieldId, int row, int column, boolean newLine) {
+        Field field = form.deleteField(fieldId);
+        if (field == null) return;
+        LinkedList<Field> fields;
+        if (newLine) {
+            fields = new LinkedList<Field>();
+            form.getElementsGrid().add(row, fields);
+            field.setGroupWithPrevious(false);
         } else {
-            for (Field formField : fields) {
-                int currentFieldPosition = formField.getPosition();
-                if (currentFieldPosition == fieldPos) {
-                    origField = formField;
-                    formField.setPosition(destPos);
-                    wasGrouped = formField.getGroupWithPrevious();
-                } else  if (destPos <= currentFieldPosition && currentFieldPosition < fieldPos) {
-                    if (currentFieldPosition == destPos) {
-                        if (groupNextField) groupWithPrevious = Boolean.TRUE.equals(formField.getGroupWithPrevious());
-                        formField.setGroupWithPrevious(groupNextField);
-                    }
-                    formField.setPosition(formField.getPosition() + 1);
-                } else if (formField.getPosition() == currentFieldPosition +1 && !wasGrouped) formField.setGroupWithPrevious(false);
-            }
-            if (origField != null) origField.setGroupWithPrevious(groupWithPrevious);
+            fields = form.getElementsGrid().get(row);
+            field.setGroupWithPrevious(column == 0);
         }
-        Collections.sort(fields, new Field.Comparator());
+        fields.add(column, field);
     }
 
     @Override
-    public void moveTop(Form pForm, int fieldPos) {
-        List<Field> fields = pForm.getFormFields();
-        for (Field formField : fields) {
-            if (formField.getPosition() == fieldPos) {
-                formField.setPosition(0);
-                formField.setGroupWithPrevious(Boolean.FALSE);
-            } else if (formField.getPosition() < fieldPos) {
-                formField.setPosition(formField.getPosition() + 1);
-            }
-        }
-        Collections.sort(fields, new FormElement.Comparator());
+    public void moveFirst(Form form, Long fieldId) {
+        Field field = form.deleteField(fieldId);
+        if (field == null) return;
+        LinkedList<Field> fields = new LinkedList<Field>();
+        fields.add(field);
+        field.setGroupWithPrevious(false);
+        form.getElementsGrid().addFirst(fields);
     }
 
     @Override
-    public void moveBottom(Form pForm, int fieldPos) {
-        List<Field> fields = pForm.getFormFields();
-        for (Field formField : fields) {
-            if (formField.getPosition() == fieldPos) {
-                formField.setPosition(fields.size() - 1);
-                formField.setGroupWithPrevious(Boolean.FALSE);
-            } else if (formField.getPosition() > fieldPos) {
-                formField.setPosition(formField.getPosition() - 1);
-            }
-        }
-        Collections.sort(fields, new FormElement.Comparator());
-    }
-
-    @Override
-    public void moveUp(Form pForm, int fieldPos) throws Exception {
-        List<Field> fields = pForm.getFormFields();
-        if (fieldPos < 1 || fieldPos >= fields.size()) {
-            log.error("Cannot move up field in position " + fieldPos);
-        } else {
-            for (Field formField : fields) {
-                if (formField.getPosition() == fieldPos) {
-                    formField.setPosition(fieldPos - 1);
-                } else if (formField.getPosition() == fieldPos - 1) {
-                    formField.setPosition(fieldPos);
-                }
-            }
-        }
-        Collections.sort(fields, new FormElement.Comparator());
-    }
-
-    @Override
-    public void groupWithPrevious(Form pForm, int fieldPos, boolean value) throws Exception {
-        List<Field> fields = pForm.getFormFields();
-        if (fieldPos < 1 || fieldPos >= fields.size()) {
-            log.warn("Cannot change field in position " + fieldPos);
-        } else {
-            for (Field formField : fields) {
-                if (formField.getPosition() == fieldPos) {
-                    formField.setGroupWithPrevious(Boolean.valueOf(value));
-                }
-            }
-        }
-        Collections.sort(fields, new FormElement.Comparator());
-    }
-
-    @Override
-    public void moveDown(Form pForm, int fieldPos) throws Exception {
-        List<Field> fields = pForm.getFormFields();
-        if (fieldPos < 0 || fieldPos >= fields.size() - 1) {
-            log.warn("Cannot move down field in position " + fieldPos);
-        } else {
-            for (Field formField : fields) {
-                if (formField.getPosition() == fieldPos) {
-                    formField.setPosition(fieldPos + 1);
-                } else if (formField.getPosition() == fieldPos + 1) {
-                    formField.setPosition(fieldPos);
-                }
-            }
-        }
-        Collections.sort(fields, new FormElement.Comparator());
-    }
-
-    @Override
-    public void deleteField(Form pForm, int fieldPos) {
-        List fields = pForm.getFormFields();
-        if (fieldPos < 0 || fieldPos >= fields.size()) {
-            log.warn("Cannot delete field in position " + fieldPos);
-        } else {
-            for (Iterator iterator = fields.iterator(); iterator.hasNext(); ) {
-                Field formField = (Field) iterator.next();
-                if (formField.getPosition() == fieldPos) {
-                    iterator.remove();
-                } else if (formField.getPosition() > fieldPos) {
-                    formField.setPosition(formField.getPosition() - 1);
-                }
-            }
-        }
-        Collections.sort(fields, new FormElement.Comparator());
+    public void moveLast(Form form, Long fieldId) {
+        Field field = form.deleteField(fieldId);
+        if (field == null) return;
+        LinkedList<Field> fields = new LinkedList<Field>();
+        fields.add(field);
+        field.setGroupWithPrevious(false);
+        form.getElementsGrid().addLast(fields);
     }
 
     @Override

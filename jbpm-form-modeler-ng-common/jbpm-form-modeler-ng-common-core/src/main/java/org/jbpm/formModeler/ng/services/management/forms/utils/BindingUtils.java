@@ -21,6 +21,8 @@ import org.jbpm.formModeler.ng.model.DataHolder;
 import org.jbpm.formModeler.ng.model.Field;
 import org.jbpm.formModeler.ng.model.Form;
 
+import java.util.LinkedList;
+
 public class BindingUtils {
     public static String generateInputBinding(DataHolder holder, DataFieldHolder field) {
         if (!holder.canHaveChildren()) return holder.getInputId();
@@ -51,15 +53,17 @@ public class BindingUtils {
         String backInputBinding = generateBackGuardsInputBinding(fieldHolder.getHolder(), fieldHolder);
         String backOutputBinding = generateBackGuardsOutputBinding(fieldHolder.getHolder(), fieldHolder);
 
-        for (Field field : form.getFormFields()) {
-            if (!StringUtils.isEmpty(field.getInputBinding())) {
-                if (field.getInputBinding().equals(inputBinding) || field.getInputBinding().equals(backInputBinding))
-                    return true;
-            }
+        for (LinkedList<Field> fields : form.getElementsGrid()) {
+            for (Field field : fields) {
+                if (!StringUtils.isEmpty(field.getInputBinding())) {
+                    if (field.getInputBinding().equals(inputBinding) || field.getInputBinding().equals(backInputBinding))
+                        return true;
+                }
 
-            if (!StringUtils.isEmpty(field.getOutputBinding())) {
-                if (field.getOutputBinding().equals(outputBinding) || field.getOutputBinding().equals(backOutputBinding))
-                    return true;
+                if (!StringUtils.isEmpty(field.getOutputBinding())) {
+                    if (field.getOutputBinding().equals(outputBinding) || field.getOutputBinding().equals(backOutputBinding))
+                        return true;
+                }
             }
         }
 
