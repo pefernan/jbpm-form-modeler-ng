@@ -16,8 +16,8 @@
 package org.jbpm.formModeler.ng.services.management.dataHolders.builders;
 
 import org.jbpm.formModeler.ng.model.DataHolder;
+import org.jbpm.formModeler.ng.services.management.dataHolders.AbstractDataHolderBuilder;
 import org.jbpm.formModeler.ng.services.management.dataHolders.DataHolderBuildConfig;
-import org.jbpm.formModeler.ng.services.management.dataHolders.DataHolderBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 @ApplicationScoped
-public class PojoDataHolderBuilder implements DataHolderBuilder {
+public class PojoDataHolderBuilder extends AbstractDataHolderBuilder {
 
     public static final String HOLDER_TYPE_POJO_CLASSNAME = "className";
 

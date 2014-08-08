@@ -46,10 +46,10 @@ public class FieldManagerImpl implements FieldManager {
     @Inject
     protected Instance<BasicTypeField> basicFields;
 
-    private Map<String, String> iconsMappings = new HashMap<String, String>();
-    private String defaultIcon = "fieldTypes/default.png";
-
     private ArrayList<String> hiddenFieldTypesCodes = new ArrayList<String>();
+
+    private Map<String, Field> backguardCompatibilityFields = new HashMap<String, Field>();
+    private Map<String, Field> compatibleClasses = new HashMap<String, Field>();
 
     private ArrayList<String> baseTypes = new ArrayList<String>();
 
@@ -61,45 +61,35 @@ public class FieldManagerImpl implements FieldManager {
 
         for (BasicTypeField field : basicFields) {
             fieldTypes.add(field);
+            // Storing primitive fields for backguards comptaibility
+            if (field.getCode().equals("InputTextByte")) {
+                backguardCompatibilityFields.put("InputTextPrimitiveByte", field);
+                compatibleClasses.put(byte.class.getName(), field);
+            } else if (field.getCode().equals("InputTextCharacter")) {
+                backguardCompatibilityFields.put("InputTextPrimitiveCharacter", field);
+                compatibleClasses.put(char.class.getName(), field);
+            } else if (field.getCode().equals("InputTextShort")) {
+                backguardCompatibilityFields.put("InputTextPrimitiveShort", field);
+                compatibleClasses.put(short.class.getName(), field);
+            } else if (field.getCode().equals("InputTextInteger")) {
+                backguardCompatibilityFields.put("InputTextPrimitiveInteger", field);
+                compatibleClasses.put(int.class.getName(), field);
+            } else if (field.getCode().equals("InputTextLong")) {
+                backguardCompatibilityFields.put("InputTextPrimitiveLong", field);
+                compatibleClasses.put(long.class.getName(), field);
+            } else if (field.getCode().equals("InputTextFloat")) {
+                backguardCompatibilityFields.put("InputTextPrimitiveFloat", field);
+                compatibleClasses.put(float.class.getName(), field);
+            } else if (field.getCode().equals("InputTextDouble")) {
+                backguardCompatibilityFields.put("InputTextPrimitiveDouble", field);
+                compatibleClasses.put(double.class.getName(), field);
+            } else if (field.getCode().equals("CheckBox")) {
+                backguardCompatibilityFields.put("CheckBoxPrimitiveBoolean", field);
+                compatibleClasses.put(boolean.class.getName(), field);
+            }
         }
 
-        iconsMappings.put("InputTextShort", "fieldTypes/box_number.png");
-        iconsMappings.put("InputTextInteger", "fieldTypes/box_number.png");
-        iconsMappings.put("InputTextIBAN", "fieldTypes/box_number.png");
-        iconsMappings.put("Separator", "fieldTypes/splitter_box.png");
-        iconsMappings.put("InputTextLong", "fieldTypes/box_number.png");
-        iconsMappings.put("InputDate", "fieldTypes/date_selector.png");
-        iconsMappings.put("I18nHTMLText", "fieldTypes/rich_text_box.png");
-        iconsMappings.put("HTMLEditor", "fieldTypes/rich_text_box.png");
-        iconsMappings.put("InputTextArea", "fieldTypes/scroll_zone.png");
-        iconsMappings.put("I18nTextArea", "fieldTypes/scroll_zone.png");
-        iconsMappings.put("CheckBox", "fieldTypes/checkbox.png");
-        iconsMappings.put("CheckBoxPrimitiveBoolean", "fieldTypes/checkbox.png");
-        iconsMappings.put("InputShortDate", "fieldTypes/date_selector.png");
-        iconsMappings.put("I18nText", "fieldTypes/textbox.png");
-        iconsMappings.put("InputTextFloat", "fieldTypes/box_number.png");
-        iconsMappings.put("InputTextBigDecimal", "fieldTypes/box_number.png");
-        iconsMappings.put("InputTextBigInteger", "fieldTypes/box_number.png");
-        iconsMappings.put("InputTextDouble", "fieldTypes/box_number.png");
-        iconsMappings.put("HTMLLabel", "fieldTypes/rich_text_box.png");
-        iconsMappings.put("InputText", "fieldTypes/textbox.png");
-        iconsMappings.put("InputTextEmail", "fieldTypes/mailbox.png");
-        iconsMappings.put("Subform", "fieldTypes/master_details.png");
-        iconsMappings.put("MultipleSubform", "fieldTypes/master_details.png");
-        iconsMappings.put("Document", "fieldTypes/file.png");
-        iconsMappings.put("File", "fieldTypes/file.png");
-
-        hiddenFieldTypesCodes.add("InputTextPrimitiveByte");
-        hiddenFieldTypesCodes.add("InputTextPrimitiveShort");
-        hiddenFieldTypesCodes.add("InputTextPrimitiveInteger");
-        hiddenFieldTypesCodes.add("InputTextPrimitiveLong");
-        hiddenFieldTypesCodes.add("InputTextPrimitiveFloat");
-        hiddenFieldTypesCodes.add("InputTextPrimitiveDouble");
-        hiddenFieldTypesCodes.add("CheckBoxPrimitiveBoolean");
-        hiddenFieldTypesCodes.add("InputTextPrimitiveCharacter");
-        hiddenFieldTypesCodes.add("I18nHTMLText");
         hiddenFieldTypesCodes.add("I18nText");
-        hiddenFieldTypesCodes.add("I18nTextArea");
         hiddenFieldTypesCodes.add("CustomInput");
 
         baseTypes.add("InputText");
@@ -114,7 +104,6 @@ public class FieldManagerImpl implements FieldManager {
         baseTypes.add("InputTextDouble");
         baseTypes.add("InputTextBigDecimal");
         baseTypes.add("InputTextBigInteger");
-
     }
 
     @Override
@@ -138,7 +127,7 @@ public class FieldManagerImpl implements FieldManager {
         for (Field field : fieldTypes) {
             if (field.getCode().equals(typeCode)) return (Field) SerializationUtils.clone(field);
         }
-        return null;
+        return backguardCompatibilityFields.get(typeCode);
     }
 
     @Override
@@ -146,6 +135,11 @@ public class FieldManagerImpl implements FieldManager {
         for (Field field : fieldTypes) {
             if (field.getFieldClass().equals(classType)) return (Field)SerializationUtils.clone(field);
         }
-        return null;
+        return compatibleClasses.get(classType);
+    }
+
+    @Override
+    public boolean isVisible(String typeCode) {
+        return !hiddenFieldTypesCodes.contains(typeCode);
     }
 }

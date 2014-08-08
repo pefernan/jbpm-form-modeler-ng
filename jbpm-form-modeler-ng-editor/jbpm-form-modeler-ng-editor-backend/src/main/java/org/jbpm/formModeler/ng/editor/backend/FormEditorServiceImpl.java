@@ -403,11 +403,9 @@ public class FormEditorServiceImpl implements FormEditorService {
         for (DataHolderBuilder builder : dataHolderManager.getHolderBuilders()) {
             if (builder instanceof RangedDataHolderBuilder) {
                 RangedDataHolderBuilder rangedBuilder = (RangedDataHolderBuilder) builder;
-                Set<String> sources = rangedBuilder.getHolderSources(ctxUID).keySet();
-                String[] values = sources.toArray(new String[sources.size()]);
-                response[i] = new RangedDataHolderBuilderTO(builder.getId(), builder.getDataHolderName(context.getCurrentLocale()), values);
+                response[i] = new RangedDataHolderBuilderTO(builder.getId(), builder.getDataHolderName(context.getCurrentLocale()), builder.needsConfig(), rangedBuilder.getHolderSources(ctxUID));
             } else {
-                response[i] = new DataHolderBuilderTO(builder.getId(), builder.getDataHolderName(context.getCurrentLocale()));
+                response[i] = new DataHolderBuilderTO(builder.getId(), builder.getDataHolderName(context.getCurrentLocale()), builder.needsConfig());
             }
             i++;
         }

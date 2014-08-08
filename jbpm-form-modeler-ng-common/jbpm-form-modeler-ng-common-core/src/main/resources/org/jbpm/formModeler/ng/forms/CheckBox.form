@@ -10,7 +10,7 @@
     <property name="groupWithPrevious" value="true"/>
     <property name="height" value=""/>
     <property name="readonly" value="false"/>
-    <property name="size" value="25"/>
+    <property name="size" value="15"/>
     <property name="formula" value=""/>
     <property name="rangeFormula" value=""/>
     <property name="pattern" value=""/>
@@ -21,13 +21,12 @@
     <property name="inputBinding" value="field/name"/>
     <property name="outputBinding" value="field/name"/>
   </field>
-  <!--
   <field position="1" name="label" type="I18nText" id="84582858">
     <property name="fieldRequired" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
     <property name="readonly" value="false"/>
-    <property name="size" value="25"/>
+    <property name="size" value="15"/>
     <property name="formula" value=""/>
     <property name="rangeFormula" value=""/>
     <property name="pattern" value=""/>
@@ -35,7 +34,9 @@
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
-  </field>-->
+    <property name="inputBinding" value="field/label"/>
+    <property name="outputBinding" value="field/label"/>
+  </field>
   <field position="2" name="fieldRequired" type="CheckBox" id="1494060118">
     <property name="fieldRequired" value="false"/>
     <property name="groupWithPrevious" value="false"/>
@@ -73,7 +74,7 @@
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
     <property name="readonly" value="false"/>
-    <property name="size" value="55"/>
+    <property name="size" value="25"/>
     <property name="formula" value=""/>
     <property name="rangeFormula" value=""/>
     <property name="pattern" value=""/>
@@ -89,7 +90,7 @@
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
     <property name="readonly" value="false"/>
-    <property name="size" value="55"/>
+    <property name="size" value="25"/>
     <property name="formula" value=""/>
     <property name="rangeFormula" value=""/>
     <property name="pattern" value=""/>

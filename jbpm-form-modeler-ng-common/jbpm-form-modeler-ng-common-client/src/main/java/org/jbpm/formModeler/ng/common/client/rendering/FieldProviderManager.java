@@ -2,7 +2,8 @@ package org.jbpm.formModeler.ng.common.client.rendering;
 
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.jbpm.formModeler.ng.common.client.rendering.fields.FieldProvider;
+import org.jbpm.formModeler.ng.common.client.rendering.fields.FieldRenderer;
+import org.jbpm.formModeler.ng.common.client.rendering.fields.TextBoxFieldRenderer;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -16,24 +17,24 @@ public class FieldProviderManager {
     private SyncBeanManager iocManager;
 
     @Inject
-    private HashMap<String, FieldProvider> providersMap;
+    private HashMap<String, FieldRenderer> providersMap;
 
     @Inject
-    private org.jbpm.formModeler.ng.common.client.rendering.fields.TextBoxFieldProvider defaultProvider;
+    private TextBoxFieldRenderer defaultProvider;
 
     @PostConstruct
     private void init() {
-        Collection<IOCBeanDef<FieldProvider>> providers = iocManager.lookupBeans(FieldProvider.class);
+        Collection<IOCBeanDef<FieldRenderer>> providers = iocManager.lookupBeans(FieldRenderer.class);
         if (providers != null) {
             for (IOCBeanDef providerDef : providers) {
-                FieldProvider provider = (FieldProvider) providerDef.getInstance();
+                FieldRenderer provider = (FieldRenderer) providerDef.getInstance();
                 providersMap.put(provider.getCode(), provider);
             }
         }
     }
 
-    public FieldProvider getProviderByType(String type) {
-        FieldProvider result = providersMap.get(type);
+    public FieldRenderer getProviderByType(String type) {
+        FieldRenderer result = providersMap.get(type);
         if (result == null) return defaultProvider;
         return result;
     }

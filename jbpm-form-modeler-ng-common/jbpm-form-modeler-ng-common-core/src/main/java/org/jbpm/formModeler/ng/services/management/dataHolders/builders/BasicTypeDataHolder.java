@@ -68,7 +68,6 @@ public class BasicTypeDataHolder extends DataHolder {
                 dataFieldHolders = new TreeSet<DataFieldHolder>();
                 DataFieldHolder datafieldHolder = new DataFieldHolder(this, StringUtils.defaultIfEmpty(inputId, outputId), field.getFieldClass(), field.getIcon());
                 dataFieldHolders.add(datafieldHolder);
-
             }
             return dataFieldHolders;
         } catch (Exception e) {

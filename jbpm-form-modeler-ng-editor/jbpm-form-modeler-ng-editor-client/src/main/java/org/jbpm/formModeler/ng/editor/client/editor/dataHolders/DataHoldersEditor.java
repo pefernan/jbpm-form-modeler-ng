@@ -13,15 +13,15 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.AsyncDataProvider;
-import com.google.gwt.view.client.HasData;
-import com.google.gwt.view.client.Range;
+import com.google.gwt.view.client.*;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jbpm.formModeler.ng.editor.events.FormModelerEvent;
@@ -42,9 +42,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Dependent
 public class DataHoldersEditor extends Composite {
@@ -65,6 +63,9 @@ public class DataHoldersEditor extends Composite {
 
     @Inject
     Caller<FormEditorService> editorService;
+
+    @UiField
+    Fieldset formFields;
 
     @UiField
     ControlGroup idGroup;
@@ -113,6 +114,7 @@ public class DataHoldersEditor extends Composite {
     @PostConstruct
     public void initView() {
         initWidget( uiBinder.createAndBindUi( this ) );
+        formFields.setVisible(false);
 
         okButton.addClickHandler(new ClickHandler() {
             @Override
@@ -240,7 +242,7 @@ public class DataHoldersEditor extends Composite {
                 public void onClick(ClickEvent event) {
                     holderType = builder.getType();
                     className = "";
-
+                    formFields.setVisible(builder.getNeedsConfig());
                     int i = 0;
                     for (Iterator<Widget> it = holderTypes.iterator(); it.hasNext();) {
                         Widget widget = it.next();
@@ -258,10 +260,10 @@ public class DataHoldersEditor extends Composite {
 
                 RangedDataHolderBuilderTO rangedBuilder = (RangedDataHolderBuilderTO) builder;
 
-                String[] values = rangedBuilder.getValues();
+                Map<String, String> values = rangedBuilder.getValues();
 
-                for (String value : values) {
-                    typeValue.addItem(value);
+                for (String value : values.keySet()) {
+                    typeValue.addItem(values.get(value), value);
                 }
 
                 typeValue.addChangeHandler(new ChangeHandler() {
@@ -281,8 +283,7 @@ public class DataHoldersEditor extends Composite {
                 });
                 inputValue = typeValue;
             }
-            button.setValue(row == 0);
-            inputValue.setVisible(row == 0);
+            inputValue.setVisible(false);
 
             holderTypes.add(inputValue);
             row += 2;
@@ -314,5 +315,32 @@ public class DataHoldersEditor extends Composite {
 
     public void refreshGrid(@Observes RefreshHoldersListEvent refreshHoldersListEvent) {
         if (context != null && context.getCtxUID().equals(refreshHoldersListEvent.getContext())) refreshDataHoldersTable();
+    }
+
+    private class HolderColor {
+        private String color;
+
+        private HolderColor(String color) {
+            this.color = color;
+        }
+
+        private String getColor() {
+            return color;
+        }
+
+        private void setColor(String color) {
+            this.color = color;
+        }
+    }
+
+    private static class ColortCell extends AbstractCell<HolderColor> {
+
+        @Override
+        public void render(Context context, HolderColor value, SafeHtmlBuilder sb) {
+            if (value != null) {
+                String html = "<div style='width:100%; background-color:" + value.getColor() + ";'></div>";
+                sb.appendHtmlConstant(html);
+            }
+        }
     }
 }

@@ -6,7 +6,7 @@ import com.google.gwt.user.client.ui.*;
 import org.jbpm.formModeler.ng.common.client.rendering.FieldDescription;
 import org.jbpm.formModeler.ng.common.client.rendering.FieldProviderManager;
 import org.jbpm.formModeler.ng.common.client.rendering.FormDescription;
-import org.jbpm.formModeler.ng.common.client.rendering.fields.FieldProvider;
+import org.jbpm.formModeler.ng.common.client.rendering.fields.FieldRenderer;
 import org.jbpm.formModeler.ng.model.Form;
 
 import javax.inject.Inject;
@@ -20,7 +20,7 @@ public abstract class FormRenderer {
     public abstract Panel generateForm(FormDescription formDescription);
 
     protected Widget getFieldBox(FormDescription form, FieldDescription field) {
-        FieldProvider provider = providerManager.getProviderByType(field.getType());
+        FieldRenderer provider = providerManager.getProviderByType(field.getType());
 
         if (provider == null) {
             Window.alert("Unable to find provider for: " + field.getType());

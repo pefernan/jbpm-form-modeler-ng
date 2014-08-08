@@ -20,7 +20,6 @@
     <property name="inputBinding" value="field/name"/>
     <property name="outputBinding" value="field/name"/>
   </field>
-  <!--
   <field position="1" name="label" type="I18nText" id="1437651781">
     <property name="fieldRequired" value="false"/>
     <property name="groupWithPrevious" value="false"/>
@@ -36,8 +35,7 @@
     <property name="accesskey" value=""/>
     <property name="inputBinding" value="field/label"/>
     <property name="outputBinding" value="field/label"/>
-  </field>       -->
-  <field position="9" name="size" type="InputTextInteger" id="1565746574">
+  </field><field position="2" name="size" type="InputTextInteger" id="1565746574">
     <property name="fieldRequired" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
@@ -53,7 +51,7 @@
     <property name="inputBinding" value="field/size"/>
     <property name="outputBinding" value="field/size"/>
   </field>
-  <field position="10" name="maxlength" type="InputTextInteger" id="431764065">
+  <field position="3" name="maxlength" type="InputTextInteger" id="431764065">
     <property name="fieldRequired" value="false"/>
     <property name="groupWithPrevious" value="true"/>
     <property name="height" value=""/>
@@ -69,7 +67,7 @@
     <property name="inputBinding" value="field/maxLength"/>
     <property name="outputBinding" value="field/maxLength"/>
   </field>
-  <field position="11" name="fieldRequired" type="CheckBox" id="831881035">
+  <field position="4" name="fieldRequired" type="CheckBox" id="831881035">
     <property name="fieldRequired" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
@@ -85,7 +83,7 @@
     <property name="inputBinding" value="field/fieldRequired"/>
     <property name="outputBinding" value="field/fieldRequired"/>
   </field>
-  <field position="13" name="readonly" type="CheckBox" id="514255595">
+  <field position="5" name="readonly" type="CheckBox" id="514255595">
     <property name="fieldRequired" value="false"/>
     <property name="groupWithPrevious" value="true"/>
     <property name="height" value=""/>
@@ -101,7 +99,7 @@
     <property name="inputBinding" value="field/readonly"/>
     <property name="outputBinding" value="field/readonly"/>
   </field>
-  <field position="21" name="inputBinding" type="InputText" id="2073732259">
+  <field position="6" name="inputBinding" type="InputText" id="2073732259">
     <property name="fieldRequired" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
@@ -117,7 +115,7 @@
     <property name="inputBinding" value="field/inputBinding"/>
     <property name="outputBinding" value="field/inputBinding"/>
   </field>
-  <field position="22" name="outputBinding" type="InputText" id="413003545">
+  <field position="7" name="outputBinding" type="InputText" id="413003545">
     <property name="fieldRequired" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>

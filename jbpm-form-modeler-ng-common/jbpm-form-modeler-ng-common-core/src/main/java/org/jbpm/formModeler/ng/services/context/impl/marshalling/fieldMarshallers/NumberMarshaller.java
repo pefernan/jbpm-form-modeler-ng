@@ -2,6 +2,7 @@ package org.jbpm.formModeler.ng.services.context.impl.marshalling.fieldMarshalle
 
 import org.apache.commons.lang.StringUtils;
 import org.jbpm.formModeler.ng.model.FieldValueMarshaller;
+import org.jbpm.formModeler.ng.services.context.FormRenderContext;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -29,7 +30,7 @@ public class NumberMarshaller implements FieldValueMarshaller {
     }
 
     @Override
-    public String marshallValue(Object value) {
+    public String marshallValue(Object value, FormRenderContext context) {
         if (value == null) return "";
         if (desiredClassName.equals(Double.class.getName()) || desiredClassName.equals("double") ||
                 desiredClassName.equals(Float.class.getName())  || desiredClassName.equals("float") ||
@@ -42,7 +43,7 @@ public class NumberMarshaller implements FieldValueMarshaller {
     }
 
     @Override
-    public Object unMarshallValue(String marshalledValue) {
+    public Object unMarshallValue(String marshalledValue, Object previousValue, FormRenderContext context) {
         if (StringUtils.isEmpty(marshalledValue)) return null;
 
         if (desiredClassName.equals("byte")) {

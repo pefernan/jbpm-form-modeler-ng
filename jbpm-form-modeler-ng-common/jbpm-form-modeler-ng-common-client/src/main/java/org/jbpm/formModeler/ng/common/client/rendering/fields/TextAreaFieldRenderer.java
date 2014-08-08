@@ -1,6 +1,6 @@
 package org.jbpm.formModeler.ng.common.client.rendering.fields;
 
-import com.github.gwtbootstrap.client.ui.IntegerBox;
+import com.github.gwtbootstrap.client.ui.TextArea;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.Widget;
@@ -11,27 +11,26 @@ import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 @Portable
-public class IntegerFieldProvider extends FieldProvider {
+public class TextAreaFieldRenderer extends FieldRenderer {
+
     @Override
     public String getCode() {
-        return "InputTextInteger";
+        return "InputTextArea";
     }
 
     @Override
     public Widget getFieldInput(final FieldDescription description) {
         if (description == null) return null;
-        final IntegerBox longBox = new IntegerBox();
-        longBox.setName(description.getId());
-        longBox.setId(description.getId());
-        longBox.setMaxLength(100);
-        longBox.setWidth("25");
-        if (description.getValue() != null && !description.getValue().isEmpty()) longBox.setValue(Integer.decode(description.getValue()));
-        longBox.addChangeHandler(new ChangeHandler() {
+        final TextArea textArea = new TextArea();
+        textArea.setName(description.getId());
+        textArea.setId(description.getId());
+        textArea.setText(description.getValue());
+        textArea.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent changeEvent) {
-                description.setValue(String.valueOf(longBox.getValue()));
+                description.setValue(textArea.getValue());
             }
         });
-        return longBox;
+        return textArea;
     }
 }

@@ -13,10 +13,10 @@ import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 @Portable
-public class TextBoxFieldProvider extends FieldProvider {
+public class I18nTextFieldRenderer extends FieldRenderer {
     @Override
     public String getCode() {
-        return "InputText";
+        return "I18nText";
     }
 
     @Override
@@ -25,6 +25,7 @@ public class TextBoxFieldProvider extends FieldProvider {
         final TextBox text = new TextBox();
         text.setName(description.getId());
         text.setId(description.getId());
+        text.setValue(description.getValue());
         JSONObject json = new JSONObject(description);
 
         JSONValue maxLength = json.get("maxLength");

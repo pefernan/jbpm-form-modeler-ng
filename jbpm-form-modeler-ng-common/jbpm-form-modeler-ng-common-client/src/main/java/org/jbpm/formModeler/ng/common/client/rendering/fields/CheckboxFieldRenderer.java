@@ -12,7 +12,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 @Portable
-public class CheckboxFieldProvider extends FieldProvider {
+public class CheckboxFieldRenderer extends FieldRenderer {
     @Override
     public String getCode() {
         return "CheckBox";

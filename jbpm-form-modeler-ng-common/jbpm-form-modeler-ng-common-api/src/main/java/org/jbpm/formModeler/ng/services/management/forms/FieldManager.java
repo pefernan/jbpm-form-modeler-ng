@@ -30,4 +30,6 @@ public interface FieldManager extends Serializable {
     Field getFieldByCode(String typeCode);
 
     Field getFieldByClass(String classType);
+
+    boolean isVisible(String typeCode);
 }

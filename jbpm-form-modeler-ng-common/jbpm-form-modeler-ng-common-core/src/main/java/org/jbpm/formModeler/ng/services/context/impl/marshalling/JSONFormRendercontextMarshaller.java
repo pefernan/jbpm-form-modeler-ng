@@ -119,7 +119,10 @@ public class JSONFormRendercontextMarshaller implements FormRenderContextMarshal
     private void marshallField(Field field, Object value, FormRenderContext context, String namespace, JsonGenerator generator) throws IOException {
         generator.writeStartObject();
 
-        generator.writeStringField("uid", String.valueOf(field.getId()));
+        String fieldId = String.valueOf(field.getId());
+        context.getPreviousValues().put(fieldId, value);
+
+        generator.writeStringField("uid", fieldId);
         generator.writeStringField("id", StringUtils.isEmpty(namespace) ? field.getName() : namespace + NAMESPACE_SEPARATOR + field.getName());
         generator.writeStringField("label", (String) localeManager.localize(field.getLabel(), context.getCurrentLocale()));
         generator.writeStringField("type", field.getCode());
@@ -144,7 +147,7 @@ public class JSONFormRendercontextMarshaller implements FormRenderContextMarshal
 
         generator.writeStringField("holderColor", StringUtils.defaultIfEmpty(holderColor, "#444444"));
 
-        generator.writeObjectField("value", field.getMarshaller().marshallValue(value));
+        generator.writeObjectField("value", field.getMarshaller().marshallValue(value, context));
 
         generator.writeEndObject();
     }
@@ -210,7 +213,7 @@ public class JSONFormRendercontextMarshaller implements FormRenderContextMarshal
 
                     DataHolder holder = BindingUtils.getFormDataHolderForField(field);
 
-                    Object value = field.getMarshaller().unMarshallValue(jsonField.get("value").getTextValue());
+                    Object value = field.getMarshaller().unMarshallValue(jsonField.get("value").getTextValue(), context.getPreviousValues().get(field.getId().toString()), context);
 
                     if (holder == null || simpleBinding) result.put(bindingString, value);
                     else {

@@ -25,7 +25,13 @@
       <tr>
         <td style="width:250px; vertical-align:top;">
           <b:Well>
-            <b:Fieldset>
+            <b:ControlGroup ui:field="typeGroup">
+              <b:ControlLabel >Holder Type:</b:ControlLabel>
+
+              <g:VerticalPanel ui:field="holderTypes"></g:VerticalPanel>
+
+            </b:ControlGroup>
+            <b:Fieldset ui:field="formFields">
               <b:ControlGroup ui:field="idGroup">
                 <b:ControlLabel for="id"  >Holder Id</b:ControlLabel>
 
@@ -50,12 +56,6 @@
                 </b:Controls>
 
               </b:ControlGroup>
-              <b:ControlGroup ui:field="typeGroup">
-                <b:ControlLabel >Holder Type:</b:ControlLabel>
-
-                <g:VerticalPanel ui:field="holderTypes"></g:VerticalPanel>
-
-              </b:ControlGroup>
 
               <b:ControlGroup ui:field="colorGroup">
                 <b:ControlLabel for="color"  >Holder Color</b:ControlLabel>
@@ -64,8 +64,8 @@
                   <b:TextBox b:id="color" ui:field="color" placeholder="!Insert a color"/>
                 </b:Controls>
               </b:ControlGroup>
-              <b:Button ui:field="okButton" type="PRIMARY" text="!Create Holder"></b:Button>
             </b:Fieldset>
+            <b:Button ui:field="okButton" type="PRIMARY" text="!Create Holder"></b:Button>
           </b:Well>
         </td>
         <td style="vertical-align:top;">

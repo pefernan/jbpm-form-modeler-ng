@@ -1,6 +1,6 @@
 package org.jbpm.formModeler.ng.common.client.rendering.fields;
 
-import com.github.gwtbootstrap.client.ui.TextArea;
+import com.github.gwtbootstrap.client.ui.LongBox;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.Widget;
@@ -11,26 +11,27 @@ import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 @Portable
-public class TextAreaFieldProvider extends FieldProvider {
-
+public class LongFieldRenderer extends FieldRenderer {
     @Override
     public String getCode() {
-        return "InputTextArea";
+        return "InputTextLong";
     }
 
     @Override
     public Widget getFieldInput(final FieldDescription description) {
         if (description == null) return null;
-        final TextArea textArea = new TextArea();
-        textArea.setName(description.getId());
-        textArea.setId(description.getId());
-        textArea.setText(description.getValue());
-        textArea.addChangeHandler(new ChangeHandler() {
+        final LongBox longBox = new LongBox();
+        longBox.setName(description.getId());
+        longBox.setId(description.getId());
+        longBox.setMaxLength(100);
+        longBox.setWidth("25");
+        if (description.getValue() != null && !description.getValue().isEmpty()) longBox.setValue(Long.decode(description.getValue()));
+        longBox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent changeEvent) {
-                description.setValue(textArea.getValue());
+                description.setValue(String.valueOf(longBox.getValue()));
             }
         });
-        return textArea;
+        return longBox;
     }
 }

@@ -6,13 +6,15 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public class DataHolderBuilderTO {
     private String type;
     private String label;
+    private Boolean needsConfig;
 
     public DataHolderBuilderTO() {
     }
 
-    public DataHolderBuilderTO(String type, String label) {
+    public DataHolderBuilderTO(String type, String label, boolean needsConfig) {
         this.type = type;
         this.label = label;
+        this.needsConfig = needsConfig;
     }
 
     public String getType() {
@@ -29,5 +31,13 @@ public class DataHolderBuilderTO {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public Boolean getNeedsConfig() {
+        return needsConfig;
+    }
+
+    public void setNeedsConfig(Boolean needsConfig) {
+        this.needsConfig = needsConfig;
     }
 }

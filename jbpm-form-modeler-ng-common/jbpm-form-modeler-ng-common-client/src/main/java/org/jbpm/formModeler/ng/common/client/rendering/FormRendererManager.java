@@ -7,11 +7,12 @@ import org.jbpm.formModeler.ng.common.client.rendering.renderers.FormRenderer;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import java.util.Collection;
 import java.util.HashMap;
 
-@ApplicationScoped
+@Dependent
 public class FormRendererManager {
     @Inject
     protected SyncBeanManager iocManager;

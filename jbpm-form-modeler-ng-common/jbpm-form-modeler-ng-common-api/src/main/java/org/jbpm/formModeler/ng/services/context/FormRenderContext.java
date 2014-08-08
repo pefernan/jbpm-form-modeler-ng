@@ -33,6 +33,7 @@ public class FormRenderContext implements Serializable {
     private Locale currentLocale;
     private Map<String, Object> contextForms = new HashMap<String, Object>();
     private Map<String, Object> attributes = new HashMap<String, Object>();
+    private Map<String, Object> previousValues = new HashMap<String, Object>();
     private String marshalledCopy;
 
     public FormRenderContext(String uid, Form form, Map<String, Object> inputData, Map<String, Object> outputData, Locale locale) {
@@ -85,6 +86,10 @@ public class FormRenderContext implements Serializable {
 
     public int getErrors() {
         return errors;
+    }
+
+    public Map<String, Object> getPreviousValues() {
+        return previousValues;
     }
 
     public Map<String, Object> getContextForms() {

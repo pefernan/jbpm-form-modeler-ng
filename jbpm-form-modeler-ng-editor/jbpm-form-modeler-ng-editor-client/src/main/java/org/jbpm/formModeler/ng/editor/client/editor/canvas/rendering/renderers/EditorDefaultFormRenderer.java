@@ -20,12 +20,13 @@ import org.jbpm.formModeler.ng.editor.events.dataHolders.RefreshHoldersListEvent
 import org.jbpm.formModeler.ng.editor.service.FormEditorService;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-@ApplicationScoped
+@Dependent
 public class EditorDefaultFormRenderer extends DefaultFormRenderer {
     @Inject
     private Event<StartEditFieldPropertyEvent> fieldPropertyEvent;
@@ -88,7 +89,6 @@ public class EditorDefaultFormRenderer extends DefaultFormRenderer {
         dropArea.addDomHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-               Window.alert("adding field to row: newLine-" + position);
                 doMoveField(position, "newLine");
             }
         }, ClickEvent.getType());
@@ -105,7 +105,6 @@ public class EditorDefaultFormRenderer extends DefaultFormRenderer {
         dropArea.addDomHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                Window.alert("adding field to : " + modifier + "-" + position);
                 doMoveField(position, modifier);
             }
         }, ClickEvent.getType());

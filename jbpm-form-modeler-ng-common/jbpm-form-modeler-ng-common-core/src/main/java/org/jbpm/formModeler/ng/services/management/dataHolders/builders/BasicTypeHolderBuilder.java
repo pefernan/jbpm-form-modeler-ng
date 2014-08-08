@@ -18,8 +18,8 @@ package org.jbpm.formModeler.ng.services.management.dataHolders.builders;
 import org.jbpm.formModeler.ng.model.BasicTypeField;
 import org.jbpm.formModeler.ng.model.DataHolder;
 import org.jbpm.formModeler.ng.model.Field;
+import org.jbpm.formModeler.ng.services.management.dataHolders.AbstractRangedDataHolderBuilder;
 import org.jbpm.formModeler.ng.services.management.dataHolders.DataHolderBuildConfig;
-import org.jbpm.formModeler.ng.services.management.dataHolders.RangedDataHolderBuilder;
 import org.jbpm.formModeler.ng.services.management.forms.FieldManager;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -27,7 +27,7 @@ import javax.inject.Inject;
 import java.util.*;
 
 @ApplicationScoped
-public class BasicTypeHolderBuilder implements RangedDataHolderBuilder {
+public class BasicTypeHolderBuilder extends AbstractRangedDataHolderBuilder {
     public static final String HOLDER_TYPE_BASIC_TYPE = "basicType";
 
     @Inject
@@ -61,8 +61,12 @@ public class BasicTypeHolderBuilder implements RangedDataHolderBuilder {
         Map<String, String> result = new TreeMap<String, String>();
         try {
             List<BasicTypeField> allFieldTypes = fieldManager.getBasicFields();
-            for (Field fieldType : allFieldTypes) {
-                result.put(fieldType.getFieldClass(), fieldType.getFieldClass());
+            for (Field field : allFieldTypes) {
+                if (!fieldManager.isVisible(field.getCode())) continue;
+                String supportedClassName = field.getFieldClass();
+                int lastIndex = supportedClassName.lastIndexOf(".");
+                if (lastIndex != -1) supportedClassName = supportedClassName.substring(lastIndex + 1);
+                result.put(field.getFieldClass(), supportedClassName);
             }
 
         } catch (Throwable e) {

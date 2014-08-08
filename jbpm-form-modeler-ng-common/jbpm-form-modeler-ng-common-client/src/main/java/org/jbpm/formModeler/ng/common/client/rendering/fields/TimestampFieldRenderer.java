@@ -1,6 +1,6 @@
 package org.jbpm.formModeler.ng.common.client.rendering.fields;
 
-import com.github.gwtbootstrap.datepicker.client.ui.DateBox;
+import com.github.gwtbootstrap.datetimepicker.client.ui.DateTimeBox;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Widget;
@@ -12,27 +12,27 @@ import java.util.Date;
 
 @ApplicationScoped
 @Portable
-public class ShortDateFieldProvider extends FieldProvider {
+public class TimestampFieldRenderer extends FieldRenderer {
     @Override
     public String getCode() {
-        return "InputShortDate";
+        return "InputDate";
     }
 
     @Override
     public Widget getFieldInput(final FieldDescription description) {
         if (description == null) return null;
-        final DateBox datepicker = new DateBox();
-        datepicker.setId(description.getId());
-        datepicker.setWidth("25");
-        if (description.getValue() != null && !description.getValue().isEmpty()) datepicker.setValue(new Date(Long.decode(description.getValue())));
-        datepicker.addValueChangeHandler(new ValueChangeHandler<Date>() {
+        final DateTimeBox datetimepicker = new DateTimeBox();
+        datetimepicker.setId(description.getId());
+        datetimepicker.setWidth("25");
+        if (description.getValue() != null && !description.getValue().isEmpty()) datetimepicker.setValue(new Date(Long.decode(description.getValue())));
+        datetimepicker.addValueChangeHandler(new ValueChangeHandler<Date>() {
             @Override
             public void onValueChange(ValueChangeEvent<Date> dateValueChangeEvent) {
                 Date value = dateValueChangeEvent.getValue();
-                if (value == null) description.setValue("");
+                if (value == null)description.setValue("");
                 else description.setValue(String.valueOf(value.getTime()));
             }
         });
-        return datepicker;
+        return datetimepicker;
     }
 }

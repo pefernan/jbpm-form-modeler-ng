@@ -30,4 +30,6 @@ public interface DataHolderBuilder {
     boolean supportsPropertyType(String type, Map<String, Object> context);
 
     int getPriority();
+
+    boolean needsConfig();
 }

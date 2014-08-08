@@ -8,8 +8,9 @@ import org.jbpm.formModeler.ng.common.client.rendering.FieldDescription;
 import org.jbpm.formModeler.ng.common.client.rendering.FormDescription;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 
-@ApplicationScoped
+@Dependent
 public class DefaultFormRenderer extends FormRenderer {
     @Override
     public String getCode() {
