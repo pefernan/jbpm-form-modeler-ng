@@ -441,6 +441,9 @@
             <compileSourcesArtifact>org.jbpm:jbpm-form-modeler-ng-renderer-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.jbpm:jbpm-form-modeler-ng-renderer-client</compileSourcesArtifact>
 
+            <!-- Social -->
+            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-social-activities-api</compileSourcesArtifact>
+
           </compileSourcesArtifacts>
           <runTarget>org.jbpm.formModeler.ng.jBPMFormModeler/jBPM.html</runTarget>
           <extraJvmArgs>-Xmx2048m -XX:MaxPermSize=256m -Xms1024m -XX:PermSize=128m</extraJvmArgs>

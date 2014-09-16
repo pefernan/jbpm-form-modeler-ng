@@ -86,7 +86,6 @@ public class FormEditorPanelPresenter {
     @Inject
     private Caller<MetadataService> metadataService;
 
-    @Inject
     private MetadataWidget metadataWidget;
 
     @Inject
@@ -118,6 +117,11 @@ public class FormEditorPanelPresenter {
 
     @Inject
     private FormEditorView view;
+
+    @Inject
+    public FormEditorPanelPresenter(BusyIndicatorView busyIndicatorView) {
+        this.metadataWidget = new MetadataWidget(busyIndicatorView);
+    }
 
 
     @OnStartup
