@@ -8,8 +8,7 @@
     <property name="groupWithPrevious" value="false"/>
     <property name="label" value="quot;enquot;,quot;Dbidquot;"/>
     <property name="readonly" value="false"/>
-    <property name="inputBinding" value="user/dbid"/>
-    <property name="outputBinding" value="user/dbid"/>
+    <property name="bindingExpression" value="user/dbid"/>
     <property name="newItemText" value=""/>
     <property name="addItemText" value=""/>
     <property name="cancelItemText" value=""/>
@@ -20,8 +19,7 @@
     <property name="groupWithPrevious" value="false"/>
     <property name="label" value="quot;enquot;,quot;Namequot;"/>
     <property name="readonly" value="false"/>
-    <property name="inputBinding" value="user/name"/>
-    <property name="outputBinding" value="user/name"/>
+    <property name="bindingExpression" value="user/name"/>
     <property name="newItemText" value=""/>
     <property name="addItemText" value=""/>
     <property name="cancelItemText" value=""/>
@@ -32,8 +30,7 @@
     <property name="groupWithPrevious" value="true"/>
     <property name="label" value="quot;enquot;,quot;Surnamequot;"/>
     <property name="readonly" value="false"/>
-    <property name="inputBinding" value="user/surname"/>
-    <property name="outputBinding" value="user/surname"/>
+    <property name="bindingExpression" value="user/surname"/>
     <property name="newItemText" value=""/>
     <property name="addItemText" value=""/>
     <property name="cancelItemText" value=""/>
@@ -44,8 +41,7 @@
     <property name="groupWithPrevious" value="false"/>
     <property name="label" value="quot;enquot;,quot;Birthdayquot;"/>
     <property name="readonly" value="false"/>
-    <property name="inputBinding" value="user/birthday"/>
-    <property name="outputBinding" value="user/birthday"/>
+    <property name="bindingExpression" value="user/birthday"/>
     <property name="newItemText" value=""/>
     <property name="addItemText" value=""/>
     <property name="cancelItemText" value=""/>
@@ -56,8 +52,7 @@
     <property name="groupWithPrevious" value="false"/>
     <property name="label" value="quot;enquot;,quot;StartDatequot;"/>
     <property name="readonly" value="false"/>
-    <property name="inputBinding" value="user/startDate"/>
-    <property name="outputBinding" value="user/startDate"/>
+    <property name="bindingExpression" value="user/startDate"/>
     <property name="newItemText" value=""/>
     <property name="addItemText" value=""/>
     <property name="cancelItemText" value=""/>
@@ -68,8 +63,7 @@
     <property name="groupWithPrevious" value="false"/>
     <property name="label" value="quot;enquot;,quot;Marriedquot;"/>
     <property name="readonly" value="false"/>
-    <property name="inputBinding" value="user/married"/>
-    <property name="outputBinding" value="user/married"/>
+    <property name="bindingExpression" value="user/married"/>
     <property name="newItemText" value=""/>
     <property name="addItemText" value=""/>
     <property name="cancelItemText" value=""/>
@@ -80,8 +74,7 @@
     <property name="groupWithPrevious" value="false"/>
     <property name="label" value="quot;enquot;,quot;Addressquot;"/>
     <property name="readonly" value="false"/>
-    <property name="inputBinding" value="user/address"/>
-    <property name="outputBinding" value="user/address"/>
+    <property name="bindingExpression" value="user/address"/>
     <property name="newItemText" value=""/>
     <property name="addItemText" value=""/>
     <property name="cancelItemText" value=""/>
@@ -92,8 +85,7 @@
     <property name="groupWithPrevious" value="false"/>
     <property name="label" value="quot;enquot;,quot;Phonequot;"/>
     <property name="readonly" value="false"/>
-    <property name="inputBinding" value="user/phone"/>
-    <property name="outputBinding" value="user/phone"/>
+    <property name="bindingExpression" value="user/phone"/>
     <property name="newItemText" value=""/>
     <property name="addItemText" value=""/>
     <property name="cancelItemText" value=""/>

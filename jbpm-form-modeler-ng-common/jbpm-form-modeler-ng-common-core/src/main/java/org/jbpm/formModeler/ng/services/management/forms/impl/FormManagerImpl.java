@@ -16,7 +16,10 @@
 package org.jbpm.formModeler.ng.services.management.forms.impl;
 
 import org.apache.commons.lang.StringUtils;
-import org.jbpm.formModeler.ng.model.*;
+import org.jbpm.formModeler.ng.model.DataFieldHolder;
+import org.jbpm.formModeler.ng.model.DataHolder;
+import org.jbpm.formModeler.ng.model.Field;
+import org.jbpm.formModeler.ng.model.Form;
 import org.jbpm.formModeler.ng.services.LocaleManager;
 import org.jbpm.formModeler.ng.services.management.forms.FieldManager;
 import org.jbpm.formModeler.ng.services.management.forms.FormManager;
@@ -118,7 +121,7 @@ public class FormManagerImpl implements FormManager {
             field.setGroupWithPrevious(false);
         } else {
             fields = form.getElementsGrid().get(row);
-            field.setGroupWithPrevious(column == 0);
+            field.setGroupWithPrevious(column != 0);
         }
         fields.add(column, field);
     }
@@ -194,7 +197,6 @@ public class FormManagerImpl implements FormManager {
         label.put(localeManager.getDefaultLang(), holderField.getId() + " (" + holder.getUniqueId() + ")");
 
         String inputBinging = BindingUtils.generateInputBinding(holder, holderField);
-        String outputBinding = BindingUtils.generateOutputBinding(holder, holderField);
 
         Field field = fieldManager.getFieldByClass(holderField.getClassName());
 
@@ -214,8 +216,7 @@ public class FormManagerImpl implements FormManager {
         field.setId(generateUniqueId());
         field.setName(tmpFName);
         field.setLabel(label);
-        field.setInputBinding(inputBinging);
-        field.setOutputBinding(outputBinding);
+        field.setBindingExpression(inputBinging);
         field.setForm(form);
         return form.addField(field);
     }

@@ -22,11 +22,9 @@ public class FormRenderContextManagerImpl implements FormRenderContextManager, S
 
     @Override
     public FormRenderContext newContext(ContextConfiguration config) {
-        String uid = CTX_PREFFIX + config.getForm().getId() + "_" + System.currentTimeMillis();
+        String uid = CTX_PREFFIX + System.currentTimeMillis();
 
-        FormRenderContext ctx = new FormRenderContext(uid, config.getForm(), config.getInputData(), config.getOutputData(), config.getLocale());
-        ctx.setContextForms(config.getContextForms());
-        ctx.getAttributes().putAll(config.getAttributes());
+        FormRenderContext ctx = new FormRenderContext(uid, config);
         marshallContext(ctx);
         formRenderContextMap.put(uid, ctx);
         return ctx;
@@ -59,7 +57,7 @@ public class FormRenderContextManagerImpl implements FormRenderContextManager, S
             if (context.getAttributes() != null) context.getAttributes().clear();
             if (context.getContextForms() != null) context.getContextForms().clear();
             if (context.getInputData() != null) context.getInputData().clear();
-            if (context.getOutputData() != null) context.getOutputData().clear();
+
         }
     }
 

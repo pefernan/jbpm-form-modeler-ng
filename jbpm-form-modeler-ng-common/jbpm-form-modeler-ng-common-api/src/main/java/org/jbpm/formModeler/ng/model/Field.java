@@ -15,20 +15,20 @@
  */
 package org.jbpm.formModeler.ng.model;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public abstract class Field extends FormElement {
 
     protected String name;
 
-    protected Map label;
+    protected Map<String, String> label = new HashMap<String, String>();
 
     protected Boolean fieldRequired = Boolean.FALSE;
 
     protected Boolean readonly = Boolean.FALSE;
 
-    protected String inputBinding;
-    protected String outputBinding;
+    protected String bindingExpression;
 
     public abstract String getCode();
 
@@ -46,11 +46,11 @@ public abstract class Field extends FormElement {
         this.name = name;
     }
 
-    public Map getLabel() {
+    public Map<String, String> getLabel() {
         return label;
     }
 
-    public void setLabel(Map label) {
+    public void setLabel(Map<String, String> label) {
         this.label = label;
     }
 
@@ -70,19 +70,11 @@ public abstract class Field extends FormElement {
         this.readonly = readonly;
     }
 
-    public String getInputBinding() {
-        return inputBinding;
+    public String getBindingExpression() {
+        return bindingExpression;
     }
 
-    public void setInputBinding(String inputBinding) {
-        this.inputBinding = inputBinding;
-    }
-
-    public String getOutputBinding() {
-        return outputBinding;
-    }
-
-    public void setOutputBinding(String outputBinding) {
-        this.outputBinding = outputBinding;
+    public void setBindingExpression(String bindingExpression) {
+        this.bindingExpression = bindingExpression;
     }
 }

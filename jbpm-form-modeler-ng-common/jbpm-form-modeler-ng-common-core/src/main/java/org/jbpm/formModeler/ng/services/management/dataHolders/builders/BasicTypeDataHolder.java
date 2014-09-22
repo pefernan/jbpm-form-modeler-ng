@@ -15,7 +15,6 @@
  */
 package org.jbpm.formModeler.ng.services.management.dataHolders.builders;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.jbpm.formModeler.ng.model.DataFieldHolder;
 import org.jbpm.formModeler.ng.model.DataHolder;
@@ -33,10 +32,8 @@ public class BasicTypeDataHolder extends DataHolder {
 
     protected Set<DataFieldHolder> dataFieldHolders;
 
-    BasicTypeDataHolder(String uniqueId, String inputId, String outputId, String className, String renderColor) {
+    BasicTypeDataHolder(String uniqueId, String className, String renderColor) {
         this.uniqueId = uniqueId;
-        this.inputId = inputId;
-        this.outputId = outputId;
         this.className = className;
         this.renderColor = renderColor;
         this.fieldManager = BeanProvider.getContextualReference(FieldManager.class, true);
@@ -66,7 +63,7 @@ public class BasicTypeDataHolder extends DataHolder {
         try {
             if (dataFieldHolders == null || dataFieldHolders.size() == 0) {
                 dataFieldHolders = new TreeSet<DataFieldHolder>();
-                DataFieldHolder datafieldHolder = new DataFieldHolder(this, StringUtils.defaultIfEmpty(inputId, outputId), field.getFieldClass(), field.getIcon());
+                DataFieldHolder datafieldHolder = new DataFieldHolder(this, uniqueId, field.getFieldClass(), field.getIcon());
                 dataFieldHolders.add(datafieldHolder);
             }
             return dataFieldHolders;

@@ -110,7 +110,7 @@ public class ProcessDataHolderBuilder implements RangedDataHolderBuilder {
             if (colorIndex == colors.length) colorIndex = 0;
             String color = colors[colorIndex];
             colorIndex ++;
-            DataHolderBuildConfig holderConfig = new DataHolderBuildConfig(key, key, key, color, variables.get(key));
+            DataHolderBuildConfig holderConfig = new DataHolderBuildConfig(key, color, variables.get(key));
             holderConfig.addAttribute("path", path);
             DataHolder holder = dataHolderManager.createDataHolderByValueType(holderConfig, new HashMap<String, Object>());
 

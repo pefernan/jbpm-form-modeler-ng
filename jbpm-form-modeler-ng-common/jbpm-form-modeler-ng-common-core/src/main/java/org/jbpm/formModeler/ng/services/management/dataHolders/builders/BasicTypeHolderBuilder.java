@@ -43,7 +43,7 @@ public class BasicTypeHolderBuilder extends AbstractRangedDataHolderBuilder {
         String fieldClass = config.getClassName();
         if (fieldManager.getFieldByClass(fieldClass) == null) return null;
 
-        return new BasicTypeDataHolder(config.getHolderId(), config.getInputId(), config.getOutputId(), fieldClass, config.getRenderColor());
+        return new BasicTypeDataHolder(config.getHolderId(), fieldClass, config.getRenderColor());
     }
 
     @Override

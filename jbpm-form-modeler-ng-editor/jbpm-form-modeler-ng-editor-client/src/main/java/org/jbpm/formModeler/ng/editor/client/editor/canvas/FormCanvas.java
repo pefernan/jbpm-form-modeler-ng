@@ -9,11 +9,12 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
 import org.jbpm.formModeler.ng.common.client.renderer.FormRendererComponent;
-import org.jbpm.formModeler.ng.common.client.rendering.FormDescription;
+import org.jbpm.formModeler.ng.common.client.rendering.js.FormContext;
 import org.jbpm.formModeler.ng.common.client.rendering.FormRendererManager;
 import org.jbpm.formModeler.ng.common.client.rendering.renderers.FormRenderer;
 import org.jbpm.formModeler.ng.editor.events.FormModelerEvent;
@@ -48,7 +49,10 @@ public class FormCanvas extends Composite {
     @Inject
     private Event<FormModelerEvent> modelerEvent;
 
-    private FormDescription description;
+    private FormContext jsonContext;
+
+    private JSONObject values;
+
     private FormEditorContextTO context;
     private String editionContext;
 
@@ -65,11 +69,14 @@ public class FormCanvas extends Composite {
 
     public void initContext(String ctxJson) {
         formContent.clear();
-        description = JsonUtils.safeEval(ctxJson);
 
-        FormRenderer renderer = formRendererManager.getRendererByType("editor-" + description.getDisplayMode());
+        jsonContext = JsonUtils.safeEval(ctxJson);
 
-        Panel content = renderer.generateForm(description);
+        values = new JSONObject(jsonContext.getContextStatus());
+
+        FormRenderer renderer = formRendererManager.getRendererByType("editor-" + jsonContext.getFormDefinition().getDisplayMode());
+
+        Panel content = renderer.generateForm(jsonContext);
 
         if (content != null) {
             formContent.add(content);
@@ -105,8 +112,7 @@ public class FormCanvas extends Composite {
             ok.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
-                    String formContent = rendererComponent.getFormContent();
-                    modelerEvent.fire(new EndFieldEditionEvent(context.getCtxUID(), editionContext, true, formContent));
+                    modelerEvent.fire(new EndFieldEditionEvent(context.getCtxUID(), editionContext, true, rendererComponent.getFormValues()));
                     editionContext = "";
                     edition.hide();
                 }

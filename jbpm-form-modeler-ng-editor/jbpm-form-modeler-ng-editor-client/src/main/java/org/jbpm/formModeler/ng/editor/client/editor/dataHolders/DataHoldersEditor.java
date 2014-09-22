@@ -74,18 +74,6 @@ public class DataHoldersEditor extends Composite {
     TextBox id;
 
     @UiField
-    ControlGroup inputGroup;
-
-    @UiField
-    TextBox inputId;
-
-    @UiField
-    ControlGroup outputGroup;
-
-    @UiField
-    TextBox outputId;
-
-    @UiField
     ControlGroup typeGroup;
 
     @UiField
@@ -121,8 +109,6 @@ public class DataHoldersEditor extends Composite {
             public void onClick(ClickEvent event) {
                 DataHolderTO info = new DataHolderTO();
                 info.setUniqueId(id.getText());
-                info.setInputId(inputId.getText());
-                info.setOutputId(outputId.getText());
                 info.setType(holderType);
                 info.setClassName(className);
                 info.setRenderColor(color.getText());
@@ -157,20 +143,6 @@ public class DataHoldersEditor extends Composite {
             }
         };
         grid.addColumn(id, "Holder Id.");
-
-        TextColumn<DataHolderTO> input = new TextColumn<DataHolderTO>() {
-            public String getValue( DataHolderTO row ) {
-                return row.getInputId();
-            }
-        };
-        grid.addColumn(input, "Input Id.");
-
-        TextColumn<DataHolderTO> output = new TextColumn<DataHolderTO>() {
-            public String getValue( DataHolderTO row ) {
-                return row.getOutputId();
-            }
-        };
-        grid.addColumn(output, "Output Id.");
 
         TextColumn<DataHolderTO> type = new TextColumn<DataHolderTO>() {
             public String getValue( DataHolderTO row ) {

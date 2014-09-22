@@ -18,8 +18,7 @@
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
-    <property name="inputBinding" value="field/name"/>
-    <property name="outputBinding" value="field/name"/>
+    <property name="bindingExpression" value="field/name"/>
   </field>
   <field position="1" name="label" type="I18nText" id="947054856">
     <property name="fieldRequired" value="false"/>
@@ -34,8 +33,7 @@
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
-    <property name="inputBinding" value="field/label"/>
-    <property name="outputBinding" value="field/label"/>
+    <property name="bindingExpression" value="field/label"/>
   </field>
   <field position="2" name="size" type="InputText" id="296725925">
     <property name="fieldRequired" value="false"/>
@@ -50,8 +48,7 @@
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
-    <property name="inputBinding" value="field/size"/>
-    <property name="outputBinding" value="field/size"/>
+    <property name="bindingExpression" value="field/size"/>
   </field>
   <field position="3" name="fieldRequired" type="CheckBox" id="771882815">
     <property name="fieldRequired" value="false"/>
@@ -66,8 +63,7 @@
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
-    <property name="inputBinding" value="field/fieldRequired"/>
-    <property name="outputBinding" value="field/fieldRequired"/>
+    <property name="bindingExpression" value="field/fieldRequired"/>
   </field>
   <field position="4" name="readonly" type="CheckBox" id="2088020175">
     <property name="fieldRequired" value="false"/>
@@ -82,10 +78,9 @@
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
-    <property name="inputBinding" value="field/readonly"/>
-    <property name="outputBinding" value="field/readonly"/>
+    <property name="bindingExpression" value="field/readonly"/>
   </field>
-  <field position="5" name="inputBinding" type="InputText" id="430289815">
+  <field position="5" name="bindingExpression" type="InputText" id="430289815">
     <property name="fieldRequired" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
@@ -98,24 +93,7 @@
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
-    <property name="inputBinding" value="field/inputBinding"/>
-    <property name="outputBinding" value="field/inputBinding"/>
-  </field>
-  <field position="6" name="outputBinding" type="InputText" id="413003545">
-    <property name="fieldRequired" value="false"/>
-    <property name="groupWithPrevious" value="false"/>
-    <property name="height" value=""/>
-    <property name="readonly" value="false"/>
-    <property name="size" value="25"/>
-    <property name="formula" value=""/>
-    <property name="rangeFormula" value=""/>
-    <property name="pattern" value=""/>
-    <property name="maxlength" value="512"/>
-    <property name="styleclass" value=""/>
-    <property name="cssStyle" value=""/>
-    <property name="accesskey" value=""/>
-    <property name="inputBinding" value="field/outputBinding"/>
-    <property name="outputBinding" value="field/outputBinding"/>
+    <property name="bindingExpression" value="field/bindingExpression"/>
   </field>
   <dataHolder inputId="field" name="#0000A0" type="className" outId="field" value="org.jbpm.formModeler.ng.model.impl.InputDateShort" id="field"/>
 </form>

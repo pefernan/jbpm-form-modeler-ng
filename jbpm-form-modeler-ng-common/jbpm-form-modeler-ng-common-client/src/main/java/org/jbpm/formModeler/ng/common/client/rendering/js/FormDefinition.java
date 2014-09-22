@@ -1,19 +1,19 @@
-package org.jbpm.formModeler.ng.common.client.rendering;
+package org.jbpm.formModeler.ng.common.client.rendering.js;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 
-public class FormDescription extends JavaScriptObject {
+public class FormDefinition extends JavaScriptObject {
 
-    protected FormDescription() {
+    protected FormDefinition() {
     }
 
     public final native String getCtxUID() /*-{
         return this.ctxUID;
     }-*/;
 
-    public final native Long getFormId() /*-{
-        return this.formId;
+    public final native Long getId() /*-{
+        return this.id;
     }-*/;
 
     public final native String getDisplayMode() /*-{
@@ -24,7 +24,7 @@ public class FormDescription extends JavaScriptObject {
         return this.labelMode;
     }-*/;
 
-    public final native JsArray<FieldDescription> getFields() /*-{
+    public final native JsArray<FieldDefinition> getFieldDefinitions() /*-{
         return this.fields;
     }-*/;
 }

@@ -150,7 +150,7 @@ public class FormRendererServiceImpl implements FormRendererService, Serializabl
 
     protected String initContext (Map<String, Object> loadData, String locale) throws Exception {
         Form form = formSerializationManager.loadFormFromXML(this.getClass().getResourceAsStream("test/user.form"));
-        ContextConfiguration configuration = new ContextConfiguration(form, loadData, new HashMap<String, Object>(), localeManager.getLocaleById(locale));
+        ContextConfiguration configuration = new ContextConfiguration(form, loadData, localeManager.getLocaleById(locale));
         FormRenderContext context = contextManager.newContext(configuration);
         return context.getUID();
     }

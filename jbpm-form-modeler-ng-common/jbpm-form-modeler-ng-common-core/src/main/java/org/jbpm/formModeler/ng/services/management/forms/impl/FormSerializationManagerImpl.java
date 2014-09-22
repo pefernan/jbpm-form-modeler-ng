@@ -41,7 +41,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Properties;
 
 @ApplicationScoped
 public class FormSerializationManagerImpl implements FormSerializationManager {
@@ -52,8 +55,6 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
     protected static final String NODE_DATA_HOLDER = "dataHolder";
 
     protected static final String ATTR_ID = "id";
-    protected static final String ATTR_INPUT_ID = "inputId";
-    protected static final String ATTR_OUT_ID = "outId";
     protected static final String ATTR_POSITION = "position";
     protected static final String ATTR_TYPE = "type";
     protected static final String ATTR_BAG_TYPE = "bag-type";
@@ -163,8 +164,6 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
                 deserializeField(form, node, resources);
             } else if (node.getNodeName().equals(NODE_DATA_HOLDER)) {
                 String holderId = getNodeAttributeValue(node, ATTR_ID);
-                String holderInputId = getNodeAttributeValue(node, ATTR_INPUT_ID);
-                String holderOutId = getNodeAttributeValue(node, ATTR_OUT_ID);
                 String holderType = getNodeAttributeValue(node, ATTR_TYPE);
                 String holderValue = getNodeAttributeValue(node, ATTR_VALUE);
                 String holderRenderColor = getNodeAttributeValue(node, ATTR_NAME);
@@ -172,7 +171,7 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
 
                 if (!StringUtils.isEmpty(holderId) && !StringUtils.isEmpty(holderType) && !StringUtils.isEmpty(holderValue)) {
 
-                    DataHolderBuildConfig config = new DataHolderBuildConfig(holderId, holderInputId, holderOutId, holderRenderColor, holderValue);
+                    DataHolderBuildConfig config = new DataHolderBuildConfig(holderId, holderRenderColor, holderValue);
                     if (context.get("path") != null)config.addAttribute("path", context.get("path"));
                     if (!StringUtils.isEmpty(holderSupportedType))
                         config.addAttribute(ATTR_SUPPORTED_TYPE, holderSupportedType);
@@ -264,10 +263,8 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
                         field.setLabel(deserializeI18nEntrySet(value));
                     } else if ("readonly".equals(propName)) {
                         field.setReadonly(Boolean.valueOf(value));
-                    } else if ("inputBinding".equals(propName)) {
-                        field.setInputBinding(value);
-                    } else if ("outputBinding".equals(propName)) {
-                        field.setOutputBinding(value);
+                    } else if ("bindingExpression".equals(propName)) {
+                        field.setBindingExpression(value);
                     } else {
                         properties.put(propName, value);
                     }
@@ -313,10 +310,8 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
         addXMLNode("readonly", (field.getReadonly() != null ? String.valueOf(field.getReadonly()) : null), rootNode);
         addXMLNode("fieldRequired", (field.getFieldRequired() != null ? String.valueOf(field.getFieldRequired()) : null), rootNode);
         addXMLNode("groupWithPrevious", (field.getGroupWithPrevious() != null ? String.valueOf(field.getGroupWithPrevious()) : null), rootNode);
-        if (!StringUtils.isEmpty(field.getInputBinding()))
-            addXMLNode("inputBinding", field.getInputBinding(), rootNode);
-        if (!StringUtils.isEmpty(field.getOutputBinding()))
-            addXMLNode("outputBinding", field.getOutputBinding(), rootNode);
+        if (!StringUtils.isEmpty(field.getBindingExpression()))
+            addXMLNode("bindingExpression", field.getBindingExpression(), rootNode);
 
         Map<String, String> properties = field.getCustomProperties();
 
@@ -331,8 +326,6 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
     public void generateDataHolderXML(DataHolder dataHolder, XMLNode parent) {
         XMLNode rootNode = new XMLNode(NODE_DATA_HOLDER, parent);
         rootNode.addAttribute(ATTR_ID, dataHolder.getUniqueId());
-        rootNode.addAttribute(ATTR_INPUT_ID, dataHolder.getInputId());
-        rootNode.addAttribute(ATTR_OUT_ID, dataHolder.getOutputId());
         rootNode.addAttribute(ATTR_TYPE, dataHolder.getTypeCode());
         rootNode.addAttribute(ATTR_VALUE, dataHolder.getClassName());
         rootNode.addAttribute(ATTR_NAME, dataHolder.getRenderColor());

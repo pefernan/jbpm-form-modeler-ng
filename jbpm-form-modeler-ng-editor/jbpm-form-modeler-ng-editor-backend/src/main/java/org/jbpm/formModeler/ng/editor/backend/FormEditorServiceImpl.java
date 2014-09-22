@@ -33,8 +33,8 @@ import org.jbpm.formModeler.ng.services.management.dataHolders.DataHolderBuildCo
 import org.jbpm.formModeler.ng.services.management.dataHolders.DataHolderBuilder;
 import org.jbpm.formModeler.ng.services.management.dataHolders.DataHolderManager;
 import org.jbpm.formModeler.ng.services.management.dataHolders.RangedDataHolderBuilder;
+import org.jbpm.formModeler.ng.services.management.forms.FormDefinitionMarshaller;
 import org.jbpm.formModeler.ng.services.management.forms.FormManager;
-import org.jbpm.formModeler.ng.services.management.forms.FormSerializationManager;
 import org.jbpm.formModeler.ng.services.management.forms.utils.BindingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,7 +104,7 @@ public class FormEditorServiceImpl implements FormEditorService {
     private DataHolderManager dataHolderManager;
 
     @Inject
-    private FormSerializationManager formSerializationManager;
+    private FormDefinitionMarshaller formDefinitionMarshaller;
 
     @Inject
     private FormRenderContextManager contextManager;
@@ -161,6 +161,7 @@ public class FormEditorServiceImpl implements FormEditorService {
         if (holder != null) {
             DataFieldHolder field = holder.getDataFieldHolderById(fieldTO.getId());
             if (formManager.addDataHolderField(context.getForm(), holder, field)) {
+                context.setFormTemplate(formDefinitionMarshaller.marshall(context.getForm()));
                 refreshCanvasEvent.fire(new RefreshCanvasEvent(ctxUID, contextMarshaller.marshallContext(context)));
             }
         }
@@ -184,8 +185,6 @@ public class FormEditorServiceImpl implements FormEditorService {
         DataHolderTO to = new DataHolderTO();
         to.setType(holder.getTypeCode());
         to.setUniqueId(holder.getUniqueId());
-        to.setInputId(holder.getInputId());
-        to.setOutputId(holder.getOutputId());
         to.setClassName(holder.getClassName());
         to.setRenderColor(holder.getRenderColor());
 
@@ -212,23 +211,15 @@ public class FormEditorServiceImpl implements FormEditorService {
         try {
             org.uberfire.java.nio.file.Path kiePath = Paths.convert(path);
 
-            String xml = ioService.readAllString(kiePath).trim();
+            String serializedForm = ioService.readAllString(kiePath).trim();
 
             Map<String, Object> serializationcontext = new HashMap<String, Object>();
             serializationcontext.put("path", path);
 
-            Form form = formSerializationManager.loadFormFromXML(xml, serializationcontext);
-
             FormEditorContextTO result = new FormEditorContextTO();
 
-            if (form == null) {
-                result.setLoadError(true);
-                form = formManager.createForm(path.getFileName());
-            }
-
-            ContextConfiguration config = new ContextConfiguration(form, new HashMap<String, Object>(), new HashMap<String, Object>(), localeManager.getLocaleById(localeName));
+            ContextConfiguration config = new ContextConfiguration(serializedForm, localeManager.getLocaleById(localeName));
             config.addAttribute("path", path);
-
             FormRenderContext context = contextManager.newContext(config);
 
             result.setCtxUID(context.getUID());
@@ -264,7 +255,7 @@ public class FormEditorServiceImpl implements FormEditorService {
             }
             Form form = formManager.createForm(formName);
 
-            ioService.write(kiePath, formSerializationManager.generateFormXML(form), makeCommentedOption(""));
+            ioService.write(kiePath, formDefinitionMarshaller.marshall(form), makeCommentedOption(""));
 
             return Paths.convert(kiePath);
         } catch ( Exception e ) {
@@ -297,7 +288,7 @@ public class FormEditorServiceImpl implements FormEditorService {
         FormRenderContext context = contextManager.getFormRenderContext(event.getContext());
         if (context != null) {
             DataHolderTO info = event.getDataHolder();
-            DataHolderBuildConfig config = new DataHolderBuildConfig(info.getUniqueId(), info.getInputId(), info.getOutputId(), info.getRenderColor(), info.getClassName());
+            DataHolderBuildConfig config = new DataHolderBuildConfig(info.getUniqueId(), info.getRenderColor(), info.getClassName());
             config.addAttribute("path", context.getAttributes().get("path"));
             config.addAttribute("context", context);
             DataHolder holder = dataHolderManager.createDataHolderByType(info.getType(), config);
@@ -315,6 +306,7 @@ public class FormEditorServiceImpl implements FormEditorService {
         String ctxJson = null;
         if (context != null) {
             context.getForm().deleteField(fieldId);
+            context.setFormTemplate(formDefinitionMarshaller.marshall(context.getForm()));
             ctxJson = contextManager.marshallContext(context);
         }
         return ctxJson;
@@ -333,6 +325,7 @@ public class FormEditorServiceImpl implements FormEditorService {
             } else {
                 formManager.changeFieldPosition(form, fieldId, row, column, newLine);
             }
+            context.setFormTemplate(formDefinitionMarshaller.marshall(context.getForm()));
             ctxJson = contextManager.marshallContext(context);
         }
         return ctxJson;
@@ -354,7 +347,7 @@ public class FormEditorServiceImpl implements FormEditorService {
             if (editionForm != null) {
                 Map<String, Object> data = new HashMap<String, Object>();
                 data.put("field", field);
-                ContextConfiguration config = new ContextConfiguration(editionForm, data, new HashMap<String, Object>(), context.getCurrentLocale());
+                ContextConfiguration config = new ContextConfiguration(editionForm, data, context.getCurrentLocale());
                 FormRenderContext editionContext = contextManager.newContext(config);
                 loadEditionEvent.fire(new LoadFieldEditionContextEvent(event.getContext(), editionContext.getUID(), editionContext.getMarshalledCopy()));
             }
@@ -369,6 +362,7 @@ public class FormEditorServiceImpl implements FormEditorService {
             try {
                 if (event.isPersist()) {
                     contextManager.persistContext(editionContext, event.getMarshalledContext());
+                    context.setFormTemplate(formDefinitionMarshaller.marshall(context.getForm()));
                     String ctxJson = contextManager.marshallContext(context);
                     refreshCanvasEvent.fire(new RefreshCanvasEvent(event.getContext(), ctxJson));
                 }
@@ -404,8 +398,8 @@ public class FormEditorServiceImpl implements FormEditorService {
     @Override
     public Path save(ObservablePath path, String ctxUID, Metadata metadata, String comment) {
         FormRenderContext context = contextManager.getFormRenderContext(ctxUID);
-        if (ctxUID != null) {
-            ioService.write(Paths.convert(path), formSerializationManager.generateFormXML(context.getForm()), metadataService.setUpAttributes(path, metadata), makeCommentedOption(comment));
+        if (context != null) {
+            ioService.write(Paths.convert(path), formDefinitionMarshaller.marshall(context.getForm()), metadataService.setUpAttributes(path, metadata), makeCommentedOption(comment));
         }
         return path;
     }

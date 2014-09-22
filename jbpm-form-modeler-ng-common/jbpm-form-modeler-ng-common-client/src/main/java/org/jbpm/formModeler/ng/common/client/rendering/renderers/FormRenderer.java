@@ -1,12 +1,15 @@
 package org.jbpm.formModeler.ng.common.client.rendering.renderers;
 
 import com.github.gwtbootstrap.client.ui.FormLabel;
+import com.google.gwt.i18n.client.LocaleInfo;
+import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import org.jbpm.formModeler.ng.common.client.rendering.FieldDescription;
 import org.jbpm.formModeler.ng.common.client.rendering.FieldProviderManager;
-import org.jbpm.formModeler.ng.common.client.rendering.FormDescription;
 import org.jbpm.formModeler.ng.common.client.rendering.fields.FieldRenderer;
+import org.jbpm.formModeler.ng.common.client.rendering.js.FieldDefinition;
+import org.jbpm.formModeler.ng.common.client.rendering.js.FormContext;
+import org.jbpm.formModeler.ng.common.client.rendering.js.FormDefinition;
 import org.jbpm.formModeler.ng.model.Form;
 
 import javax.inject.Inject;
@@ -17,9 +20,9 @@ public abstract class FormRenderer {
     protected FieldProviderManager providerManager;
 
     public abstract String getCode();
-    public abstract Panel generateForm(FormDescription formDescription);
+    public abstract Panel generateForm(FormContext context);
 
-    protected Widget getFieldBox(FormDescription form, FieldDescription field) {
+    protected Widget getFieldBox(FieldDefinition field, FormContext context) {
         FieldRenderer provider = providerManager.getProviderByType(field.getType());
 
         if (provider == null) {
@@ -27,7 +30,9 @@ public abstract class FormRenderer {
             return null;
         }
 
-        Widget input = provider.getFieldInput(field);
+        Widget input = provider.getFieldInput(field, context);
+
+        FormDefinition form = context.getFormDefinition();
 
         if (provider.supportsLabel() || form.getLabelMode().equals(Form.LABEL_MODE_HIDDEN)) return input;
 
@@ -54,8 +59,16 @@ public abstract class FormRenderer {
         return fieldBox;
     }
 
-    protected Widget getFieldLabel(FieldDescription field) {
-        String label = field.getLabel();
+    protected Widget getFieldLabel(FieldDefinition field) {
+
+        JSONObject jsonLabel = new JSONObject(field.getLabel());
+
+        String locale = LocaleInfo.getCurrentLocale().getLocaleName();
+
+        String label;
+        if (jsonLabel.get(locale).isNull() == null) label = jsonLabel.get(locale).isString().stringValue();
+        else label = jsonLabel.get("default").isString().stringValue();
+
         if (field.isRequired()) label = "* " + label;
         FormLabel fieldLabel = new FormLabel(label);
         fieldLabel.setFor(field.getId());

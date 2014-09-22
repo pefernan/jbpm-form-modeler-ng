@@ -20,17 +20,13 @@ import java.util.Map;
 
 public class DataHolderBuildConfig {
     private String holderId;
-    private String inputId;
-    private String outputId;
     private String renderColor;
     private String className;
 
     private Map<String, Object> attributes = new HashMap<String, Object>();
 
-    public DataHolderBuildConfig(String holderId, String inputId, String outputId, String renderColor, String className) {
+    public DataHolderBuildConfig(String holderId, String renderColor, String className) {
         this.holderId = holderId;
-        this.inputId = inputId;
-        this.outputId = outputId;
         this.renderColor = renderColor;
         this.className = className;
     }
@@ -41,22 +37,6 @@ public class DataHolderBuildConfig {
 
     public void setHolderId(String holderId) {
         this.holderId = holderId;
-    }
-
-    public String getInputId() {
-        return inputId;
-    }
-
-    public void setInputId(String inputId) {
-        this.inputId = inputId;
-    }
-
-    public String getOutputId() {
-        return outputId;
-    }
-
-    public void setOutputId(String outputId) {
-        this.outputId = outputId;
     }
 
     public String getRenderColor() {
@@ -81,5 +61,9 @@ public class DataHolderBuildConfig {
 
     public void setClassName(String className) {
         this.className = className;
+    }
+
+    public void setAttributes(Map<String, Object> attributes) {
+        this.attributes = attributes;
     }
 }

@@ -58,7 +58,7 @@ public class FormDisplayerViewImpl extends Composite implements FormDisplayerPre
 
     @Override
     public String getMarshalledForm() {
-        return rendererComponent.getFormContent();
+        return rendererComponent.getFormValues();
     }
 
     @EventHandler("submit")

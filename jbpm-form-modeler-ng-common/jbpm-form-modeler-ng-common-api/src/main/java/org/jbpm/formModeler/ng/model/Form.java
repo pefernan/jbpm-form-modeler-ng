@@ -1,7 +1,9 @@
 package org.jbpm.formModeler.ng.model;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Form implements Serializable, Comparable {
     public static final String RENDER_MODE_FORM = "form";
@@ -41,6 +43,8 @@ public class Form implements Serializable, Comparable {
 
     private Set<DataHolder> holders = new TreeSet<DataHolder>();
 
+    private String serializedStatus;
+
 
     public Form() {
     }
@@ -51,12 +55,9 @@ public class Form implements Serializable, Comparable {
     }
 
     public void addDataHolder(DataHolder holder) {
-        if (holder == null) return;
+        if (holder == null || holder.getUniqueId() == null || "".equals(holder.getUniqueId().trim())) return;
 
-        if ((holder.getInputId() == null || holder.getInputId().trim().length() == 0) && (holder.getOutputId() == null || holder.getOutputId().trim().length() == 0))
-            return;
-
-        if (getDataHolderById(holder.getInputId()) != null || getDataHolderById(holder.getOutputId()) != null) {
+        if (getDataHolderById(holder.getUniqueId()) != null) {
             holders.remove(holder);
         }
         holders.add(holder);
@@ -167,6 +168,7 @@ public class Form implements Serializable, Comparable {
                     if (fieldId.equals(field.getId())) {
                         fields.remove(field);
                         if (fields.isEmpty()) elementsGrid.remove(fields);
+                        if (fields.size() == 1) fields.getFirst().setGroupWithPrevious(false);
                         return field;
                     }
                 }
@@ -236,5 +238,13 @@ public class Form implements Serializable, Comparable {
         }
 
         return fieldsCount;
+    }
+
+    public String getSerializedStatus() {
+        return serializedStatus;
+    }
+
+    public void setSerializedStatus(String serializedStatus) {
+        this.serializedStatus = serializedStatus;
     }
 }

@@ -1,9 +1,9 @@
-package org.jbpm.formModeler.ng.common.client.rendering;
+package org.jbpm.formModeler.ng.common.client.rendering.js;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
-public class FieldDescription extends JavaScriptObject {
-    protected FieldDescription() {
+public class FieldDefinition extends JavaScriptObject {
+    protected FieldDefinition() {
     }
 
     public final native String getUid() /*-{
@@ -14,7 +14,7 @@ public class FieldDescription extends JavaScriptObject {
         return this.id;
     }-*/;
 
-    public final native String getLabel() /*-{
+    public final native JavaScriptObject getLabel() /*-{
         return this.label;
     }-*/;
 
@@ -42,15 +42,7 @@ public class FieldDescription extends JavaScriptObject {
         return this.grouped;
     }-*/;
 
-    public final native String getValue() /*-{
-        return this.value;
-    }-*/;
-
-    public final native void setValue(String value) /*-{
-        this.value = value;
-    }-*/;
-
-    public final native JavaScriptObject getOptions() /*-{
-        return this.options;
+    public final native JavaScriptObject getData() /*-{
+        return this.data;
     }-*/;
 }

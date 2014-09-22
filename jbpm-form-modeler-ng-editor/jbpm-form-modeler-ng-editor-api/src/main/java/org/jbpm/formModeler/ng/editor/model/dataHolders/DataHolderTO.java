@@ -8,8 +8,6 @@ import org.uberfire.paging.AbstractPageRow;
 public class DataHolderTO extends AbstractPageRow {
     private String type;
     private String uniqueId;
-    private String inputId;
-    private String outputId;
     private String className;
     private String renderColor;
     private boolean canHaveChild;
@@ -32,22 +30,6 @@ public class DataHolderTO extends AbstractPageRow {
 
     public void setUniqueId(String uniqueId) {
         this.uniqueId = uniqueId;
-    }
-
-    public String getInputId() {
-        return inputId;
-    }
-
-    public void setInputId(String inputId) {
-        this.inputId = inputId;
-    }
-
-    public String getOutputId() {
-        return outputId;
-    }
-
-    public void setOutputId(String outputId) {
-        this.outputId = outputId;
     }
 
     public String getClassName() {

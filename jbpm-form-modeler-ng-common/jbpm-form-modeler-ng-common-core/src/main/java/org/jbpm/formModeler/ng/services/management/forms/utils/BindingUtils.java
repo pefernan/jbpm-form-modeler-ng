@@ -25,43 +25,19 @@ import java.util.LinkedList;
 
 public class BindingUtils {
     public static String generateInputBinding(DataHolder holder, DataFieldHolder field) {
-        if (!holder.canHaveChildren()) return holder.getInputId();
+        if (!holder.canHaveChildren()) return holder.getUniqueId();
         return holder.getUniqueId() + "/" + field.getId();
-    }
-
-    public static String generateOutputBinding(DataHolder holder, DataFieldHolder field) {
-        if (!holder.canHaveChildren()) return holder.getOutputId();
-        return holder.getUniqueId() + "/" + field.getId();
-    }
-
-    public static String generateBackGuardsInputBinding(DataHolder holder, DataFieldHolder field) {
-        if (!holder.canHaveChildren()) return holder.getInputId();
-        return holder.getInputId() + "/" + field.getId();
-    }
-
-    public static String generateBackGuardsOutputBinding(DataHolder holder, DataFieldHolder field) {
-        if (!holder.canHaveChildren()) return holder.getOutputId();
-        return holder.getOutputId() + "/" + field.getId();
     }
 
     public static boolean isFieldBinded(Form form, DataFieldHolder fieldHolder) {
         if (fieldHolder == null) return false;
 
         String inputBinding = generateInputBinding(fieldHolder.getHolder(), fieldHolder);
-        String outputBinding = generateOutputBinding(fieldHolder.getHolder(), fieldHolder);
-
-        String backInputBinding = generateBackGuardsInputBinding(fieldHolder.getHolder(), fieldHolder);
-        String backOutputBinding = generateBackGuardsOutputBinding(fieldHolder.getHolder(), fieldHolder);
 
         for (LinkedList<Field> fields : form.getElementsGrid()) {
             for (Field field : fields) {
-                if (!StringUtils.isEmpty(field.getInputBinding())) {
-                    if (field.getInputBinding().equals(inputBinding) || field.getInputBinding().equals(backInputBinding))
-                        return true;
-                }
-
-                if (!StringUtils.isEmpty(field.getOutputBinding())) {
-                    if (field.getOutputBinding().equals(outputBinding) || field.getOutputBinding().equals(backOutputBinding))
+                if (!StringUtils.isEmpty(field.getBindingExpression())) {
+                    if (field.getBindingExpression().equals(inputBinding))
                         return true;
                 }
             }
@@ -70,15 +46,11 @@ public class BindingUtils {
         return false;
     }
 
-    public static DataHolder getFormDataHolderForField(Field field) {
-        if (field == null || (field.getInputBinding() == null && field.getOutputBinding() == null)) return null;
+    public static DataHolder getDataHolderForField(Field field) {
+        if (field == null || field.getBindingExpression() == null) return null;
 
         for (DataHolder holder : field.getForm().getHolders()) {
-            if (holderSupportsExpression(holder, field.getInputBinding())){
-                return holder;
-            } else if (holderSupportsExpression(holder, field.getOutputBinding())){
-                return holder;
-            }
+            if (holderSupportsExpression(holder, field.getBindingExpression())) return holder;
         }
         return null;
     }
@@ -95,10 +67,10 @@ public class BindingUtils {
 
     protected static boolean holderSupportsId(DataHolder holder, String holderId) {
         if (StringUtils.isEmpty(holderId)) return false;
-        return holder.getUniqueId().equals(holderId) || holderId.equals(holder.getInputId()) || holderId.equals(holder.getOutputId());
+        return holder.getUniqueId().equals(holderId);
     }
 
-    public static String extractInputExpression(String expression) {
+    public static String extractBindingExpression(String expression) {
         if (StringUtils.isEmpty(expression)) return "";
         String[] parts = expression.split("/");
         if (parts.length == 1) return parts[0];

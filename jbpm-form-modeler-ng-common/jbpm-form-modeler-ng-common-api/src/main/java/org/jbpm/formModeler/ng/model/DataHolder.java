@@ -22,8 +22,6 @@ import java.util.Set;
 
 public abstract class DataHolder implements Comparable<DataHolder>, Serializable {
     protected String uniqueId;
-    protected String inputId;
-    protected String outputId;
     protected String className;
     protected String renderColor;
 
@@ -33,22 +31,6 @@ public abstract class DataHolder implements Comparable<DataHolder>, Serializable
 
     public void setUniqueId(String uniqueId) {
         this.uniqueId = uniqueId;
-    }
-
-    public String getInputId() {
-        return inputId;
-    }
-
-    public void setInputId(String inputId) {
-        this.inputId = inputId;
-    }
-
-    public String getOutputId() {
-        return outputId;
-    }
-
-    public void setOutputId(String outputId) {
-        this.outputId = outputId;
     }
 
     public void setClassName(String className) {

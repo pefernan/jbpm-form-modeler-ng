@@ -24,7 +24,6 @@ import org.jbpm.formModeler.ng.services.context.FormRenderContext;
 import org.jbpm.formModeler.ng.services.management.forms.FieldManager;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
@@ -34,10 +33,8 @@ public class PojoDataHolder extends DataHolder {
 
     protected Set<DataFieldHolder> dataFieldHolders;
 
-    PojoDataHolder(String uniqueId, String inputId, String outputId, String className, String renderColor) {
+    PojoDataHolder(String uniqueId, String className, String renderColor) {
         this.uniqueId = uniqueId;
-        this.inputId = inputId;
-        this.outputId = outputId;
         this.className = className;
         this.renderColor = renderColor;
         this.fieldManager = BeanProvider.getContextualReference(FieldManager.class, true);

@@ -40,22 +40,6 @@
                 </b:Controls>
 
               </b:ControlGroup>
-              <b:ControlGroup ui:field="inputGroup">
-                <b:ControlLabel for="inputId"  >Holder Input Id</b:ControlLabel>
-
-                <b:Controls>
-                  <b:TextBox b:id="inputId" ui:field="inputId" placeholder="!Insert the holder input id"/>
-                </b:Controls>
-
-              </b:ControlGroup>
-              <b:ControlGroup ui:field="outputGroup">
-                <b:ControlLabel for="outputId"  >Holder Output Id</b:ControlLabel>
-
-                <b:Controls>
-                  <b:TextBox b:id="outputId" ui:field="outputId" placeholder="!Insert the holder Output Id"/>
-                </b:Controls>
-
-              </b:ControlGroup>
 
               <b:ControlGroup ui:field="colorGroup">
                 <b:ControlLabel for="color"  >Holder Color</b:ControlLabel>

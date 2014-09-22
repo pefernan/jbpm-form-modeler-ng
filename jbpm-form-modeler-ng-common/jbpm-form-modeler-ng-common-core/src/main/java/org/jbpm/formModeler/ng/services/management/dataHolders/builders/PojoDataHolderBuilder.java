@@ -42,7 +42,7 @@ public class PojoDataHolderBuilder extends AbstractDataHolderBuilder {
     public DataHolder buildDataHolder(DataHolderBuildConfig config) {
         try {
             Class.forName(config.getClassName());
-            return new PojoDataHolder(config.getHolderId(), config.getInputId(), config.getOutputId(), config.getClassName(), config.getRenderColor());
+            return new PojoDataHolder(config.getHolderId(), config.getClassName(), config.getRenderColor());
         } catch (ClassNotFoundException e) {
             log.warn("Unable to load class '{}': {}", config.getClassName(), e);
         }

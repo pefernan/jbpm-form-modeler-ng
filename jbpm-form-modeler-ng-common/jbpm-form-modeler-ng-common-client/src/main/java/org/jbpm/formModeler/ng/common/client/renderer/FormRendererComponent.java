@@ -11,8 +11,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
-import org.jbpm.formModeler.ng.common.client.rendering.FormDescription;
 import org.jbpm.formModeler.ng.common.client.rendering.FormRendererManager;
+import org.jbpm.formModeler.ng.common.client.rendering.js.FormContext;
 import org.jbpm.formModeler.ng.common.client.rendering.renderers.FormRenderer;
 
 import javax.annotation.PostConstruct;
@@ -33,7 +33,7 @@ public class FormRendererComponent extends Composite {
     @Inject
     private FormRendererManager formRendererManager;
 
-    private FormDescription description;
+    private FormContext context;
 
     @PostConstruct
     public void initView() {
@@ -42,13 +42,13 @@ public class FormRendererComponent extends Composite {
 
     public boolean renderFormContent(String form) {
         try {
-            FormRenderer renderer = formRendererManager.getRendererByType(description.getDisplayMode());
+            FormRenderer renderer = formRendererManager.getRendererByType(context.getFormDefinition().getDisplayMode());
 
             formContent.clear();
 
-            description = JsonUtils.safeEval(form);
+            context = JsonUtils.safeEval(form);
 
-            Panel content = renderer.generateForm(description);
+            Panel content = renderer.generateForm(context);
 
             if (content != null) {
                 formContent.add(content);
@@ -60,7 +60,7 @@ public class FormRendererComponent extends Composite {
         return false;
     }
 
-    public String getFormContent() {
-        return new JSONObject(description).toString();
+    public String getFormValues() {
+        return new JSONObject(context.getContextStatus().getValues()).toString();
     }
 }

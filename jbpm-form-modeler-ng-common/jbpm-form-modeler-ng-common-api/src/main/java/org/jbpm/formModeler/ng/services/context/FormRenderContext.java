@@ -23,11 +23,15 @@ import java.util.Locale;
 import java.util.Map;
 
 public class FormRenderContext implements Serializable {
+
+
     private String UID;
     private Form form;
+    private String formTemplate;
+    private String serializedStatus;
+
     private boolean readonly = false;
     private Map<String, Object> inputData;
-    private Map<String, Object> outputData;
     private boolean submit = false;
     private int errors;
     private Locale currentLocale;
@@ -36,12 +40,17 @@ public class FormRenderContext implements Serializable {
     private Map<String, Object> previousValues = new HashMap<String, Object>();
     private String marshalledCopy;
 
-    public FormRenderContext(String uid, Form form, Map<String, Object> inputData, Map<String, Object> outputData, Locale locale) {
-        this.UID = uid;
-        this.form = form;
-        this.inputData = inputData;
-        this.outputData = outputData;
-        currentLocale = locale;
+    public FormRenderContext(String UID, ContextConfiguration config) {
+        this.UID = UID;
+
+        this.form = config.getForm();
+        this.formTemplate = config.getFormTemplate();
+        this.serializedStatus = config.getSerializedStatus();
+
+        this.inputData = config.getInputData();
+        this.contextForms.putAll(config.getContextForms());
+        this.attributes.putAll(config.getAttributes());
+        this.currentLocale = config.getLocale();
     }
 
     public String getUID() {
@@ -56,12 +65,16 @@ public class FormRenderContext implements Serializable {
         this.form = form;
     }
 
-    public Map<String, Object> getInputData() {
-        return inputData;
+    public String getFormTemplate() {
+        return formTemplate;
     }
 
-    public Map<String, Object> getOutputData() {
-        return outputData;
+    public String getSerializedStatus() {
+        return serializedStatus;
+    }
+
+    public Map<String, Object> getInputData() {
+        return inputData;
     }
 
     public boolean isReadonly() {
@@ -114,5 +127,9 @@ public class FormRenderContext implements Serializable {
 
     public String getMarshalledCopy() {
         return marshalledCopy;
+    }
+
+    public void setFormTemplate(String formTemplate) {
+        this.formTemplate = formTemplate;
     }
 }
