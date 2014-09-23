@@ -134,7 +134,6 @@ public class FormManagerImpl implements FormManager {
         if (field == null) return;
         LinkedList<Field> fields = new LinkedList<Field>();
         fields.add(field);
-        field.setGroupWithPrevious(false);
         form.getElementsGrid().addFirst(fields);
     }
 
@@ -144,7 +143,6 @@ public class FormManagerImpl implements FormManager {
         if (field == null) return;
         LinkedList<Field> fields = new LinkedList<Field>();
         fields.add(field);
-        field.setGroupWithPrevious(false);
         form.getElementsGrid().addLast(fields);
     }
 

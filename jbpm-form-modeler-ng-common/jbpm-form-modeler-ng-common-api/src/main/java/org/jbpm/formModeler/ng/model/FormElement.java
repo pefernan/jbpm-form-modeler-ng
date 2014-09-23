@@ -22,14 +22,6 @@ public abstract class FormElement implements Serializable, Comparable<FormElemen
         this.id = id;
     }
 
-    public Boolean getGroupWithPrevious() {
-        return groupWithPrevious;
-    }
-
-    public void setGroupWithPrevious(Boolean groupWithPrevious) {
-        this.groupWithPrevious = groupWithPrevious;
-    }
-
     public Form getForm() {
         return form;
     }

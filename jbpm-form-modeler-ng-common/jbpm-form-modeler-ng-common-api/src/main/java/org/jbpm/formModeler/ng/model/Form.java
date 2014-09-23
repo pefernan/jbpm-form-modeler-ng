@@ -171,7 +171,6 @@ public class Form implements Serializable, Comparable {
                     if (fieldId.equals(field.getId())) {
                         fields.remove(field);
                         if (fields.isEmpty()) elementsGrid.remove(fields);
-                        if (fields.size() == 1) fields.getFirst().setGroupWithPrevious(false);
                         return field;
                     }
                 }

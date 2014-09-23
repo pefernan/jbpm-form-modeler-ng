@@ -245,11 +245,7 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
                         if (FIELD_REQUIRED.equals(propName)) {
                             field.setFieldRequired(value.getBooleanValue());
                         } else if (FIELD_ROW.equals(propName)) {
-                            int row = value.getIntValue();
                             field.setRow(value.getIntValue());
-                            boolean grouped = lastRow == row;
-                            field.setGroupWithPrevious(grouped);
-                            if (!grouped) lastRow = row;
                         } else if (FIELD_COLUMN.equals(propName)) {
                             field.setColumn(value.getIntValue());
                         } else if (FIELD_LABEL.equals(propName)) {
@@ -268,7 +264,8 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
                     }
                 }
                 field.setCustomProperties(properties);
-                form.addField(field);
+                form.addField(field, lastRow == field.getRow());
+                lastRow = field.getRow();
             }
         }
     }
