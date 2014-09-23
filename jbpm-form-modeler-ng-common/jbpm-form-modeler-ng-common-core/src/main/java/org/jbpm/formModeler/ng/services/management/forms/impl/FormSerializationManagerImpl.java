@@ -55,7 +55,6 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
     protected static final String NODE_DATA_HOLDER = "dataHolder";
 
     protected static final String ATTR_ID = "id";
-    protected static final String ATTR_POSITION = "position";
     protected static final String ATTR_TYPE = "type";
     protected static final String ATTR_BAG_TYPE = "bag-type";
     protected static final String ATTR_SUPPORTED_TYPE = "supportedType";
@@ -213,11 +212,11 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
         addXMLNode("labelMode", form.getLabelMode(), rootNode);
         addXMLNode("showMode", form.getShowMode(), rootNode);
 
-        int index = 0;
         for (LinkedList<Field> fields : form.getElementsGrid()) {
+            boolean changeColumn = true;
             for (Field field : fields) {
-                generateFieldXML(field, index, rootNode);
-                index ++;
+                generateFieldXML(field, !changeColumn, rootNode);
+                changeColumn = false;
             }
         }
 
@@ -244,11 +243,11 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
 
         field.setId(Long.valueOf(nodeField.getAttributes().getNamedItem(ATTR_ID).getNodeValue()));
         field.setName(nodeField.getAttributes().getNamedItem(ATTR_NAME).getNodeValue());
-        field.setPosition(Integer.parseInt(nodeField.getAttributes().getNamedItem(ATTR_POSITION).getNodeValue()));
 
         Map<String, String> properties = new HashMap<String, String>();
 
         NodeList fieldPropsNodes = nodeField.getChildNodes();
+        Boolean groupWithPrevious = false;
         for (int j = 0; j < fieldPropsNodes.getLength(); j++) {
             Node nodeFieldProp = fieldPropsNodes.item(j);
             if (nodeFieldProp.getNodeName().equals(NODE_PROPERTY)) {
@@ -258,7 +257,7 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
                     if ("fieldRequired".equals(propName)) {
                         field.setFieldRequired(Boolean.valueOf(value));
                     } else if ("groupWithPrevious".equals(propName)) {
-                        field.setGroupWithPrevious(Boolean.valueOf(value));
+                        groupWithPrevious = Boolean.valueOf(value);
                     } else if ("label".equals(propName)) {
                         field.setLabel(deserializeI18nEntrySet(value));
                     } else if ("readonly".equals(propName)) {
@@ -286,7 +285,7 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
             }
         }
 
-        form.addField(field);
+        form.addField(field, groupWithPrevious);
     }
 
     private String getFieldProperty(String formName, String fieldName, String selector, Properties props) {
@@ -299,17 +298,16 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
         return value;
     }
 
-    public void generateFieldXML(Field field, int index, XMLNode parent) {
+    public void generateFieldXML(Field field, boolean group, XMLNode parent) {
         XMLNode rootNode = new XMLNode(NODE_FIELD, parent);
         rootNode.addAttribute(ATTR_ID, String.valueOf(field.getId()));
-        rootNode.addAttribute(ATTR_POSITION, String.valueOf(index));
         rootNode.addAttribute(ATTR_NAME, field.getName());
         rootNode.addAttribute(ATTR_TYPE, field.getCode());
 
         if (field.getLabel() != null) addXMLNode("label", serializeI18nSet(field.getLabel()), rootNode);
         addXMLNode("readonly", (field.getReadonly() != null ? String.valueOf(field.getReadonly()) : null), rootNode);
         addXMLNode("fieldRequired", (field.getFieldRequired() != null ? String.valueOf(field.getFieldRequired()) : null), rootNode);
-        addXMLNode("groupWithPrevious", (field.getGroupWithPrevious() != null ? String.valueOf(field.getGroupWithPrevious()) : null), rootNode);
+        addXMLNode("groupWithPrevious", String.valueOf(group), rootNode);
         if (!StringUtils.isEmpty(field.getBindingExpression()))
             addXMLNode("bindingExpression", field.getBindingExpression(), rootNode);
 

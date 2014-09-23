@@ -53,31 +53,36 @@ public class EditorDefaultFormRenderer extends DefaultFormRenderer {
         FormDefinition formDefinition = context.getFormDefinition();
         if (formDefinition != null) {
             ctxUID = context.getCtxUID();
-            boolean first = true;
-            HorizontalPanel horizontalPanel = new HorizontalPanel();
+
             JsArray<FieldDefinition> fields = formDefinition.getFieldDefinitions();
 
             if (fields != null && fields.length() > 0) {
-                FieldDefinition fieldDefinition = null;
+
+                HorizontalPanel horizontalPanel = new HorizontalPanel();
+
+                int currentRow = -1;
+                FieldDefinition lastField = null;
+
                 for (int i = 0; i < formDefinition.getFieldDefinitions().length(); i++) {
-                    fieldDefinition = formDefinition.getFieldDefinitions().get(i);
-                    Widget fieldBox = getFieldBox(fieldDefinition, context);
+                    FieldDefinition currentField = formDefinition.getFieldDefinitions().get(i);
+                    Widget fieldBox = getFieldBox(currentField, context);
                     if (fieldBox != null) {
-                        if (first) {
-                            formContent.add(getHorizontalDropArea(0));
-                            first = false;
+                        if (currentField.getRow() != currentRow) {
+                            if (lastField != null) {
+                                horizontalPanel.add(getVerticalDropArea(lastField.getRow(), lastField.getColumn() + 1));
+                            }
                             formContent.add(horizontalPanel);
-                        } else if (fieldDefinition.getColumn() == 0) {
-                            horizontalPanel.add(getVerticalDropArea(fieldDefinition.getRow() - 1, fieldDefinition.getColumn()));
-                            formContent.add(getHorizontalDropArea(fieldDefinition.getRow()));
                             horizontalPanel = new HorizontalPanel();
-                            formContent.add(horizontalPanel);
+                            formContent.add(getHorizontalDropArea(currentField.getRow()));
                         }
-                        horizontalPanel.add(getVerticalDropArea(fieldDefinition.getRow(), fieldDefinition.getColumn()));
+                        horizontalPanel.add(getVerticalDropArea(currentField.getRow(), currentField.getColumn()));
                         horizontalPanel.add(fieldBox);
+                        currentRow = currentField.getRow();
+                        lastField = currentField;
                     }
                 }
-                if (fieldDefinition != null) horizontalPanel.add(getVerticalDropArea(fieldDefinition.getRow(), fieldDefinition.getColumn() + 1));
+                if (lastField != null) horizontalPanel.add(getVerticalDropArea(lastField.getRow(), lastField.getColumn() + 1));
+                formContent.add(horizontalPanel);
                 formContent.add(getHorizontalDropArea(-1));
             }
         }

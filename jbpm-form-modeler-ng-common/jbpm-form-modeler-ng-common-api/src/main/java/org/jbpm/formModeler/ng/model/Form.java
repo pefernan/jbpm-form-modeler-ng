@@ -148,15 +148,18 @@ public class Form implements Serializable, Comparable {
     }
 
     public boolean addField(Field field) {
+        return addField(field, false);
+    }
+
+    public boolean addField(Field field, boolean groupWithPrevious) {
         LinkedList<Field> fieldRow;
-        if (elementsGrid.size() == 0 || !field.getGroupWithPrevious()) {
+        if (elementsGrid.size() == 0 || !groupWithPrevious) {
             fieldRow = new LinkedList<Field>();
             elementsGrid.add(fieldRow);
         } else {
             fieldRow = elementsGrid.getLast();
         }
         field.setForm(this);
-        field.setPosition(fieldsCount);
         fieldsCount ++;
         return fieldRow.add(field);
     }

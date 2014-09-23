@@ -112,16 +112,18 @@ public class FormManagerImpl implements FormManager {
 
     @Override
     public void changeFieldPosition(Form form, Long fieldId, int row, int column, boolean newLine) {
+        int rows = form.getElementsGrid().size();
         Field field = form.deleteField(fieldId);
         if (field == null) return;
+
+        if (rows > form.getElementsGrid().size() && row > field.getRow()) row--;
+
         LinkedList<Field> fields;
         if (newLine) {
             fields = new LinkedList<Field>();
             form.getElementsGrid().add(row, fields);
-            field.setGroupWithPrevious(false);
         } else {
             fields = form.getElementsGrid().get(row);
-            field.setGroupWithPrevious(column != 0);
         }
         fields.add(column, field);
     }

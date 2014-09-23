@@ -38,10 +38,6 @@ public class FieldDefinition extends JavaScriptObject {
         return this.required;
     }-*/;
 
-    public final native boolean isGrouped() /*-{
-        return this.grouped;
-    }-*/;
-
     public final native JavaScriptObject getData() /*-{
         return this.data;
     }-*/;

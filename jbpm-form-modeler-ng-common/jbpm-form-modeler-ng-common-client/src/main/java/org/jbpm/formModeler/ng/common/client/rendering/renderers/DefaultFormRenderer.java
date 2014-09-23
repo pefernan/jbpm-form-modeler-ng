@@ -22,21 +22,21 @@ public class DefaultFormRenderer extends FormRenderer {
         VerticalPanel formContent = new VerticalPanel();
 
         FormDefinition formDefinition = context.getFormDefinition();
-
+        int lastRow = 0;
         if (formDefinition != null) {
             HorizontalPanel horizontalPanel = new HorizontalPanel();
-            formContent.add(horizontalPanel);
             for(int i = 0; i < formDefinition.getFieldDefinitions().length(); i++) {
                 FieldDefinition fieldDefinition = formDefinition.getFieldDefinitions().get(i);
                 Widget fieldBox = getFieldBox(fieldDefinition, context);
-                if (fieldBox != null) {
-                    if (!fieldDefinition.isGrouped()) {
-                        horizontalPanel = new HorizontalPanel();
-                        formContent.add(horizontalPanel);
-                    }
-                    horizontalPanel.add(fieldBox);
+
+                if (fieldDefinition.getRow() != lastRow) {
+                    formContent.add(horizontalPanel);
+                    horizontalPanel = new HorizontalPanel();
+                    lastRow = fieldDefinition.getRow();
                 }
+                horizontalPanel.add(fieldBox);
             }
+            formContent.add(horizontalPanel);
         }
 
         return formContent;

@@ -44,7 +44,6 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
     public static final String FIELD_COLUMN = "column";
     public static final String FIELD_LABEL = "label";
     public static final String FIELD_READONLY = "readonly";
-    public static final String FIELD_GROUPED = "grouped";
     public static final String FIELD_BINDING_EXPRESSION = "bindingExpression";
     public static final String FIELD_HOLDER_COLOR = "holderColor";
     public static final String FIELD_DATA = "data";
@@ -129,6 +128,8 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
         for (LinkedList<Field> fields : form.getElementsGrid()) {
             int column = 0;
             for (Field field : fields) {
+                field.setColumn(column);
+                field.setRow(row);
 
                 generator.writeStartObject();
                 generator.writeStringField(FIELD_UID, field.getId().toString());
@@ -147,7 +148,6 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
                 generator.writeBooleanField(FIELD_REQUIRED, field.getFieldRequired());
                 generator.writeNumberField(FIELD_ROW, row);
                 generator.writeNumberField(FIELD_COLUMN, column);
-                generator.writeBooleanField(FIELD_GROUPED, field.getGroupWithPrevious());
 
                 String color = "";
 
@@ -221,7 +221,6 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
 
     protected void unmarshallFields(Form form, JsonNode fields) {
         if (fields != null && !fields.isNull()) {
-            int index = 0;
             int lastRow = -1;
             for (Iterator<JsonNode> it = fields.getElements(); it.hasNext();) {
                 JsonNode jsonField = it.next();
@@ -234,10 +233,8 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
 
                 if (field == null) continue;
 
-                field.setId(jsonField.get(FIELD_UID).getLongValue());
+                field.setId(Long.decode(jsonField.get(FIELD_UID).getTextValue()));
                 field.setName(jsonField.get(ID).getTextValue());
-
-                field.setPosition(index ++);
 
                 Map<String, String> properties = new HashMap<String, String>();
 
@@ -249,9 +246,12 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
                             field.setFieldRequired(value.getBooleanValue());
                         } else if (FIELD_ROW.equals(propName)) {
                             int row = value.getIntValue();
+                            field.setRow(value.getIntValue());
                             boolean grouped = lastRow == row;
                             field.setGroupWithPrevious(grouped);
                             if (!grouped) lastRow = row;
+                        } else if (FIELD_COLUMN.equals(propName)) {
+                            field.setColumn(value.getIntValue());
                         } else if (FIELD_LABEL.equals(propName)) {
                             for (Iterator<String> labelIt = value.getFieldNames(); labelIt.hasNext();) {
                                 String lang = labelIt.next();
@@ -263,7 +263,7 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
                         } else if (FIELD_BINDING_EXPRESSION.equals(propName)) {
                             field.setBindingExpression(value.getTextValue());
                         } else {
-                            properties.put(propName, value.getTextValue());
+                            if (!propName.equals(TYPE) && !propName.equals(ID) && !propName.equals(FIELD_UID)) properties.put(propName, value.getTextValue());
                         }
                     }
                 }
