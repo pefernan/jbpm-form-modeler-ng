@@ -19,6 +19,7 @@ import org.jbpm.formModeler.ng.services.management.forms.utils.BindingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -27,6 +28,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
+@ApplicationScoped
 public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
     protected Logger log = LoggerFactory.getLogger(JSONFormDefinitionMarshaller.class);
 

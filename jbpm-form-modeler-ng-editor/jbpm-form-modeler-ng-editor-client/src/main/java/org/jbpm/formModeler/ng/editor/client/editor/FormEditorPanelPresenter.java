@@ -60,9 +60,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
-import static org.kie.uberfire.client.common.ConcurrentChangePopup.newConcurrentDelete;
-import static org.kie.uberfire.client.common.ConcurrentChangePopup.newConcurrentRename;
-import static org.kie.uberfire.client.common.ConcurrentChangePopup.newConcurrentUpdate;
+import static org.kie.uberfire.client.common.ConcurrentChangePopup.*;
 
 @Dependent
 @WorkbenchEditor(identifier = "FormModelerNGEditor", supportedTypes = { FormDefinitionResourceType.class })

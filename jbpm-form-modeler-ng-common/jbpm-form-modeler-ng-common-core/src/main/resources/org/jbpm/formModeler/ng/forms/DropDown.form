@@ -1,6 +1,6 @@
-<form id="1483331948">
+<form id="280077499">
   <property name="subject" value="org.jbpm.formModeler.api.model.Field"/>
-  <property name="name" value="InputTextDouble"/>
+  <property name="name" value="DropDown"/>
   <property name="displayMode" value="default"/>
   <property name="labelMode" value="undefined"/>
   <property name="showMode" value=""/>
@@ -13,7 +13,7 @@
     <property name="provider" value="org.jbpm.formModeler.ng.services.management.forms.impl.selectValuesProviders.FieldTypeSelectValuesProvider"/>
     <property name="bindingExpression" value="code"/>
   </field>
-  <field position="1" name="fieldName" type="InputText" id="142293341">
+  <field position="1" name="fieldName" type="InputText" id="1897308602">
     <property name="fieldRequired" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
@@ -28,7 +28,7 @@
     <property name="accesskey" value=""/>
     <property name="bindingExpression" value="field/name"/>
   </field>
-  <field position="2" name="label" type="I18nText" id="1437651781">
+  <field position="2" name="label" type="I18nText" id="1855784433">
     <property name="fieldRequired" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
@@ -43,7 +43,7 @@
     <property name="accesskey" value=""/>
     <property name="bindingExpression" value="field/label"/>
   </field>
-  <field position="3" name="size" type="InputTextInteger" id="1565746574">
+  <field position="3" name="provider" type="DropDown" id="937759424">
     <property name="fieldRequired" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
@@ -56,9 +56,10 @@
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
-    <property name="bindingExpression" value="field/size"/>
+    <property name="provider" value="org.jbpm.formModeler.ng.services.management.forms.impl.selectValuesProviders.SelectValuesProviderProvider"/>
+    <property name="bindingExpression" value="field/provider"/>
   </field>
-  <field position="4" name="maxlength" type="InputTextInteger" id="431764065">
+  <field position="4" name="size" type="InputTextInteger" id="1565746574">
     <property name="fieldRequired" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
@@ -71,9 +72,9 @@
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
-    <property name="bindingExpression" value="field/maxLength"/>
+    <property name="bindingExpression" value="field/width"/>
   </field>
-  <field position="5" name="fieldRequired" type="CheckBox" id="831881035">
+  <field position="5" name="fieldRequired" type="CheckBox" id="937759424">
     <property name="fieldRequired" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
@@ -88,7 +89,7 @@
     <property name="accesskey" value=""/>
     <property name="bindingExpression" value="field/fieldRequired"/>
   </field>
-  <field position="6" name="readonly" type="CheckBox" id="514255595">
+  <field position="6" name="readonly" type="CheckBox" id="937759424">
     <property name="fieldRequired" value="false"/>
     <property name="groupWithPrevious" value="true"/>
     <property name="height" value=""/>
@@ -103,12 +104,12 @@
     <property name="accesskey" value=""/>
     <property name="bindingExpression" value="field/readonly"/>
   </field>
-  <field position="7" name="bindingExpression" type="InputText" id="2073732259">
+  <field position="7" name="bindingExpression" type="InputText" id="82469306">
     <property name="fieldRequired" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
     <property name="readonly" value="false"/>
-    <property name="size" value="25"/>
+    <property name="size" value="15"/>
     <property name="formula" value=""/>
     <property name="rangeFormula" value=""/>
     <property name="pattern" value=""/>
@@ -118,5 +119,5 @@
     <property name="accesskey" value=""/>
     <property name="bindingExpression" value="field/bindingExpression"/>
   </field>
-  <dataHolder inputId="field" name="#0000A0" type="className" outId="field" value="org.jbpm.formModeler.ng.model.impl.InputTextDouble" id="field"/>
+  <dataHolder inputId="field" name="#0000A0" type="className" outId="field" value="org.jbpm.formModeler.ng.model.Field" id="field"/>
 </form>

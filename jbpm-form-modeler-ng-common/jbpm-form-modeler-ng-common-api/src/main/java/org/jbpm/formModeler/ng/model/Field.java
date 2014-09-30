@@ -77,4 +77,19 @@ public abstract class Field extends FormElement {
     public void setBindingExpression(String bindingExpression) {
         this.bindingExpression = bindingExpression;
     }
+
+    public void copyValues(Field source) {
+        if (source == null) return;
+
+        setId(source.getId());
+        setName(source.getName());
+        setLabel(source.getLabel());
+        setFieldRequired(source.getFieldRequired());
+        setReadonly(source.getReadonly());
+        setBindingExpression(source.getBindingExpression());
+        setRow(source.getRow());
+        setColumn(source.getColumn());
+        setForm(source.getForm());
+        setCustomProperties(source.getCustomProperties());
+    }
 }

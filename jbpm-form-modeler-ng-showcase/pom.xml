@@ -104,6 +104,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-spi</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.jboss.weld.servlet</groupId>
       <artifactId>weld-servlet-core</artifactId>
     </dependency>
@@ -138,11 +143,6 @@
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-xjc</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.transaction</groupId>
-      <artifactId>jta</artifactId>
     </dependency>
 
     <!--Miscellaneous -->

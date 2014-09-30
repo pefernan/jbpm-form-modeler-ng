@@ -8,38 +8,33 @@ import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InputTextArea extends BasicTypeField {
-    private Integer height = 15;
-    private Integer width = 10;
+public class DropDown extends BasicTypeField {
+    public static final String CODE = "DropDown";
+
+    private Integer width = 15;
+    private String provider;
 
     @Inject
     private StringMarshaller marshaller;
 
     @Override
     public String getCode() {
-        return "InputTextArea";
-    }
-
-    @Override
-    public String getFieldClass() {
-        return String.class.getName();    }
-
-    @Override
-    public FieldValueMarshaller getMarshaller() {
-        return marshaller;
+        return CODE;
     }
 
     @Override
     public String getIcon() {
-        return "scroll_zone.png";
+        return "select.png";
     }
 
-    public Integer getHeight() {
-        return height;
+    @Override
+    public String getFieldClass() {
+        return String.class.getName();
     }
 
-    public void setHeight(Integer height) {
-        this.height = height;
+    @Override
+    public FieldValueMarshaller getMarshaller() {
+        return marshaller;
     }
 
     public Integer getWidth() {
@@ -50,25 +45,29 @@ public class InputTextArea extends BasicTypeField {
         this.width = width;
     }
 
+    public String getProvider() {
+        return provider;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
+    }
+
     @Override
     public Map<String, String> getCustomProperties() {
         Map<String, String> result = new HashMap<String, String>();
-        result.put("height", String.valueOf(height));
         result.put("width", String.valueOf(width));
+        result.put("provider", provider);
         return result;
     }
 
     @Override
     public void setCustomProperties(Map<String, String> properties) {
         try {
-            height = Integer.decode(properties.get("height"));
-        } catch (Exception ex) {
-            height = 10;
-        }
-        try {
             width = Integer.decode(properties.get("width"));
         } catch (Exception ex) {
             width = 15;
         }
+        provider = properties.get("provider");
     }
 }

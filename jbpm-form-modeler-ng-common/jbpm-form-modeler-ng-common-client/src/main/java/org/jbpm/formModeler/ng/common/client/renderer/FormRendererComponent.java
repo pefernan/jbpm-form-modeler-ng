@@ -11,11 +11,16 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
+import org.apache.commons.io.FilenameUtils;
 import org.jbpm.formModeler.ng.common.client.rendering.FormRendererManager;
+import org.jbpm.formModeler.ng.common.client.rendering.event.FieldChangedEvent;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormContext;
+import org.jbpm.formModeler.ng.common.client.rendering.js.FormContextStatus;
 import org.jbpm.formModeler.ng.common.client.rendering.renderers.FormRenderer;
+import org.uberfire.mvp.Command;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 public class FormRendererComponent extends Composite {
@@ -35,6 +40,12 @@ public class FormRendererComponent extends Composite {
 
     private FormContext context;
 
+    private FormContextStatus status;
+
+    private FieldChangedEvent fieldChangedEvent;
+
+    private Command onFieldChange;
+
     @PostConstruct
     public void initView() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -42,11 +53,13 @@ public class FormRendererComponent extends Composite {
 
     public boolean renderFormContent(String form) {
         try {
-            FormRenderer renderer = formRendererManager.getRendererByType(context.getFormDefinition().getDisplayMode());
-
             formContent.clear();
 
             context = JsonUtils.safeEval(form);
+
+            status = context.getContextStatus();
+
+            FormRenderer renderer = formRendererManager.getRendererByType(context.getFormDefinition().getDisplayMode());
 
             Panel content = renderer.generateForm(context);
 
@@ -55,12 +68,28 @@ public class FormRendererComponent extends Composite {
                 return true;
             }
         } catch (Exception ex) {
-            Window.alert("Something wrong happened: " + ex.getMessage());
+            Window.alert("Something wrong happened rendering form: " + ex.getMessage());
         }
         return false;
     }
 
+    public void checkFieldValue(@Observes FieldChangedEvent fieldChangedEvent) {
+        if (context != null && fieldChangedEvent.getCtxUID().equals(context.getCtxUID())) {
+            this.fieldChangedEvent = fieldChangedEvent;
+            status.setFieldValue(fieldChangedEvent.getFieldId(), fieldChangedEvent.getNewValue());
+            if (onFieldChange != null) onFieldChange.execute();
+        }
+    }
+
     public String getFormValues() {
-        return new JSONObject(context.getContextStatus().getValues()).toString();
+        return new JSONObject(status.getValues()).toString();
+    }
+
+    public void setOnFieldChange(Command onFieldChange) {
+        this.onFieldChange = onFieldChange;
+    }
+
+    public FieldChangedEvent getFieldChangedEvent() {
+        return fieldChangedEvent;
     }
 }

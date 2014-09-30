@@ -147,6 +147,27 @@ public class FormManagerImpl implements FormManager {
     }
 
     @Override
+    public boolean changeFieldType(Form form, Field field, String code) {
+        Field result = fieldManager.getFieldByCode(code);
+        if (result == null) return false;
+        try {
+            result.copyValues(field);
+            for (LinkedList<Field> row : form.getElementsGrid()) {
+                int index = row.indexOf(field);
+                if (index != -1) {
+                    row.remove(index);
+                    row.add(index, result);
+                    return true;
+                }
+            }
+        } catch (Exception ex) {
+            log.warn("Error changing fieldType for field '{}' type '{}' to '{}': {}", field.getName(), field.getCode(), code, ex);
+
+        }
+        return false;
+    }
+
+    @Override
     public void addDataHolderToForm(Form form, DataHolder holder) {
         if (holder != null) form.addDataHolder(holder);
     }

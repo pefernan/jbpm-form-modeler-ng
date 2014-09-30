@@ -15,21 +15,12 @@
  */
 package org.jbpm.formModeler.ng.services.management.forms;
 
-import org.jbpm.formModeler.ng.model.BasicTypeField;
-import org.jbpm.formModeler.ng.model.Field;
-
-import java.io.Serializable;
 import java.util.List;
 
-public interface FieldManager extends Serializable {
+public interface SelectValuesProviderManager {
 
-    List<BasicTypeField> getBasicFields();
+    List<SelectValuesProvider> getProvidersList();
+    SelectValuesProvider getRangeProviderByType(String providerId);
 
-    List<Field> getSuitableFields(Field field);
-
-    Field getFieldByCode(String typeCode);
-
-    Field getFieldByClass(String classType);
-
-    boolean isVisible(String typeCode);
+    List<String> getSystemProviders();
 }

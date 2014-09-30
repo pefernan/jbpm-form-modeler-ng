@@ -1,4 +1,4 @@
-package org.jbpm.formModeler.ng.editor.client.editor.canvas.rendering.renderers;
+package org.jbpm.formModeler.ng.editor.client.editor.modeler.canvas.rendering.renderers;
 
 import com.github.gwtbootstrap.client.ui.base.IconAnchor;
 import com.github.gwtbootstrap.client.ui.constants.IconType;

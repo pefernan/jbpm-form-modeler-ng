@@ -178,7 +178,12 @@ public class PojoDataHolder extends DataHolder {
     @Override
     public boolean isAssignableValue(Object value) {
         if (value == null) return true;
-        return value.getClass().getName().equals(this.getClassName());
+        try {
+            return getHolderClass().isAssignableFrom(value.getClass());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     @Override

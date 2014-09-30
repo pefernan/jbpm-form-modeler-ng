@@ -7,13 +7,11 @@ import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.jbpm.formModeler.ng.editor.events.canvas.EndFieldEditionEvent;
-import org.jbpm.formModeler.ng.editor.events.canvas.LoadFieldEditionContextEvent;
 import org.jbpm.formModeler.ng.editor.events.canvas.RefreshCanvasEvent;
-import org.jbpm.formModeler.ng.editor.events.canvas.StartEditFieldPropertyEvent;
 import org.jbpm.formModeler.ng.editor.events.dataHolders.DeleteDataHolderEvent;
 import org.jbpm.formModeler.ng.editor.events.dataHolders.NewDataHolderEvent;
 import org.jbpm.formModeler.ng.editor.events.dataHolders.RefreshHoldersListEvent;
+import org.jbpm.formModeler.ng.editor.model.EditionContextTO;
 import org.jbpm.formModeler.ng.editor.model.FormEditorContextTO;
 import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderBuilderTO;
 import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderFieldTO;
@@ -92,7 +90,7 @@ public class FormEditorServiceImpl implements FormEditorService {
     private Event<RefreshCanvasEvent> refreshCanvasEvent;
 
     @Inject
-    private Event<LoadFieldEditionContextEvent> loadEditionEvent;
+    private Event<EditionContextTO> loadEditionEvent;
 
     @Inject
     private LocaleManager localeManager;
@@ -339,39 +337,73 @@ public class FormEditorServiceImpl implements FormEditorService {
         }
     }
 
-    public void editFieldProperties(@Observes StartEditFieldPropertyEvent event) {
-        FormRenderContext context = contextManager.getFormRenderContext(event.getContext());
+    @Override
+    public EditionContextTO startFieldEdition(String ctxUID, String fieldUID) {
+        FormRenderContext context = contextManager.getFormRenderContext(ctxUID);
         if (context != null) {
-            Field field = context.getForm().getFieldById(Long.decode(event.getFieldUid()));
-            Form editionForm = formManager.getFormForFieldEdition(field.getCode());
-            if (editionForm != null) {
-                Map<String, Object> data = new HashMap<String, Object>();
-                data.put("field", field);
-                ContextConfiguration config = new ContextConfiguration(editionForm, data, context.getCurrentLocale());
-                FormRenderContext editionContext = contextManager.newContext(config);
-                loadEditionEvent.fire(new LoadFieldEditionContextEvent(event.getContext(), editionContext.getUID(), editionContext.getMarshalledCopy()));
+            Field field = context.getForm().getFieldById(Long.decode(fieldUID));
+            if (field != null) {
+                Form editionForm = formManager.getFormForFieldEdition(field.getCode());
+                if (editionForm != null) {
+                    Map<String, Object> data = new HashMap<String, Object>();
+                    data.put("field", field);
+                    data.put("code", field.getCode());
+                    ContextConfiguration config = new ContextConfiguration(editionForm, data, context.getCurrentLocale());
+                    FormRenderContext editionContext = contextManager.newContext(config);
+                    return new EditionContextTO(editionContext.getUID(), editionContext.getMarshalledCopy());
+                }
             }
         }
+        return null;
     }
 
-    public void endFieldEdition(@Observes EndFieldEditionEvent event) {
-        FormRenderContext context = contextManager.getFormRenderContext(event.getContext());
-        FormRenderContext editionContext = contextManager.getFormRenderContext(event.getEditionContext());
+    @Override
+    public String editFieldValue(String ctxUID, String editionCtxUID, String editionMarshalledCtx, boolean persist) {
+        FormRenderContext context = contextManager.getFormRenderContext(ctxUID);
+        FormRenderContext editionContext = contextManager.getFormRenderContext(editionCtxUID);
+        String ctxJson = null;
         if (context != null && editionContext != null) {
-
             try {
-                if (event.isPersist()) {
-                    contextManager.persistContext(editionContext, event.getMarshalledContext());
-                    context.setFormTemplate(formDefinitionMarshaller.marshall(context.getForm()));
-                    String ctxJson = contextManager.marshallContext(context);
-                    refreshCanvasEvent.fire(new RefreshCanvasEvent(event.getContext(), ctxJson));
+                if (persist) {
+                    contextManager.persistContext(editionContext, editionMarshalledCtx);
+                } else {
+                    contextManager.removeContext(editionContext);
                 }
+                context.setFormTemplate(formDefinitionMarshaller.marshall(context.getForm()));
+                ctxJson = contextManager.marshallContext(context);
             } catch (Exception ex) {
                 log.warn("Unable to persist context {}", editionContext.getUID(), ex);
             }
-
-            contextManager.removeContext(editionContext);
         }
+        return ctxJson;
+    }
+
+    @Override
+    public EditionContextTO changeFieldType(String editionCtxUID, String fieldName, String code, String rootCtxUID) {
+        FormRenderContext editionContext = contextManager.getFormRenderContext(editionCtxUID);
+        FormRenderContext rootContext = contextManager.getFormRenderContext(rootCtxUID);
+
+        if (editionContext == null || rootContext == null) return null;
+
+        Field editedField = (Field) editionContext.getInputData().get("field");
+
+        Form rootForm = rootContext.getForm();
+
+        if (editedField == null || rootForm == null) return null;
+
+        if (formManager.changeFieldType(rootForm, editedField, code)) {
+            Field newField = rootForm.getFieldById(editedField.getId());
+            Form editionForm = formManager.getFormForFieldEdition(newField.getCode());
+            if (editionForm != null) {
+                Map<String, Object> data = new HashMap<String, Object>();
+                data.put("field", newField);
+                data.put("code", newField.getCode());
+                ContextConfiguration config = new ContextConfiguration(editionForm, data, editionContext.getCurrentLocale());
+                editionContext = contextManager.newContext(config);
+                return new EditionContextTO(editionContext.getUID(), editionContext.getMarshalledCopy());
+            }
+        }
+        return null;
     }
 
     @Override

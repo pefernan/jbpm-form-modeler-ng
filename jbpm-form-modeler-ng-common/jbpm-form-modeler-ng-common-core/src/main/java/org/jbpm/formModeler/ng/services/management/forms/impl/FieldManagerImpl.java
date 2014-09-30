@@ -116,7 +116,7 @@ public class FieldManagerImpl implements FieldManager {
         List<Field> result = new ArrayList<Field>();
 
         for (Field typeField : fieldTypes) {
-            if (typeField.getClass().equals(field.getClass())) result.add(typeField);
+            if (typeField.getFieldClass().equals(field.getFieldClass())) result.add(typeField);
         }
 
         return result;

@@ -17,6 +17,7 @@ package org.jbpm.formModeler.ng.services.management.forms;
 
 import org.jbpm.formModeler.ng.model.DataFieldHolder;
 import org.jbpm.formModeler.ng.model.DataHolder;
+import org.jbpm.formModeler.ng.model.Field;
 import org.jbpm.formModeler.ng.model.Form;
 
 import java.io.Serializable;
@@ -57,4 +58,6 @@ public interface FormManager extends Serializable {
     boolean addDataHolderField(Form form, DataHolder holder, DataFieldHolder field);
 
     void setSystemForms(List<Form> systemForms);
+
+    boolean changeFieldType(Form form, Field field, String code);
 }

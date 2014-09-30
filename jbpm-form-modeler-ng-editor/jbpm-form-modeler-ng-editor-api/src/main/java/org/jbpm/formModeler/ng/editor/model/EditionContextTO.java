@@ -1,18 +1,16 @@
-package org.jbpm.formModeler.ng.editor.events.canvas;
+package org.jbpm.formModeler.ng.editor.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.jbpm.formModeler.ng.editor.events.FormModelerEvent;
 
 @Portable
-public class LoadFieldEditionContextEvent extends FormModelerEvent {
+public class EditionContextTO {
     private String editionContext;
     private String marshalledContext;
 
-    public LoadFieldEditionContextEvent() {
+    public EditionContextTO() {
     }
 
-    public LoadFieldEditionContextEvent(String context, String editionContext, String marshalledContext) {
-        this.context = context;
+    public EditionContextTO(String editionContext, String marshalledContext) {
         this.editionContext = editionContext;
         this.marshalledContext = marshalledContext;
     }

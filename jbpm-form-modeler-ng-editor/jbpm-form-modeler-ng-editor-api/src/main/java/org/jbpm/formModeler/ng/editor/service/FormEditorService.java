@@ -2,6 +2,7 @@ package org.jbpm.formModeler.ng.editor.service;
 
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.jbpm.formModeler.ng.editor.model.EditionContextTO;
 import org.jbpm.formModeler.ng.editor.model.FormEditorContextTO;
 import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderBuilderTO;
 import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderFieldTO;
@@ -39,4 +40,10 @@ public interface FormEditorService {
     String moveSelectedFieldToFieldPosition(String ctxUID, Long fieldId, int row, int column, boolean newLine);
 
     Path save(ObservablePath path, String ctxUID, Metadata content, String commitMessage);
+
+    EditionContextTO startFieldEdition(String ctxUID, String fieldUID);
+
+    String editFieldValue(String ctxUID, String editionCtxUID, String editionMarshalledCtx, boolean persist);
+
+    EditionContextTO changeFieldType(String ctxUID, String fieldName, String code, String editionCtxUID);
 }

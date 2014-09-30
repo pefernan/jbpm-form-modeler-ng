@@ -6,16 +6,19 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.common.client.api.annotations.Portable;
+import org.jbpm.formModeler.ng.common.client.rendering.event.FieldChangedEvent;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FieldDefinition;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormContext;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormContextStatus;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
 
 @ApplicationScoped
-@Portable
 public class TextAreaFieldRenderer extends FieldRenderer {
+    @Inject
+    private Event<FieldChangedEvent> changedEvent;
 
     @Override
     public String getCode() {
@@ -23,7 +26,7 @@ public class TextAreaFieldRenderer extends FieldRenderer {
     }
 
     @Override
-    public Widget getFieldInput(final FieldDefinition description, FormContext context) {
+    public Widget getFieldInput(final FieldDefinition description, final FormContext context) {
         if (description == null) return null;
         final TextArea textArea = new TextArea();
         textArea.setName(description.getId());
@@ -51,7 +54,7 @@ public class TextAreaFieldRenderer extends FieldRenderer {
         textArea.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent changeEvent) {
-                status.setFieldValue(description.getId(), textArea.getValue());
+                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getId(),  textArea.getValue()));
             }
         });
 

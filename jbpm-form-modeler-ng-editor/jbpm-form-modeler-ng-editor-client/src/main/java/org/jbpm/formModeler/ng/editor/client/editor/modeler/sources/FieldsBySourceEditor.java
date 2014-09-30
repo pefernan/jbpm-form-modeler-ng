@@ -1,4 +1,4 @@
-package org.jbpm.formModeler.ng.editor.client.editor.sources;
+package org.jbpm.formModeler.ng.editor.client.editor.modeler.sources;
 
 
 import com.github.gwtbootstrap.client.ui.base.IconAnchor;
@@ -7,13 +7,11 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jbpm.formModeler.ng.editor.client.editor.canvas.FormCanvas;
 import org.jbpm.formModeler.ng.editor.events.dataHolders.RefreshHoldersListEvent;
 import org.jbpm.formModeler.ng.editor.model.FormEditorContextTO;
 import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderFieldTO;
@@ -40,24 +38,16 @@ public class FieldsBySourceEditor extends Composite {
     @UiField
     SimplePanel treeContainer;
 
-    @UiField
-    SimplePanel canvasContainer;
-
-    @Inject
-    private FormCanvas formCanvas;
-
     private FormEditorContextTO context;
 
     @PostConstruct
     public void initView() {
-        initWidget( uiBinder.createAndBindUi( this ) );
-        canvasContainer.add(formCanvas);
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     public void initEditor(FormEditorContextTO ctx) {
         this.context = ctx;
         loadFormSources();
-        formCanvas.initContext(ctx);
     }
 
     protected void loadFormSources() {

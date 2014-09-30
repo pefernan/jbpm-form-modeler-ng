@@ -30,6 +30,10 @@ public abstract class FormRenderer {
             return null;
         }
 
+        String fieldValue = "";
+
+
+
         Widget input = provider.getFieldInput(field, context);
 
         FormDefinition form = context.getFormDefinition();
@@ -66,7 +70,8 @@ public abstract class FormRenderer {
         String locale = LocaleInfo.getCurrentLocale().getLocaleName();
 
         String label;
-        if (jsonLabel.get(locale).isNull() == null) label = jsonLabel.get(locale).isString().stringValue();
+        if (jsonLabel.isNull() != null && jsonLabel.keySet().size() == 0) label = "";
+        else if (jsonLabel.get(locale).isNull() == null) label = jsonLabel.get(locale).isString().stringValue();
         else label = jsonLabel.get("default").isString().stringValue();
 
         if (field.isRequired()) label = "* " + label;

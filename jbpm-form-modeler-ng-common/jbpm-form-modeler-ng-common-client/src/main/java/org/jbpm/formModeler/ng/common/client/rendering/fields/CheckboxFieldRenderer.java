@@ -7,23 +7,27 @@ import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.common.client.api.annotations.Portable;
+import org.jbpm.formModeler.ng.common.client.rendering.event.FieldChangedEvent;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FieldDefinition;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormContext;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormContextStatus;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
 
 @ApplicationScoped
-@Portable
 public class CheckboxFieldRenderer extends FieldRenderer {
+    @Inject
+    private Event<FieldChangedEvent> changedEvent;
+
     @Override
     public String getCode() {
         return "CheckBox";
     }
 
     @Override
-    public Widget getFieldInput(final FieldDefinition description, FormContext context) {
+    public Widget getFieldInput(final FieldDefinition description, final FormContext context) {
         if (description == null) return null;
 
         final CheckBox checkBox = new CheckBox(new SafeHtml() {
@@ -48,7 +52,7 @@ public class CheckboxFieldRenderer extends FieldRenderer {
         checkBox.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent changeEvent) {
-                status.setFieldValue(description.getId(), String.valueOf(checkBox.getValue()));
+                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getId(),  String.valueOf(checkBox.getValue())));
             }
         });
         return checkBox;

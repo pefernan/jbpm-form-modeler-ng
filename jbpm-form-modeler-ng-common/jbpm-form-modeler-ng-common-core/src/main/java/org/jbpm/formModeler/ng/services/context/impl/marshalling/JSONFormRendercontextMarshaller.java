@@ -10,10 +10,12 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.jbpm.formModeler.ng.model.DataHolder;
 import org.jbpm.formModeler.ng.model.Field;
 import org.jbpm.formModeler.ng.model.Form;
+import org.jbpm.formModeler.ng.model.impl.DropDown;
 import org.jbpm.formModeler.ng.services.LocaleManager;
 import org.jbpm.formModeler.ng.services.context.FormRenderContext;
 import org.jbpm.formModeler.ng.services.context.FormRenderContextMarshaller;
 import org.jbpm.formModeler.ng.services.management.forms.FormDefinitionMarshaller;
+import org.jbpm.formModeler.ng.services.management.forms.SelectValuesOptionsMarshaller;
 import org.jbpm.formModeler.ng.services.management.forms.utils.BindingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +25,7 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 @Default
 @ApplicationScoped
@@ -37,11 +37,15 @@ public class JSONFormRendercontextMarshaller implements FormRenderContextMarshal
 
     public static final String STATUS = "status";
     public static final String VALUES = "values";
+    public static final String OPTIONS = "options";
 
     private Logger log = LoggerFactory.getLogger(JSONFormRendercontextMarshaller.class);
 
     @Inject
     private FormDefinitionMarshaller formMarshaller;
+
+    @Inject
+    private SelectValuesOptionsMarshaller optionsMarshaller;
 
     @Inject
     private LocaleManager localeManager;
@@ -88,6 +92,8 @@ public class JSONFormRendercontextMarshaller implements FormRenderContextMarshal
                 generator.writeEndObject();
             }
 
+            marshallDropDownOptions(form, "", context, generator);
+
             generator.writeEndObject();
             generator.writeEndObject();
 
@@ -101,8 +107,33 @@ public class JSONFormRendercontextMarshaller implements FormRenderContextMarshal
         return result;
     }
 
-    private void marshallStatus(Form form, Map inputData,String namespace, FormRenderContext context, JsonGenerator generator) throws IOException {
+    private void marshallDropDownOptions(Form form, String namespace, FormRenderContext context, JsonGenerator generator) throws IOException {
+        generator.writeObjectFieldStart(OPTIONS);
+        for (LinkedList<Field> fields : form.getElementsGrid()) {
+            for (Field field : fields) {
+
+                if (!(field instanceof DropDown)) continue;
+
+                String fieldId = StringUtils.isEmpty(namespace) ? field.getName() : namespace + NAMESPACE_SEPARATOR + field.getName();
+
+                String options = optionsMarshaller.marshallOptionsForField(field, context);
+
+                if (StringUtils.isEmpty(options)) {
+                    generator.writeArrayFieldStart(fieldId);
+                    generator.writeEndArray();
+                } else {
+                    generator.writeFieldName(fieldId);
+                    generator.writeRawValue(options);
+                }
+            }
+        }
+        generator.writeEndObject();
+    }
+
+    private void marshallStatus(Form form, Map inputData, String namespace, FormRenderContext context, JsonGenerator generator) throws IOException {
         generator.writeObjectFieldStart(VALUES);
+
+        List<DropDown> dropDowns = new ArrayList<DropDown>();
 
         for (LinkedList<Field> fields : form.getElementsGrid()) {
             for (Field field : fields) {
@@ -127,6 +158,8 @@ public class JSONFormRendercontextMarshaller implements FormRenderContextMarshal
                 if (value == null) generator.writeNullField(fieldId);
 
                 generator.writeStringField(fieldId, field.getMarshaller().marshallValue(value, context));
+
+                if (field.getCode().equals(DropDown.CODE)) dropDowns.add((DropDown) field);
             }
         }
         generator.writeEndObject();
