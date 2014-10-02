@@ -24,26 +24,27 @@ import org.jbpm.formModeler.ng.model.Form;
 import java.util.LinkedList;
 
 public class BindingUtils {
-    public static String generateInputBinding(DataHolder holder, DataFieldHolder field) {
+    public static String generateBinding(DataHolder holder, DataFieldHolder field) {
         if (!holder.canHaveChildren()) return holder.getUniqueId();
         return holder.getUniqueId() + "/" + field.getId();
     }
 
     public static boolean isFieldBinded(Form form, DataFieldHolder fieldHolder) {
         if (fieldHolder == null) return false;
+        return getFielForBindingExpression(generateBinding(fieldHolder.getHolder(), fieldHolder), form) != null;
+    }
 
-        String inputBinding = generateInputBinding(fieldHolder.getHolder(), fieldHolder);
 
+    public static final Field getFielForBindingExpression(String bindingExpression, Form form) {
         for (LinkedList<Field> fields : form.getElementsGrid()) {
             for (Field field : fields) {
                 if (!StringUtils.isEmpty(field.getBindingExpression())) {
-                    if (field.getBindingExpression().equals(inputBinding))
-                        return true;
+                    if (field.getBindingExpression().equals(bindingExpression))
+                        return field;
                 }
             }
         }
-
-        return false;
+        return null;
     }
 
     public static DataHolder getDataHolderForField(Field field) {

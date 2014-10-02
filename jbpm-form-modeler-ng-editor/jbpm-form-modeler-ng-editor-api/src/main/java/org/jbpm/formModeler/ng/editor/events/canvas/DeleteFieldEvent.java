@@ -2,13 +2,13 @@ package org.jbpm.formModeler.ng.editor.events.canvas;
 
 import org.jbpm.formModeler.ng.editor.events.FormModelerEvent;
 
-public class StartEditFieldPropertyEvent extends FormModelerEvent {
+public class DeleteFieldEvent extends FormModelerEvent {
     private String fieldUid;
 
-    public StartEditFieldPropertyEvent() {
+    public DeleteFieldEvent() {
     }
 
-    public StartEditFieldPropertyEvent(String context, String fieldUid) {
+    public DeleteFieldEvent(String context, String fieldUid) {
         this.context = context;
         this.fieldUid = fieldUid;
     }

@@ -15,6 +15,7 @@ import org.jbpm.formModeler.ng.common.client.rendering.js.FormContext;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormDefinition;
 import org.jbpm.formModeler.ng.common.client.rendering.renderers.DefaultFormRenderer;
 import org.jbpm.formModeler.ng.editor.events.FormModelerEvent;
+import org.jbpm.formModeler.ng.editor.events.canvas.DeleteFieldEvent;
 import org.jbpm.formModeler.ng.editor.events.canvas.RefreshCanvasEvent;
 import org.jbpm.formModeler.ng.editor.events.canvas.StartEditFieldPropertyEvent;
 import org.jbpm.formModeler.ng.editor.events.dataHolders.RefreshHoldersListEvent;
@@ -30,6 +31,9 @@ import java.util.List;
 public class EditorDefaultFormRenderer extends DefaultFormRenderer {
     @Inject
     private Event<StartEditFieldPropertyEvent> fieldPropertyEvent;
+
+    @Inject
+    private Event<DeleteFieldEvent> deleteFieldEvent;
 
     @Inject
     private Caller<FormEditorService> editorService;
@@ -174,22 +178,7 @@ public class EditorDefaultFormRenderer extends DefaultFormRenderer {
             @Override
             public void onClick(ClickEvent event) {
                 if (Window.confirm("!!Are you sure?")) {
-                    editorService.call(new RemoteCallback<String>() {
-                                           @Override
-                                           public void callback(String jsonResponse) {
-                                               if (jsonResponse != null) {
-                                                   modelerEvent.fire(new RefreshCanvasEvent(context.getCtxUID(), jsonResponse));
-                                                   modelerEvent.fire(new RefreshHoldersListEvent(context.getCtxUID()));
-                                               }
-                                           }
-                                       }, new ErrorCallback<Object>() {
-                                           @Override
-                                           public boolean error(Object message, Throwable throwable) {
-                                               Window.alert("Something wong happened: " + message);
-                                               return false;
-                                           }
-                                       }
-                    ).removeFieldFromForm(context.getCtxUID(), Long.decode(field.getUid()));
+                    deleteFieldEvent.fire(new DeleteFieldEvent(context.getCtxUID(), field.getUid()));
                 }
             }
         });

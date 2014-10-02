@@ -8,6 +8,7 @@ public class DataHolderFieldTO {
     private String holderId;
     private String id;
     private String className;
+    private boolean binded;
 
     public String getHolderId() {
         return holderId;
@@ -39,5 +40,13 @@ public class DataHolderFieldTO {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public boolean isBinded() {
+        return binded;
+    }
+
+    public void setBinded(boolean binded) {
+        this.binded = binded;
     }
 }

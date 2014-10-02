@@ -59,15 +59,15 @@
             </div>
           </div>
         </td>
-        <td class="TdCentralTable">
-          <g:SimplePanel ui:field="canvasContainer" addStyleNames="{style.canvasContainer}"/>
-        </td>
         <td class="TdLateralTable">
           <div class="well well-small">
             <div style="height:600px; width:100%">
               <g:SimplePanel ui:field="propertiesContainer"/>
             </div>
           </div>
+        </td>
+        <td class="TdCentralTable">
+          <g:SimplePanel ui:field="canvasContainer" addStyleNames="{style.canvasContainer}"/>
         </td>
       </tr>
     </table>

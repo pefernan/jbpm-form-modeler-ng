@@ -149,6 +149,18 @@ public class FormEditorServiceImpl implements FormEditorService {
 
 
     @Override
+    public Long getFieldIdFromExpression(String ctxUID, String bindingExpression) {
+        FormRenderContext context = contextManager.getFormRenderContext(ctxUID);
+
+        if (context != null) {
+            Field field = BindingUtils.getFielForBindingExpression(bindingExpression, context.getForm());
+            if (field != null) return field.getId();
+        }
+
+        return null;
+    }
+
+    @Override
     public DataHolderTO[] addFieldFromHolder(String ctxUID, DataHolderFieldTO fieldTO) {
         FormRenderContext context = contextManager.getFormRenderContext(ctxUID);
 
@@ -191,12 +203,13 @@ public class FormEditorServiceImpl implements FormEditorService {
         List<DataHolderFieldTO> fields = new ArrayList<DataHolderFieldTO>();
         if (addChild) {
             for (DataFieldHolder field : holder.getFieldHolders()) {
-                if (onlyNonBinded && BindingUtils.isFieldBinded(form, field)) continue;
+                //if (onlyNonBinded && BindingUtils.isFieldBinded(form, field)) continue;
                 DataHolderFieldTO fieldTO = new DataHolderFieldTO();
                 fieldTO.setHolderId(to.getUniqueId());
                 fieldTO.setId(field.getId());
                 fieldTO.setClassName(field.getClassName());
                 fieldTO.setIcon(field.getIcon());
+                fieldTO.setBinded(BindingUtils.isFieldBinded(form, field));
                 fields.add(fieldTO);
             }
         }

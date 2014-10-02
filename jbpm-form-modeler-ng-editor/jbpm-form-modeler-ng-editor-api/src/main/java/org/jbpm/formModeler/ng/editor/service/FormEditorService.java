@@ -46,4 +46,6 @@ public interface FormEditorService {
     String editFieldValue(String ctxUID, String editionCtxUID, String editionMarshalledCtx, boolean persist);
 
     EditionContextTO changeFieldType(String ctxUID, String fieldName, String code, String editionCtxUID);
+
+    Long getFieldIdFromExpression(String ctxUID, String bindingExpression);
 }

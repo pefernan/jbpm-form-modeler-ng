@@ -127,7 +127,7 @@ public class FieldManagerImpl implements FieldManager {
         for (Field field : fieldTypes) {
             if (field.getCode().equals(typeCode)) return (Field) SerializationUtils.clone(field);
         }
-        return backguardCompatibilityFields.get(typeCode);
+        return (Field) SerializationUtils.clone(backguardCompatibilityFields.get(typeCode));
     }
 
     @Override
@@ -135,7 +135,7 @@ public class FieldManagerImpl implements FieldManager {
         for (Field field : fieldTypes) {
             if (field.getFieldClass().equals(classType)) return (Field)SerializationUtils.clone(field);
         }
-        return compatibleClasses.get(classType);
+        return (Field) SerializationUtils.clone(compatibleClasses.get(classType));
     }
 
     @Override

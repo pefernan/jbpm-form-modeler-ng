@@ -3,15 +3,20 @@ package org.jbpm.formModeler.ng.editor.client.editor.modeler;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jbpm.formModeler.ng.common.client.renderer.FormRendererComponent;
 import org.jbpm.formModeler.ng.common.client.rendering.event.FieldChangedEvent;
 import org.jbpm.formModeler.ng.editor.client.editor.dataHolders.DataHoldersEditor;
 import org.jbpm.formModeler.ng.editor.client.editor.modeler.canvas.FormCanvas;
 import org.jbpm.formModeler.ng.editor.client.editor.modeler.sources.FieldsBySourceEditor;
+import org.jbpm.formModeler.ng.editor.events.canvas.DeleteFieldEvent;
+import org.jbpm.formModeler.ng.editor.events.canvas.RefreshCanvasEvent;
 import org.jbpm.formModeler.ng.editor.events.canvas.StartEditFieldPropertyEvent;
+import org.jbpm.formModeler.ng.editor.events.dataHolders.RefreshHoldersListEvent;
 import org.jbpm.formModeler.ng.editor.model.EditionContextTO;
 import org.jbpm.formModeler.ng.editor.model.FormEditorContextTO;
 import org.jbpm.formModeler.ng.editor.service.FormEditorService;
@@ -56,6 +61,7 @@ public class FormModeler extends Composite {
     private FormEditorContextTO context;
 
     private String editionCtxUID = null;
+    private String editedField = null;
 
     private static FormModelerViewBinder uiBinder = GWT.create(FormModelerViewBinder.class);
 
@@ -77,14 +83,42 @@ public class FormModeler extends Composite {
         if (context.getCtxUID().equals(event.getContext())) {
             if (editionCtxUID != null) {
                 propertiesContainer.clear();
-                updateFieldContext(editionCtxUID, rendererComponent.getFormValues(), true);
+                updateFieldContext(editionCtxUID, rendererComponent.getFormValues(), false);
             }
             editorService.call(new RemoteCallback<EditionContextTO>() {
                 @Override
                 public void callback(final EditionContextTO response) {
+                    editedField = event.getFieldUid();
                     loadEditionForm(response);
                 }
             }).startFieldEdition(event.getContext(), event.getFieldUid());
+        }
+    }
+
+    public void deleteField(@Observes final DeleteFieldEvent event) {
+        if (context.getCtxUID().equals(event.getContext())) {
+            editorService.call(new RemoteCallback<String>() {
+                                   @Override
+                                   public void callback(String jsonResponse) {
+                                       if (editionCtxUID != null && event.getFieldUid().equals(editedField)) {
+                                           propertiesContainer.clear();
+                                           updateFieldContext(editionCtxUID, rendererComponent.getFormValues(), false);
+                                           editionCtxUID = null;
+                                           editedField = null;
+                                       }
+                                       if (jsonResponse != null) {
+                                           canvas.refreshContext(jsonResponse);
+                                           fieldsBySourceEditor.loadFormSources();
+                                       }
+                                   }
+                               }, new ErrorCallback<Object>() {
+                                   @Override
+                                   public boolean error(Object message, Throwable throwable) {
+                                       Window.alert("Something wong happened: " + message);
+                                       return false;
+                                   }
+                               }
+            ).removeFieldFromForm(context.getCtxUID(), Long.decode(event.getFieldUid()));
         }
     }
 

@@ -12,6 +12,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jbpm.formModeler.ng.editor.events.canvas.StartEditFieldPropertyEvent;
 import org.jbpm.formModeler.ng.editor.events.dataHolders.RefreshHoldersListEvent;
 import org.jbpm.formModeler.ng.editor.model.FormEditorContextTO;
 import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderFieldTO;
@@ -19,6 +20,7 @@ import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderTO;
 import org.jbpm.formModeler.ng.editor.service.FormEditorService;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -29,6 +31,9 @@ public class FieldsBySourceEditor extends Composite {
             UiBinder<Widget, FieldsBySourceEditor> {
 
     }
+
+    @Inject
+    private Event<StartEditFieldPropertyEvent> fieldPropertyEvent;
 
     @Inject
     private Caller<FormEditorService> editorService;
@@ -50,7 +55,7 @@ public class FieldsBySourceEditor extends Composite {
         loadFormSources();
     }
 
-    protected void loadFormSources() {
+    public void loadFormSources() {
         editorService.call(new RemoteCallback<DataHolderTO[]>() {
             @Override
             public void callback(DataHolderTO[] dataHolderTOs) {
@@ -71,23 +76,104 @@ public class FieldsBySourceEditor extends Composite {
             }
 
             for (final DataHolderFieldTO field : holder.getFields()) {
+                Widget item;
+                if (field.isBinded()) item = getBindedWidget(field, holder);
+                else item = getSourceAddWidget(field, holder);
 
-                ClickHandler handler = new ClickHandler() {
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        editorService.call(new RemoteCallback<DataHolderTO[]>() {
-                            @Override
-                            public void callback(DataHolderTO[] holders) {
-                                loadFormSources(holders);
-                            }
-                        }).addFieldFromHolder(context.getCtxUID(), field);
-                    }
-                };
 
-                if (currentNode != null) currentNode.addItem(getSourceAddWidget(field.getId(), holder.getRenderColor(), handler));
-                else holdersTree.add(getSourceAddWidget(field.getId(), holder.getRenderColor(), handler));
+                if (currentNode != null) currentNode.addItem(item);
+                else holdersTree.add(item);
             }
         }
+    }
+
+    protected Widget getBindedWidget(final DataHolderFieldTO field, final DataHolderTO holder) {
+        HorizontalPanel fieldWidget = new HorizontalPanel();
+        fieldWidget.setWidth("100%");
+
+        fieldWidget.add(new HTML(field.getId()));
+
+        SimplePanel color = new SimplePanel();
+        color.setWidth("20px");
+        color.setHeight("20px");
+        color.getElement().getStyle().setBackgroundColor(holder.getRenderColor());
+
+        SimplePanel colorPanel = new SimplePanel();
+        colorPanel.add(color);
+        colorPanel.getElement().getStyle().setPadding(3, Style.Unit.PX);
+
+        fieldWidget.add(colorPanel);
+        fieldWidget.setCellWidth(colorPanel, "20px");
+
+
+
+        ClickHandler handler = new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+
+                String bindingExpression = "";
+                if (holder.isCanHaveChild()) bindingExpression = holder.getUniqueId() + "/";
+                bindingExpression += field.getId();
+
+                editorService.call(new RemoteCallback<Long>() {
+                    @Override
+                    public void callback(Long id) {
+                        if (id != null) fieldPropertyEvent.fire(new StartEditFieldPropertyEvent(context.getCtxUID(), id.toString()));
+                    }
+                }).getFieldIdFromExpression(context.getCtxUID(), bindingExpression);
+            }
+        };
+
+
+
+        IconAnchor action = new IconAnchor();
+        action.setIcon(IconType.PENCIL);
+        action.addClickHandler(handler);
+        action.getElement().getStyle().setPadding(3, Style.Unit.PX);
+
+        fieldWidget.add(action);
+        fieldWidget.setCellWidth(action, "20px");
+        return fieldWidget;
+    }
+
+    protected Widget getSourceAddWidget(final DataHolderFieldTO field, final DataHolderTO holder) {
+        HorizontalPanel fieldWidget = new HorizontalPanel();
+        fieldWidget.setWidth("100%");
+
+        fieldWidget.add(new HTML(field.getId()));
+
+        SimplePanel color = new SimplePanel();
+        color.setWidth("20px");
+        color.setHeight("20px");
+        color.getElement().getStyle().setBackgroundColor(holder.getRenderColor());
+
+        SimplePanel colorPanel = new SimplePanel();
+        colorPanel.add(color);
+        colorPanel.getElement().getStyle().setPadding(3, Style.Unit.PX);
+
+        fieldWidget.add(colorPanel);
+        fieldWidget.setCellWidth(colorPanel, "20px");
+
+        ClickHandler handler = new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                editorService.call(new RemoteCallback<DataHolderTO[]>() {
+                    @Override
+                    public void callback(DataHolderTO[] holders) {
+                        loadFormSources(holders);
+                    }
+                }).addFieldFromHolder(context.getCtxUID(), field);
+            }
+        };
+
+        IconAnchor action = new IconAnchor();
+        action.setIcon(IconType.PLAY);
+        action.addClickHandler(handler);
+        action.getElement().getStyle().setPadding(3, Style.Unit.PX);
+
+        fieldWidget.add(action);
+        fieldWidget.setCellWidth(action, "20px");
+        return fieldWidget;
     }
 
     protected Widget getSourceAddWidget(String label, String renderColor, ClickHandler handler) {
