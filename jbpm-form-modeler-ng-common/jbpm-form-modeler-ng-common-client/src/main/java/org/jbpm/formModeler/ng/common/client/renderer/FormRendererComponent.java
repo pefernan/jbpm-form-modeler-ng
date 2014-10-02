@@ -16,6 +16,7 @@ import org.jbpm.formModeler.ng.common.client.rendering.FormRendererManager;
 import org.jbpm.formModeler.ng.common.client.rendering.event.FieldChangedEvent;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormContext;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormContextStatus;
+import org.jbpm.formModeler.ng.common.client.rendering.layouts.FormLayoutRenderer;
 import org.jbpm.formModeler.ng.common.client.rendering.renderers.FormRenderer;
 import org.uberfire.mvp.Command;
 
@@ -59,9 +60,9 @@ public class FormRendererComponent extends Composite {
 
             status = context.getContextStatus();
 
-            FormRenderer renderer = formRendererManager.getRendererByType(context.getFormDefinition().getDisplayMode());
+            FormLayoutRenderer layoutRenderer = formRendererManager.getLayoutRendererByType(context.getFormDefinition().getDisplayMode());
 
-            Panel content = renderer.generateForm(context);
+            Panel content = layoutRenderer.generateForm(context);
 
             if (content != null) {
                 formContent.add(content);

@@ -1,4 +1,4 @@
-package org.jbpm.formModeler.ng.editor.client.editor.modeler.canvas.rendering.renderers;
+package org.jbpm.formModeler.ng.editor.client.editor.modeler.canvas.rendering.layouts;
 
 import com.github.gwtbootstrap.client.ui.base.IconAnchor;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
@@ -10,10 +10,9 @@ import com.google.gwt.user.client.ui.*;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jbpm.formModeler.ng.common.client.rendering.js.FieldDefinition;
-import org.jbpm.formModeler.ng.common.client.rendering.js.FormContext;
-import org.jbpm.formModeler.ng.common.client.rendering.js.FormDefinition;
-import org.jbpm.formModeler.ng.common.client.rendering.renderers.DefaultFormRenderer;
+import org.jbpm.formModeler.ng.common.client.rendering.js.*;
+import org.jbpm.formModeler.ng.common.client.rendering.layouts.DefaultFormLayoutRenderer;
+import org.jbpm.formModeler.ng.common.client.rendering.layouts.FormLayoutRenderer;
 import org.jbpm.formModeler.ng.editor.events.FormModelerEvent;
 import org.jbpm.formModeler.ng.editor.events.canvas.DeleteFieldEvent;
 import org.jbpm.formModeler.ng.editor.events.canvas.RefreshCanvasEvent;
@@ -28,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Dependent
-public class EditorDefaultFormRenderer extends DefaultFormRenderer {
+public class DefaultEditorFormLayoutRenderer extends DefaultFormLayoutRenderer {
     @Inject
     private Event<StartEditFieldPropertyEvent> fieldPropertyEvent;
 
@@ -48,101 +47,55 @@ public class EditorDefaultFormRenderer extends DefaultFormRenderer {
 
     @Override
     public String getCode() {
-        return "editor-" + super.getCode();
+        return "editor-default";
     }
 
     @Override
     public Panel generateForm(FormContext context) {
+
         VerticalPanel formContent = new VerticalPanel();
         FormDefinition formDefinition = context.getFormDefinition();
+
         if (formDefinition != null) {
             ctxUID = context.getCtxUID();
-
-            JsArray<FieldDefinition> fields = formDefinition.getFieldDefinitions();
-
-            if (fields != null && fields.length() > 0) {
-
+            FormLayoutDefinition layout = formDefinition.getLayout();
+            for (int row = 0; row < layout.getAreas().length(); row++) {
+                FormLayoutArea area = layout.getAreas().get(row);
+                formContent.add(getHorizontalDropArea(row));
                 HorizontalPanel horizontalPanel = new HorizontalPanel();
-
-                int currentRow = -1;
-                FieldDefinition lastField = null;
-
-                for (int i = 0; i < formDefinition.getFieldDefinitions().length(); i++) {
-                    FieldDefinition currentField = formDefinition.getFieldDefinitions().get(i);
-                    Widget fieldBox = getFieldBox(currentField, context);
-                    if (fieldBox != null) {
-                        if (currentField.getRow() != currentRow) {
-                            if (lastField != null) {
-                                horizontalPanel.add(getVerticalDropArea(lastField.getRow(), lastField.getColumn() + 1));
-                            }
-                            formContent.add(horizontalPanel);
-                            horizontalPanel = new HorizontalPanel();
-                            formContent.add(getHorizontalDropArea(currentField.getRow()));
-                        }
-                        horizontalPanel.add(getVerticalDropArea(currentField.getRow(), currentField.getColumn()));
-                        horizontalPanel.add(fieldBox);
-                        currentRow = currentField.getRow();
-                        lastField = currentField;
-                    }
-                }
-                if (lastField != null) horizontalPanel.add(getVerticalDropArea(lastField.getRow(), lastField.getColumn() + 1));
                 formContent.add(horizontalPanel);
-                formContent.add(getHorizontalDropArea(-1));
+
+                for (int column = 0; column < area.getElements().length(); column++) {
+                    FieldDefinition fieldDefinition = formDefinition.getFieldDefinition(area.getElements().get(column));
+                    Widget fieldBox = getFieldBox(fieldDefinition, context);
+                    horizontalPanel.add(getVerticalDropArea(row, column));
+                    horizontalPanel.add(fieldBox);
+                }
+                horizontalPanel.add(getVerticalDropArea(row, area.getElements().length()));
             }
+            formContent.add(getHorizontalDropArea(layout.getAreas().length()));
         }
+
         return formContent;
     }
 
-    protected Panel getHorizontalDropArea(final int row) {
-        SimpleLayoutPanel dropArea = new SimpleLayoutPanel();
-        dropArea.addDomHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                doMoveField(row, 0, true);
-            }
-        }, ClickEvent.getType());
-        dropArea.setWidth("100%");
-        dropArea.setHeight("10px");
-        dropArea.getElement().getStyle().setBackgroundColor("green");
-        dropArea.setVisible(false);
-        dropAreas.add(dropArea);
-        return dropArea;
-    }
-
-    protected Panel getVerticalDropArea(final int row, final int column) {
-        SimpleLayoutPanel dropArea = new SimpleLayoutPanel();
-        dropArea.addDomHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                doMoveField(row, column, false);
-            }
-        }, ClickEvent.getType());
-        dropArea.setWidth("10px");
-        dropArea.setHeight("30px");
-        dropArea.getElement().getStyle().setBackgroundColor("green");
-        dropArea.setVisible(false);
-        dropAreas.add(dropArea);
-        return dropArea;
-    }
-
-
-    protected void doMoveField(int row, int column, boolean newLine) {
+    protected void doMoveField(int row, int column) {
         if (selectedField != null) {
             editorService.call(new RemoteCallback<String>() {
-                @Override
-                public void callback(String jsonResponse) {
-                    if (jsonResponse != null) {
-                        modelerEvent.fire(new RefreshCanvasEvent(ctxUID, jsonResponse));
-                        modelerEvent.fire(new RefreshHoldersListEvent(ctxUID));
-                    }
-                }
-            }, new ErrorCallback<Object>() {
-                @Override
-                public boolean error(Object message, Throwable throwable) {
-                    Window.alert("Something wong happened: " + message);
-                    return false;
-                }
-            }).moveSelectedFieldToFieldPosition(ctxUID, Long.decode(selectedField.getUid()), row, column);
+                                   @Override
+                                   public void callback(String jsonResponse) {
+                                       if (jsonResponse != null) {
+                                           modelerEvent.fire(new RefreshCanvasEvent(ctxUID, jsonResponse));
+                                           modelerEvent.fire(new RefreshHoldersListEvent(ctxUID));
+                                       }
+                                   }
+                               }, new ErrorCallback<Object>() {
+                                   @Override
+                                   public boolean error(Object message, Throwable throwable) {
+                                       Window.alert("Something wong happened: " + message);
+                                       return false;
+                                   }
+                               }).moveSelectedFieldToFieldPosition(ctxUID, Long.decode(selectedField.getUid()), row, column);
         }
     }
 
@@ -228,5 +181,37 @@ public class EditorDefaultFormRenderer extends DefaultFormRenderer {
         horizontalPanel.add(holder);
         horizontalPanel.getElement().getStyle().setPaddingRight(10, Style.Unit.PX);
         return horizontalPanel;
+    }
+
+    protected Panel getHorizontalDropArea(final int row) {
+        SimpleLayoutPanel dropArea = new SimpleLayoutPanel();
+        dropArea.addDomHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                doMoveField(row, -1);
+            }
+        }, ClickEvent.getType());
+        dropArea.setWidth("100%");
+        dropArea.setHeight("10px");
+        dropArea.getElement().getStyle().setBackgroundColor("green");
+        dropArea.setVisible(false);
+        dropAreas.add(dropArea);
+        return dropArea;
+    }
+
+    protected Panel getVerticalDropArea(final int row, final int column) {
+        SimpleLayoutPanel dropArea = new SimpleLayoutPanel();
+        dropArea.addDomHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                doMoveField(row, column);
+            }
+        }, ClickEvent.getType());
+        dropArea.setWidth("10px");
+        dropArea.setHeight("30px");
+        dropArea.getElement().getStyle().setBackgroundColor("green");
+        dropArea.setVisible(false);
+        dropAreas.add(dropArea);
+        return dropArea;
     }
 }

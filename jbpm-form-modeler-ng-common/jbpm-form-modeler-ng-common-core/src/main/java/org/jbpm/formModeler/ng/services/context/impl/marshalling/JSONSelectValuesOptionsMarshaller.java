@@ -5,7 +5,7 @@ import org.codehaus.jackson.JsonEncoding;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.jbpm.formModeler.ng.model.Field;
-import org.jbpm.formModeler.ng.model.impl.DropDown;
+import org.jbpm.formModeler.ng.model.impl.fields.DropDown;
 import org.jbpm.formModeler.ng.services.context.FormRenderContext;
 import org.jbpm.formModeler.ng.services.management.forms.SelectValuesOptionsMarshaller;
 import org.jbpm.formModeler.ng.services.management.forms.SelectValuesProvider;

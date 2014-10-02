@@ -1,9 +1,7 @@
 package org.jbpm.formModeler.ng.model;
 
 import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 public class Form implements Serializable, Comparable {
     public static final String RENDER_MODE_FORM = "form";
@@ -37,9 +35,9 @@ public class Form implements Serializable, Comparable {
 
     private String showMode;
 
-    private LinkedList<LinkedList<Field>> elementsGrid = new LinkedList<LinkedList<Field>>();
+    private Layout layout;
 
-    private int fieldsCount = 0;
+    private List<FormElement> elements = new ArrayList<FormElement>();
 
     private Set<DataHolder> holders = new TreeSet<DataHolder>();
 
@@ -106,13 +104,8 @@ public class Form implements Serializable, Comparable {
      */
     public Field getField(String name) {
         if (name == null || name.trim().length() == 0) return null;
-        if (!elementsGrid.isEmpty()) {
-            for (LinkedList<Field> fields : elementsGrid) {
-                for (Field field : fields) {
-                    if (name.equals(field.getName()))
-                        return field;
-                }
-            }
+        for (FormElement element : elements) {
+            if (name.equals(element.getName())) return (Field) element;
         }
         return null;
     }
@@ -120,13 +113,8 @@ public class Form implements Serializable, Comparable {
 
     public Field getFieldById(Long id) {
         if (id == null || id < 0) return null;
-        if (!elementsGrid.isEmpty()) {
-            for (LinkedList<Field> fields : elementsGrid) {
-                for (Field field : fields) {
-                    if (id.equals(field.getId()))
-                        return field;
-                }
-            }
+        for (FormElement element : elements) {
+            if (id.equals(element.getId())) return (Field) element;
         }
         return null;
     }
@@ -152,27 +140,17 @@ public class Form implements Serializable, Comparable {
     }
 
     public boolean addField(Field field, boolean groupWithPrevious) {
-        LinkedList<Field> fieldRow;
-        if (elementsGrid.size() == 0 || !groupWithPrevious) {
-            fieldRow = new LinkedList<Field>();
-            elementsGrid.add(fieldRow);
-        } else {
-            fieldRow = elementsGrid.getLast();
-        }
         field.setForm(this);
-        fieldsCount ++;
-        return fieldRow.add(field);
+        return elements.add(field);
     }
 
     public Field deleteField(Long fieldId) {
         if (fieldId != null) {
-            for (LinkedList<Field> fields : elementsGrid) {
-                for (Field field : fields) {
-                    if (fieldId.equals(field.getId())) {
-                        fields.remove(field);
-                        if (fields.isEmpty()) elementsGrid.remove(fields);
-                        return field;
-                    }
+            for (FormElement element : elements) {
+                if (element.getId().equals(fieldId)) {
+                    elements.remove(element);
+                    layout.removeElement(fieldId);
+                    return (Field) element;
                 }
             }
         }
@@ -228,18 +206,8 @@ public class Form implements Serializable, Comparable {
         this.showMode = showMode;
     }
 
-    public LinkedList<LinkedList<Field>> getElementsGrid() {
-        return elementsGrid;
-    }
-
-    public int getFieldsCount() {
-        int fieldsCount = 0;
-
-        for (LinkedList<Field> fields : elementsGrid) {
-            fieldsCount += fields.size();
-        }
-
-        return fieldsCount;
+    public List<FormElement> getElements() {
+        return elements;
     }
 
     public String getSerializedStatus() {
@@ -248,5 +216,13 @@ public class Form implements Serializable, Comparable {
 
     public void setSerializedStatus(String serializedStatus) {
         this.serializedStatus = serializedStatus;
+    }
+
+    public Layout getLayout() {
+        return layout;
+    }
+
+    public void setLayout(Layout layout) {
+        this.layout = layout;
     }
 }

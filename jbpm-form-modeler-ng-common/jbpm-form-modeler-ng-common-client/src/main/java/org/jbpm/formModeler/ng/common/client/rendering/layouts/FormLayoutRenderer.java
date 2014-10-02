@@ -1,4 +1,4 @@
-package org.jbpm.formModeler.ng.common.client.rendering.renderers;
+package org.jbpm.formModeler.ng.common.client.rendering.layouts;
 
 import com.github.gwtbootstrap.client.ui.FormLabel;
 import com.google.gwt.i18n.client.LocaleInfo;
@@ -13,11 +13,8 @@ import org.jbpm.formModeler.ng.common.client.rendering.js.FormDefinition;
 import org.jbpm.formModeler.ng.model.Form;
 
 import javax.inject.Inject;
-import java.util.Map;
 
-public abstract class FormRenderer {
-    private Map<String, Widget> inputs;
-    private Map<String, Widget> labels;
+public abstract class FormLayoutRenderer {
 
     @Inject
     protected FieldProviderManager providerManager;
@@ -35,9 +32,9 @@ public abstract class FormRenderer {
 
         String fieldValue = "";
 
-        Widget input = provider.getFieldInput(field, context);
 
-        inputs.put(field.getUid(), input);
+
+        Widget input = provider.getFieldInput(field, context);
 
         FormDefinition form = context.getFormDefinition();
 
@@ -45,21 +42,17 @@ public abstract class FormRenderer {
 
         CellPanel fieldBox;
 
-        Widget label = getFieldLabel(field);
-        labels.put(field.getUid(), label);
-
-
         if (form.getLabelMode().equals(Form.LABEL_MODE_AFTER)) {
             fieldBox = new VerticalPanel();
             fieldBox.add(input);
-            fieldBox.add(label);
+            fieldBox.add(getFieldLabel(field));
         } else if (form.getLabelMode().equals(Form.LABEL_MODE_LEFT)) {
             fieldBox = new HorizontalPanel();
-            fieldBox.add(label);
+            fieldBox.add(getFieldLabel(field));
             fieldBox.add(input);
         } else {
             fieldBox = new VerticalPanel();
-            fieldBox.add(label);
+            fieldBox.add(getFieldLabel(field));
             fieldBox.add(input);
         }
 

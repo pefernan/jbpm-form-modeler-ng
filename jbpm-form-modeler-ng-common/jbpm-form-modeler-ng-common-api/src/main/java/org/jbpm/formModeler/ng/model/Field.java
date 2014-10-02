@@ -20,8 +20,6 @@ import java.util.Map;
 
 public abstract class Field extends FormElement {
 
-    protected String name;
-
     protected Map<String, String> label = new HashMap<String, String>();
 
     protected Boolean fieldRequired = Boolean.FALSE;
@@ -37,14 +35,6 @@ public abstract class Field extends FormElement {
     public abstract FieldValueMarshaller getMarshaller();
 
     public abstract String getIcon();
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public Map<String, String> getLabel() {
         return label;

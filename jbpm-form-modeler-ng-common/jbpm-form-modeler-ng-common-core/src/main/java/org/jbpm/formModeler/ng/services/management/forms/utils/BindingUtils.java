@@ -16,10 +16,7 @@
 package org.jbpm.formModeler.ng.services.management.forms.utils;
 
 import org.apache.commons.lang.StringUtils;
-import org.jbpm.formModeler.ng.model.DataFieldHolder;
-import org.jbpm.formModeler.ng.model.DataHolder;
-import org.jbpm.formModeler.ng.model.Field;
-import org.jbpm.formModeler.ng.model.Form;
+import org.jbpm.formModeler.ng.model.*;
 
 import java.util.LinkedList;
 
@@ -36,12 +33,11 @@ public class BindingUtils {
 
 
     public static final Field getFielForBindingExpression(String bindingExpression, Form form) {
-        for (LinkedList<Field> fields : form.getElementsGrid()) {
-            for (Field field : fields) {
-                if (!StringUtils.isEmpty(field.getBindingExpression())) {
-                    if (field.getBindingExpression().equals(bindingExpression))
-                        return field;
-                }
+        for (FormElement formElement : form.getElements()) {
+            Field field = (Field) formElement;
+            if (!StringUtils.isEmpty(field.getBindingExpression())) {
+                if (field.getBindingExpression().equals(bindingExpression))
+                    return field;
             }
         }
         return null;

@@ -24,6 +24,14 @@ public class FormDefinition extends JavaScriptObject {
         return this.labelMode;
     }-*/;
 
+    public final native FormLayoutDefinition getLayout() /*-{
+        return this.layout;
+    }-*/;
+
+    public final native FieldDefinition getFieldDefinition(String fieldUid) /*-{
+        return this.fields[fieldUid];
+    }-*/;
+
     public final native JsArray<FieldDefinition> getFieldDefinitions() /*-{
         return this.fields;
     }-*/;

@@ -118,5 +118,5 @@
     <property name="accesskey" value=""/>
     <property name="bindingExpression" value="field/bindingExpression"/>
   </field>
-  <dataHolder inputId="field" name="#0000A0" type="className" outId="field" value="org.jbpm.formModeler.ng.model.impl.InputTextDouble" id="field"/>
+  <dataHolder inputId="field" name="#0000A0" type="className" outId="field" value="org.jbpm.formModeler.ng.model.impl.fields.InputTextDouble" id="field"/>
 </form>

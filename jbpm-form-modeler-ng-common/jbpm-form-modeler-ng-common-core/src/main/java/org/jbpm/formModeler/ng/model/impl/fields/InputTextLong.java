@@ -1,4 +1,4 @@
-package org.jbpm.formModeler.ng.model.impl;
+package org.jbpm.formModeler.ng.model.impl.fields;
 
 public class InputTextLong extends InputTextBigInteger {
     @Override

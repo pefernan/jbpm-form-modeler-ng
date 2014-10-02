@@ -324,18 +324,15 @@ public class FormEditorServiceImpl implements FormEditorService {
     }
 
     @Override
-    public String moveSelectedFieldToFieldPosition(String ctxUID, Long fieldId, int row, int column, boolean newLine) {
+    public String moveSelectedFieldToFieldPosition(String ctxUID, Long fieldId, int row, int column) {
         FormRenderContext context = contextManager.getFormRenderContext(ctxUID);
         String ctxJson = null;
         if (context != null) {
             Form form = context.getForm();
-            if (row == 0 && newLine) {
-                formManager.moveFirst(form, fieldId);
-            } else if (row == -1) {
-                formManager.moveLast(form, fieldId);
-            } else {
-                formManager.changeFieldPosition(form, fieldId, row, column, newLine);
-            }
+            int areas = form.getLayout().getAreas().size();
+            form.getLayout().removeElement(fieldId);
+            if (areas > form.getLayout().getAreas().size() && row >= form.getLayout().getAreas().size()) row --;
+            form.getLayout().addElement(row, column, fieldId);
             context.setFormTemplate(formDefinitionMarshaller.marshall(context.getForm()));
             ctxJson = contextManager.marshallContext(context);
         }

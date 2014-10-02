@@ -10,7 +10,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.jbpm.formModeler.ng.model.DataHolder;
 import org.jbpm.formModeler.ng.model.Field;
 import org.jbpm.formModeler.ng.model.Form;
-import org.jbpm.formModeler.ng.model.impl.DropDown;
+import org.jbpm.formModeler.ng.model.FormElement;
+import org.jbpm.formModeler.ng.model.impl.fields.DropDown;
 import org.jbpm.formModeler.ng.services.LocaleManager;
 import org.jbpm.formModeler.ng.services.context.FormRenderContext;
 import org.jbpm.formModeler.ng.services.context.FormRenderContextMarshaller;
@@ -109,22 +110,20 @@ public class JSONFormRendercontextMarshaller implements FormRenderContextMarshal
 
     private void marshallDropDownOptions(Form form, String namespace, FormRenderContext context, JsonGenerator generator) throws IOException {
         generator.writeObjectFieldStart(OPTIONS);
-        for (LinkedList<Field> fields : form.getElementsGrid()) {
-            for (Field field : fields) {
+        for (FormElement field : form.getElements()) {
 
-                if (!(field instanceof DropDown)) continue;
+            if (!(field instanceof DropDown)) continue;
 
-                String fieldId = StringUtils.isEmpty(namespace) ? field.getName() : namespace + NAMESPACE_SEPARATOR + field.getName();
+            String fieldId = StringUtils.isEmpty(namespace) ? field.getName() : namespace + NAMESPACE_SEPARATOR + field.getName();
 
-                String options = optionsMarshaller.marshallOptionsForField(field, context);
+            String options = optionsMarshaller.marshallOptionsForField((Field)field, context);
 
-                if (StringUtils.isEmpty(options)) {
-                    generator.writeArrayFieldStart(fieldId);
-                    generator.writeEndArray();
-                } else {
-                    generator.writeFieldName(fieldId);
-                    generator.writeRawValue(options);
-                }
+            if (StringUtils.isEmpty(options)) {
+                generator.writeArrayFieldStart(fieldId);
+                generator.writeEndArray();
+            } else {
+                generator.writeFieldName(fieldId);
+                generator.writeRawValue(options);
             }
         }
         generator.writeEndObject();
@@ -135,32 +134,32 @@ public class JSONFormRendercontextMarshaller implements FormRenderContextMarshal
 
         List<DropDown> dropDowns = new ArrayList<DropDown>();
 
-        for (LinkedList<Field> fields : form.getElementsGrid()) {
-            for (Field field : fields) {
+        for (FormElement formElement : form.getElements()) {
 
-                String fieldId = StringUtils.isEmpty(namespace) ? field.getName() : namespace + NAMESPACE_SEPARATOR + field.getName();
+            Field field = (Field) formElement;
 
-                if (StringUtils.isEmpty(field.getBindingExpression())) {
-                    generator.writeNullField(fieldId);
-                    continue;
-                }
+            String fieldId = StringUtils.isEmpty(namespace) ? field.getName() : namespace + NAMESPACE_SEPARATOR + field.getName();
 
-                DataHolder dataHolder = BindingUtils.getDataHolderForField(field);
-
-                Object value;
-
-                if (dataHolder == null) {
-                    value = getUnbindedValue(field, inputData);
-                } else {
-                    value = getBindedValue(field, dataHolder, inputData, namespace);
-                }
-
-                if (value == null) generator.writeNullField(fieldId);
-
-                generator.writeStringField(fieldId, field.getMarshaller().marshallValue(value, context));
-
-                if (field.getCode().equals(DropDown.CODE)) dropDowns.add((DropDown) field);
+            if (StringUtils.isEmpty(field.getBindingExpression())) {
+                generator.writeNullField(fieldId);
+                continue;
             }
+
+            DataHolder dataHolder = BindingUtils.getDataHolderForField(field);
+
+            Object value;
+
+            if (dataHolder == null) {
+                value = getUnbindedValue(field, inputData);
+            } else {
+                value = getBindedValue(field, dataHolder, inputData, namespace);
+            }
+
+            if (value == null) generator.writeNullField(fieldId);
+
+            generator.writeStringField(fieldId, field.getMarshaller().marshallValue(value, context));
+
+            if (field.getCode().equals(DropDown.CODE)) dropDowns.add((DropDown) field);
         }
         generator.writeEndObject();
     }

@@ -21,6 +21,7 @@ import org.apache.xerces.parsers.DOMParser;
 import org.jbpm.formModeler.ng.model.DataHolder;
 import org.jbpm.formModeler.ng.model.Field;
 import org.jbpm.formModeler.ng.model.Form;
+import org.jbpm.formModeler.ng.model.FormElement;
 import org.jbpm.formModeler.ng.services.LocaleManager;
 import org.jbpm.formModeler.ng.services.management.dataHolders.DataHolderBuildConfig;
 import org.jbpm.formModeler.ng.services.management.dataHolders.DataHolderManager;
@@ -212,12 +213,9 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
         addXMLNode("labelMode", form.getLabelMode(), rootNode);
         addXMLNode("showMode", form.getShowMode(), rootNode);
 
-        for (LinkedList<Field> fields : form.getElementsGrid()) {
-            boolean changeColumn = true;
-            for (Field field : fields) {
-                generateFieldXML(field, !changeColumn, rootNode);
-                changeColumn = false;
-            }
+        for (FormElement formElement : form.getElements()) {
+            Field field = (Field) formElement;
+            generateFieldXML(field, true, rootNode);
         }
 
         for (DataHolder dataHolder : form.getHolders()) {
@@ -286,6 +284,7 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
         }
 
         form.addField(field, groupWithPrevious);
+        form.getLayout().addElement(field);
     }
 
     private String getFieldProperty(String formName, String fieldName, String selector, Properties props) {

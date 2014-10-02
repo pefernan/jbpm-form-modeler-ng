@@ -22,6 +22,7 @@ import org.jbpm.formModeler.ng.model.Field;
 import org.jbpm.formModeler.ng.model.Form;
 import org.jbpm.formModeler.ng.services.LocaleManager;
 import org.jbpm.formModeler.ng.services.management.forms.FieldManager;
+import org.jbpm.formModeler.ng.services.management.forms.FormLayoutManager;
 import org.jbpm.formModeler.ng.services.management.forms.FormManager;
 import org.jbpm.formModeler.ng.services.management.forms.FormSerializationManager;
 import org.jbpm.formModeler.ng.services.management.forms.utils.BindingUtils;
@@ -38,6 +39,9 @@ public class FormManagerImpl implements FormManager {
 
     @Inject
     private FormSerializationManager formSerializationManager;
+
+    @Inject
+    private FormLayoutManager formLayoutManager;
 
     @Inject
     private FieldManager fieldManager;
@@ -101,18 +105,20 @@ public class FormManagerImpl implements FormManager {
     @Override
     public Form createForm() {
         Form form = new Form();
+        form.setLayout(formLayoutManager.getDefaultLayout());
         return form;
     }
 
     @Override
     public Form createForm(String name) {
         Form form = new Form(generateUniqueId(), name);
+        form.setLayout(formLayoutManager.getDefaultLayout());
         return form;
     }
 
     @Override
     public void changeFieldPosition(Form form, Long fieldId, int row, int column, boolean newLine) {
-        int rows = form.getElementsGrid().size();
+        /*int rows = form.getElementsGrid().size();
         Field field = form.deleteField(fieldId);
         if (field == null) return;
 
@@ -125,25 +131,25 @@ public class FormManagerImpl implements FormManager {
         } else {
             fields = form.getElementsGrid().get(row);
         }
-        fields.add(column, field);
+        fields.add(column, field);*/
     }
 
     @Override
     public void moveFirst(Form form, Long fieldId) {
-        Field field = form.deleteField(fieldId);
+        /*Field field = form.deleteField(fieldId);
         if (field == null) return;
         LinkedList<Field> fields = new LinkedList<Field>();
         fields.add(field);
-        form.getElementsGrid().addFirst(fields);
+        form.getElementsGrid().addFirst(fields);*/
     }
 
     @Override
     public void moveLast(Form form, Long fieldId) {
-        Field field = form.deleteField(fieldId);
+        /*Field field = form.deleteField(fieldId);
         if (field == null) return;
         LinkedList<Field> fields = new LinkedList<Field>();
         fields.add(field);
-        form.getElementsGrid().addLast(fields);
+        form.getElementsGrid().addLast(fields);*/
     }
 
     @Override
@@ -152,14 +158,8 @@ public class FormManagerImpl implements FormManager {
         if (result == null) return false;
         try {
             result.copyValues(field);
-            for (LinkedList<Field> row : form.getElementsGrid()) {
-                int index = row.indexOf(field);
-                if (index != -1) {
-                    row.remove(index);
-                    row.add(index, result);
-                    return true;
-                }
-            }
+            form.getElements().remove(field);
+            form.getElements().add(result);
         } catch (Exception ex) {
             log.warn("Error changing fieldType for field '{}' type '{}' to '{}': {}", field.getName(), field.getCode(), code, ex);
 
@@ -217,7 +217,7 @@ public class FormManagerImpl implements FormManager {
 
         label.put(localeManager.getDefaultLang(), holderField.getId() + " (" + holder.getUniqueId() + ")");
 
-        String inputBinging = BindingUtils.generateInputBinding(holder, holderField);
+        String inputBinging = BindingUtils.generateBinding(holder, holderField);
 
         Field field = fieldManager.getFieldByClass(holderField.getClassName());
 
@@ -238,8 +238,13 @@ public class FormManagerImpl implements FormManager {
         field.setName(tmpFName);
         field.setLabel(label);
         field.setBindingExpression(inputBinging);
-        field.setForm(form);
-        return form.addField(field);
+
+        boolean added = form.addField(field);
+        if (added) {
+            field.setForm(form);
+            form.getLayout().addElement(field);
+        }
+        return added;
     }
 
 

@@ -37,7 +37,7 @@ public interface FormEditorService {
 
     String removeFieldFromForm(String ctxUID,  Long fieldId);
 
-    String moveSelectedFieldToFieldPosition(String ctxUID, Long fieldId, int row, int column, boolean newLine);
+    String moveSelectedFieldToFieldPosition(String ctxUID, Long fieldId, int row, int column);
 
     Path save(ObservablePath path, String ctxUID, Metadata content, String commitMessage);
 

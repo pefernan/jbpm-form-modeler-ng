@@ -6,14 +6,14 @@ import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.jbpm.formModeler.ng.model.DataHolder;
-import org.jbpm.formModeler.ng.model.Field;
-import org.jbpm.formModeler.ng.model.Form;
+import org.jbpm.formModeler.ng.model.*;
+import org.jbpm.formModeler.ng.model.impl.layouts.DefaultLayoutArea;
 import org.jbpm.formModeler.ng.services.LocaleManager;
 import org.jbpm.formModeler.ng.services.management.dataHolders.DataHolderBuildConfig;
 import org.jbpm.formModeler.ng.services.management.dataHolders.DataHolderManager;
 import org.jbpm.formModeler.ng.services.management.forms.FieldManager;
 import org.jbpm.formModeler.ng.services.management.forms.FormDefinitionMarshaller;
+import org.jbpm.formModeler.ng.services.management.forms.FormLayoutManager;
 import org.jbpm.formModeler.ng.services.management.forms.FormManager;
 import org.jbpm.formModeler.ng.services.management.forms.utils.BindingUtils;
 import org.slf4j.Logger;
@@ -25,7 +25,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Map;
 
 @ApplicationScoped
@@ -38,6 +37,10 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
     public static final String FORM_NAME = "name";
     public static final String FORM_DISPLAY_MODE = "displayMode";
     public static final String FORM_LABEL_MODE = "labelMode";
+
+    public static final String LAYOUT = "layout";
+    public static final String LAYOUT_AREAS = "areas";
+    public static final String ELEMENTS = "elements";
 
     public static final String FIELDS = "fields";
     public static final String FIELD_UID = "uid";
@@ -67,6 +70,9 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
     private FieldManager fieldManager;
 
     @Inject
+    private FormLayoutManager layoutManager;
+
+    @Inject
     private DataHolderManager dataHolderManager;
 
     @Override
@@ -87,6 +93,7 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
             generator.writeStringField(FORM_DISPLAY_MODE, form.getDisplayMode());
             generator.writeStringField(FORM_LABEL_MODE, form.getLabelMode());
 
+            marshallLayout(form, generator);
             marshallFields(form, generator);
             marshallDataHolders(form, generator);
 
@@ -110,6 +117,23 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
 
         return result;
     }
+    private void marshallLayout(Form form, JsonGenerator generator) throws IOException {
+        generator.writeObjectFieldStart(LAYOUT);
+        Layout layout = form.getLayout();
+        generator.writeStringField(ID, layout.getCode());
+        generator.writeArrayFieldStart(LAYOUT_AREAS);
+        for (LayoutArea area : layout.getAreas()) {
+            generator.writeStartObject();
+            generator.writeArrayFieldStart(ELEMENTS);
+            for (Long fieldId : area.getElementIds()) {
+                generator.writeString(fieldId.toString());
+            }
+            generator.writeEndArray();
+            generator.writeEndObject();
+        }
+        generator.writeEndArray();
+        generator.writeEndObject();
+    }
 
     private void marshallDataHolders(Form form, JsonGenerator generator) throws IOException {
         generator.writeArrayFieldStart(DATAHOLDERS);
@@ -125,56 +149,47 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
     }
 
     private void marshallFields(Form form, JsonGenerator generator) throws IOException {
-        generator.writeArrayFieldStart(FIELDS);
-        int row = 0;
-        for (LinkedList<Field> fields : form.getElementsGrid()) {
-            int column = 0;
-            for (Field field : fields) {
-                field.setColumn(column);
-                field.setRow(row);
+        generator.writeObjectFieldStart(FIELDS);
 
-                generator.writeStartObject();
-                generator.writeStringField(FIELD_UID, field.getId().toString());
-                generator.writeStringField(ID, field.getName());
-                generator.writeStringField(TYPE, field.getCode());
+        for (FormElement formElement : form.getElements()) {
+            Field field = (Field) formElement;
 
-                generator.writeObjectFieldStart(FIELD_LABEL);
-                for (String lang : field.getLabel().keySet()) {
-                    generator.writeStringField(lang, field.getLabel().get(lang));
-                    if(lang.equals(localeManager.getDefaultLang())) generator.writeStringField("default", field.getLabel().get(lang));
-                }
-                generator.writeEndObject();
+            generator.writeObjectFieldStart(field.getId().toString());
+            generator.writeStringField(FIELD_UID, field.getId().toString());
+            generator.writeStringField(ID, field.getName());
+            generator.writeStringField(TYPE, field.getCode());
 
-                generator.writeStringField(FIELD_BINDING_EXPRESSION, field.getBindingExpression());
-                generator.writeBooleanField(FIELD_READONLY, field.getReadonly());
-                generator.writeBooleanField(FIELD_REQUIRED, field.getFieldRequired());
-                generator.writeNumberField(FIELD_ROW, row);
-                generator.writeNumberField(FIELD_COLUMN, column);
-
-                String color = "";
-
-                DataHolder dataHolder = BindingUtils.getDataHolderForField(field);
-                if (dataHolder != null) color = dataHolder.getRenderColor();
-                generator.writeStringField(FIELD_HOLDER_COLOR, color);
-
-                generator.writeObjectFieldStart(FIELD_DATA);
-
-                Map<String, String> properties = field.getCustomProperties();
-
-                if (properties != null) {
-                    for (String key : properties.keySet()) {
-                        generator.writeStringField(key, properties.get(key));
-                    }
-                }
-
-                generator.writeEndObject();
-                generator.writeEndObject();
-
-                column ++;
+            generator.writeObjectFieldStart(FIELD_LABEL);
+            for (String lang : field.getLabel().keySet()) {
+                generator.writeStringField(lang, field.getLabel().get(lang));
+                if(lang.equals(localeManager.getDefaultLang())) generator.writeStringField("default", field.getLabel().get(lang));
             }
-            row ++;
+            generator.writeEndObject();
+
+            generator.writeStringField(FIELD_BINDING_EXPRESSION, field.getBindingExpression());
+            generator.writeBooleanField(FIELD_READONLY, field.getReadonly());
+            generator.writeBooleanField(FIELD_REQUIRED, field.getFieldRequired());
+
+            String color = "";
+
+            DataHolder dataHolder = BindingUtils.getDataHolderForField(field);
+            if (dataHolder != null) color = dataHolder.getRenderColor();
+            generator.writeStringField(FIELD_HOLDER_COLOR, color);
+
+            generator.writeObjectFieldStart(FIELD_DATA);
+
+            Map<String, String> properties = field.getCustomProperties();
+
+            if (properties != null) {
+                for (String key : properties.keySet()) {
+                    generator.writeStringField(key, properties.get(key));
+                }
+            }
+
+            generator.writeEndObject();
+            generator.writeEndObject();
         }
-        generator.writeEndArray();
+        generator.writeEndObject();
     }
 
     @Override
@@ -194,6 +209,7 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
             form.setLabelMode(jsonForm.get(FORM_LABEL_MODE).getTextValue());
 
             unmarshallFields(form, jsonForm.get(FIELDS));
+            unmarshallLayout(form, jsonForm.get(LAYOUT));
             unmarshallDataHolders(form, jsonForm.get(DATAHOLDERS), context);
 
             JsonNode values = jsonForm.get(VALUES);
@@ -205,6 +221,27 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
             log.error("Error unmarshalling form definition: ", e);
         }
         return form;
+    }
+
+    private void unmarshallLayout(Form form, JsonNode jsonLayout) {
+        if (jsonLayout != null && !jsonLayout.isNull()) {
+
+            Layout layout = layoutManager.getLayout(jsonLayout.get(ID).getTextValue());
+            form.setLayout(layout);
+
+            JsonNode areas = jsonLayout.get(LAYOUT_AREAS);
+
+            for (Iterator<JsonNode> it = areas.getElements(); it.hasNext();) {
+                LayoutArea area = new DefaultLayoutArea();
+                layout.getAreas().add(area);
+                JsonNode jsonArea = it.next();
+
+                for (Iterator<JsonNode> itFields = jsonArea.getElements(); itFields.hasNext();) {
+                    area.addElement(Long.decode(itFields.next().asText()));
+                }
+
+            }
+        }
     }
 
     private void unmarshallDataHolders(Form form, JsonNode dataHolders, Map<String, Object> context) {
@@ -224,8 +261,9 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
     protected void unmarshallFields(Form form, JsonNode fields) {
         if (fields != null && !fields.isNull()) {
             int lastRow = -1;
-            for (Iterator<JsonNode> it = fields.getElements(); it.hasNext();) {
-                JsonNode jsonField = it.next();
+
+            for (Iterator<String> it = fields.getFieldNames(); it.hasNext();) {
+                JsonNode jsonField = fields.get(it.next());
 
                 String code = jsonField.get(TYPE).getTextValue();
 

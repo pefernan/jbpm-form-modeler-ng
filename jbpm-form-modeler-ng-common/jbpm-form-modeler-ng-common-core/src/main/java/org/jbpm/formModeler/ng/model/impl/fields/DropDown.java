@@ -1,4 +1,4 @@
-package org.jbpm.formModeler.ng.model.impl;
+package org.jbpm.formModeler.ng.model.impl.fields;
 
 import org.jbpm.formModeler.ng.model.BasicTypeField;
 import org.jbpm.formModeler.ng.model.FieldValueMarshaller;
@@ -8,21 +8,23 @@ import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InputText extends BasicTypeField {
-    private Integer size = 15;
-    private Integer maxLength = 100;
+public class DropDown extends BasicTypeField {
+    public static final String CODE = "DropDown";
+
+    private Integer width = 15;
+    private String provider;
 
     @Inject
     private StringMarshaller marshaller;
 
     @Override
     public String getCode() {
-        return "InputText";
+        return CODE;
     }
 
     @Override
     public String getIcon() {
-        return "textbox.png";
+        return "select.png";
     }
 
     @Override
@@ -35,41 +37,37 @@ public class InputText extends BasicTypeField {
         return marshaller;
     }
 
-    public Integer getSize() {
-        return size;
+    public Integer getWidth() {
+        return width;
     }
 
-    public void setSize(Integer size) {
-        this.size = size;
+    public void setWidth(Integer width) {
+        this.width = width;
     }
 
-    public Integer getMaxLength() {
-        return maxLength;
+    public String getProvider() {
+        return provider;
     }
 
-    public void setMaxLength(Integer maxLength) {
-        this.maxLength = maxLength;
+    public void setProvider(String provider) {
+        this.provider = provider;
     }
 
     @Override
     public Map<String, String> getCustomProperties() {
         Map<String, String> result = new HashMap<String, String>();
-        result.put("size", String.valueOf(size));
-        result.put("maxLength", String.valueOf(maxLength));
+        result.put("width", String.valueOf(width));
+        result.put("provider", provider);
         return result;
     }
 
     @Override
     public void setCustomProperties(Map<String, String> properties) {
         try {
-            size = Integer.decode(properties.get("size"));
+            width = Integer.decode(properties.get("width"));
         } catch (Exception ex) {
-            size = 15;
+            width = 15;
         }
-        try {
-            maxLength = Integer.decode(properties.get("size"));
-        } catch (Exception ex) {
-            maxLength = 100;
-        }
+        provider = properties.get("provider");
     }
 }

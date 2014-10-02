@@ -6,6 +6,8 @@ import java.util.Map;
 public abstract class FormElement implements Serializable, Comparable<FormElement> {
     protected Long id;
 
+    protected String name;
+
     protected Integer row;
 
     protected Integer column;
@@ -20,6 +22,14 @@ public abstract class FormElement implements Serializable, Comparable<FormElemen
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Form getForm() {

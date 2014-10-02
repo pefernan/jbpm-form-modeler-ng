@@ -1,4 +1,4 @@
-package org.jbpm.formModeler.ng.model.impl;
+package org.jbpm.formModeler.ng.model.impl.fields;
 
 import org.jbpm.formModeler.ng.model.FieldValueMarshaller;
 import org.jbpm.formModeler.ng.services.context.impl.marshalling.fieldMarshallers.I18nMarshaller;

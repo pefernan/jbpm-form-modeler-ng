@@ -74,11 +74,11 @@ public class FormModelerServicesTest {
 
         formManager.addAllDataHolderFieldsToForm(newForm, basicHolder);
 
-        assertEquals("Added fields != 1.", newForm.getFieldsCount(), 1);
+        assertEquals("Added fields != 1.", newForm.getElements().size(), 1);
 
         formManager.addAllDataHolderFieldsToForm(newForm, pojoHolder);
 
-        assertEquals("Added fields from Pojo != 5.", newForm.getFieldsCount(), 5);
+        assertEquals("Added fields from Pojo != 5.", newForm.getElements().size(), 5);
 
         DataHolderBuildConfig config2 = new DataHolderBuildConfig("boolean", "yellow", Boolean.class.getName());
 

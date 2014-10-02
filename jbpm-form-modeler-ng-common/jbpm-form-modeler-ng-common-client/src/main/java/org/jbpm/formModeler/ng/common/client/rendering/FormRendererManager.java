@@ -2,6 +2,8 @@ package org.jbpm.formModeler.ng.common.client.rendering;
 
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.jbpm.formModeler.ng.common.client.rendering.layouts.DefaultFormLayoutRenderer;
+import org.jbpm.formModeler.ng.common.client.rendering.layouts.FormLayoutRenderer;
 import org.jbpm.formModeler.ng.common.client.rendering.renderers.DefaultFormRenderer;
 import org.jbpm.formModeler.ng.common.client.rendering.renderers.FormRenderer;
 
@@ -20,7 +22,13 @@ public class FormRendererManager {
     protected HashMap<String, FormRenderer> renderersMap;
 
     @Inject
-    private DefaultFormRenderer defaultrenderer;
+    protected HashMap<String, FormLayoutRenderer> layoutRenderersMap;
+
+    @Inject
+    private DefaultFormRenderer defaultRenderer;
+
+    @Inject
+    private DefaultFormLayoutRenderer defaultLayoutRenderer;
 
     @PostConstruct
     private void init() {
@@ -31,11 +39,24 @@ public class FormRendererManager {
                 renderersMap.put(renderer.getCode(), renderer);
             }
         }
+        Collection<IOCBeanDef<FormLayoutRenderer>> layouts = iocManager.lookupBeans(FormLayoutRenderer.class);
+        if (layouts != null) {
+            for (IOCBeanDef layoutDef : layouts) {
+                FormLayoutRenderer layoutRenderer = (FormLayoutRenderer) layoutDef.getInstance();
+                layoutRenderersMap.put(layoutRenderer.getCode(), layoutRenderer);
+            }
+        }
     }
 
     public FormRenderer getRendererByType(String type) {
         FormRenderer result = renderersMap.get(type);
-        if (result == null) return defaultrenderer;
+        if (result == null) return defaultRenderer;
+        return result;
+    }
+
+    public FormLayoutRenderer getLayoutRendererByType(String type) {
+        FormLayoutRenderer result = layoutRenderersMap.get(type);
+        if (result == null) return defaultLayoutRenderer;
         return result;
     }
 }

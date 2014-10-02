@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 import org.jbpm.formModeler.ng.common.client.rendering.FormRendererManager;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormContext;
+import org.jbpm.formModeler.ng.common.client.rendering.layouts.FormLayoutRenderer;
 import org.jbpm.formModeler.ng.common.client.rendering.renderers.FormRenderer;
 import org.jbpm.formModeler.ng.editor.events.FormModelerEvent;
 import org.jbpm.formModeler.ng.editor.events.canvas.RefreshCanvasEvent;
@@ -65,9 +66,9 @@ public class FormCanvas extends Composite {
 
         values = new JSONObject(jsonContext.getContextStatus());
 
-        FormRenderer renderer = formRendererManager.getRendererByType("editor-" + jsonContext.getFormDefinition().getDisplayMode());
+        FormLayoutRenderer layoutRenderer = formRendererManager.getLayoutRendererByType("editor-" + jsonContext.getFormDefinition().getDisplayMode());
 
-        Panel content = renderer.generateForm(jsonContext);
+        Panel content = layoutRenderer.generateForm(jsonContext);
 
         if (content != null) {
             formContent.add(content);
