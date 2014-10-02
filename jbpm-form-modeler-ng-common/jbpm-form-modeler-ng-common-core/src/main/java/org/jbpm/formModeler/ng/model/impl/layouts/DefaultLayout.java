@@ -31,8 +31,13 @@ public class DefaultLayout implements Layout {
 
     @Override
     public void addElement(FormElement element) {
+        if (element != null) addElement(element.getId());
+    }
+
+    @Override
+    public void addElement(Long elementId) {
         DefaultLayoutArea area = new DefaultLayoutArea();
-        area.addElement(element);
+        area.addElement(elementId);
         areas.add(area);
     }
 

@@ -7,7 +7,7 @@ public class FormLayoutDefinition extends JavaScriptObject {
     protected FormLayoutDefinition() {
     }
 
-    public final native Long getId() /*-{
+    public final native String getId() /*-{
         return this.id;
     }-*/;
 

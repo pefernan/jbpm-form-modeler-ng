@@ -160,6 +160,7 @@ public class FormManagerImpl implements FormManager {
             result.copyValues(field);
             form.getElements().remove(field);
             form.getElements().add(result);
+            return true;
         } catch (Exception ex) {
             log.warn("Error changing fieldType for field '{}' type '{}' to '{}': {}", field.getName(), field.getCode(), code, ex);
 

@@ -16,12 +16,12 @@ public class ColumnLayout implements Layout {
 
     @Override
     public String getCode() {
-        return "column";
+        return "columns";
     }
 
     @Override
     public String getName(Locale locale) {
-        return "column";
+        return "columns";
     }
 
     public int getColumns() {
@@ -39,10 +39,18 @@ public class ColumnLayout implements Layout {
 
     @Override
     public void addElement(FormElement element) {
+        if (element != null) addElement(element.getId());
+    }
+
+    @Override
+    public void addElement(Long elementId) {
         DefaultLayoutArea area;
-        if (areas.isEmpty()) area = new DefaultLayoutArea();
+        if (areas.isEmpty()) {
+            area = new DefaultLayoutArea();
+            areas.add(area);
+        }
         else area = (DefaultLayoutArea) areas.get(0);
-        area.addElement(element);
+        area.addElement(elementId);
     }
 
     @Override

@@ -48,4 +48,6 @@ public interface FormEditorService {
     EditionContextTO changeFieldType(String ctxUID, String fieldName, String code, String editionCtxUID);
 
     Long getFieldIdFromExpression(String ctxUID, String bindingExpression);
+
+    String changeFormLayout(String ctxUID, String id);
 }

@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 import org.jbpm.formModeler.ng.common.client.rendering.FormRendererManager;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormContext;
+import org.jbpm.formModeler.ng.common.client.rendering.js.FormDefinition;
 import org.jbpm.formModeler.ng.common.client.rendering.layouts.FormLayoutRenderer;
 import org.jbpm.formModeler.ng.common.client.rendering.renderers.FormRenderer;
 import org.jbpm.formModeler.ng.editor.events.FormModelerEvent;
@@ -83,5 +84,9 @@ public class FormCanvas extends Composite {
         if (context != null && event.getContext().equals(context.getCtxUID())) {
             initContext(event.getMarshalledContext());
         }
+    }
+
+    public FormDefinition getFormDefinition() {
+        return jsonContext.getFormDefinition();
     }
 }

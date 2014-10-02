@@ -25,6 +25,7 @@ public interface Layout extends Serializable {
 
     public List<LayoutArea> getAreas();
     public void addElement(FormElement element);
+    public void addElement(Long elementId);
     void addElement(int row, int column, Long fieldId);
 
     void removeElement(Long fieldId);

@@ -18,10 +18,7 @@ import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderFieldTO;
 import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderTO;
 import org.jbpm.formModeler.ng.editor.model.dataHolders.RangedDataHolderBuilderTO;
 import org.jbpm.formModeler.ng.editor.service.FormEditorService;
-import org.jbpm.formModeler.ng.model.DataFieldHolder;
-import org.jbpm.formModeler.ng.model.DataHolder;
-import org.jbpm.formModeler.ng.model.Field;
-import org.jbpm.formModeler.ng.model.Form;
+import org.jbpm.formModeler.ng.model.*;
 import org.jbpm.formModeler.ng.services.LocaleManager;
 import org.jbpm.formModeler.ng.services.context.ContextConfiguration;
 import org.jbpm.formModeler.ng.services.context.FormRenderContext;
@@ -32,6 +29,7 @@ import org.jbpm.formModeler.ng.services.management.dataHolders.DataHolderBuilder
 import org.jbpm.formModeler.ng.services.management.dataHolders.DataHolderManager;
 import org.jbpm.formModeler.ng.services.management.dataHolders.RangedDataHolderBuilder;
 import org.jbpm.formModeler.ng.services.management.forms.FormDefinitionMarshaller;
+import org.jbpm.formModeler.ng.services.management.forms.FormLayoutManager;
 import org.jbpm.formModeler.ng.services.management.forms.FormManager;
 import org.jbpm.formModeler.ng.services.management.forms.utils.BindingUtils;
 import org.slf4j.Logger;
@@ -53,7 +51,9 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 @Service
 @ApplicationScoped
@@ -97,6 +97,9 @@ public class FormEditorServiceImpl implements FormEditorService {
 
     @Inject
     private FormManager formManager;
+
+    @Inject
+    private FormLayoutManager layoutManager;
 
     @Inject
     private DataHolderManager dataHolderManager;
@@ -309,6 +312,32 @@ public class FormEditorServiceImpl implements FormEditorService {
             }
             refreshHoldersListEvent.fire(new RefreshHoldersListEvent(event.getContext()));
         }
+    }
+
+    @Override
+    public String changeFormLayout(String ctxUID, String id) {
+        FormRenderContext context = contextManager.getFormRenderContext(ctxUID);
+        String ctxJson = null;
+        if (context != null) {
+            Layout layout = layoutManager.getLayout(id);
+
+            Form form = context.getForm();
+
+            if (layout.getCode().equals(form.getLayout().getCode())) ctxJson = context.getMarshalledCopy();
+            else {
+                Layout oldLayout = form.getLayout();
+
+                for (LayoutArea area : oldLayout.getAreas()) {
+                    for (Long elementId : area.getElementIds()) {
+                        layout.addElement(elementId);
+                    }
+                }
+                form.setLayout(layout);
+                context.setFormTemplate(formDefinitionMarshaller.marshall(context.getForm()));
+                ctxJson = contextManager.marshallContext(context);
+            }
+        }
+        return ctxJson;
     }
 
     @Override
