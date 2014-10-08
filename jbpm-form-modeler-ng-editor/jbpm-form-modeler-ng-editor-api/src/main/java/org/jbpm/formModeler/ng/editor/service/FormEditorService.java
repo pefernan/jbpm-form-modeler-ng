@@ -50,4 +50,6 @@ public interface FormEditorService {
     Long getFieldIdFromExpression(String ctxUID, String bindingExpression);
 
     String changeFormLayout(String ctxUID, String id);
+
+    String changeFormLabelPosition(String ctxUID, String labelPosition);
 }

@@ -315,11 +315,11 @@ public class FormEditorServiceImpl implements FormEditorService {
     }
 
     @Override
-    public String changeFormLayout(String ctxUID, String id) {
+    public String changeFormLayout(String ctxUID, String layoutId) {
         FormRenderContext context = contextManager.getFormRenderContext(ctxUID);
         String ctxJson = null;
         if (context != null) {
-            Layout layout = layoutManager.getLayout(id);
+            Layout layout = layoutManager.getLayout(layoutId);
 
             Form form = context.getForm();
 
@@ -336,6 +336,19 @@ public class FormEditorServiceImpl implements FormEditorService {
                 context.setFormTemplate(formDefinitionMarshaller.marshall(context.getForm()));
                 ctxJson = contextManager.marshallContext(context);
             }
+        }
+        return ctxJson;
+    }
+
+    @Override
+    public String changeFormLabelPosition(String ctxUID, String labelPosition) {
+        FormRenderContext context = contextManager.getFormRenderContext(ctxUID);
+        String ctxJson = null;
+        if (context != null) {
+            Form form = context.getForm();
+            form.setLabelMode(labelPosition);
+            context.setFormTemplate(formDefinitionMarshaller.marshall(context.getForm()));
+            ctxJson = contextManager.marshallContext(context);
         }
         return ctxJson;
     }

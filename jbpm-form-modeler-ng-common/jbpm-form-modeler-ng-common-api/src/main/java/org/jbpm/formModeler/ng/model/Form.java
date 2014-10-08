@@ -4,24 +4,8 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Form implements Serializable, Comparable {
-    public static final String RENDER_MODE_FORM = "form";
-    public static final String RENDER_MODE_DISPLAY = "display";
-    public static final String RENDER_MODE_TEMPLATE_EDIT = "templateEdit";
-    public static final String RENDER_MODE_WYSIWYG_FORM = "wysiwyg-form";
-    public static final String RENDER_MODE_WYSIWYG_DISPLAY = "wysiwyg-display";
 
-    public static final String LABEL_MODE_UNDEFINED = "undefined";
-    public static final String LABEL_MODE_BEFORE = "before";
-    public static final String LABEL_MODE_AFTER = "after";
-    public static final String LABEL_MODE_RIGHT = "right";
-    public static final String LABEL_MODE_LEFT = "left";
     public static final String LABEL_MODE_HIDDEN = "hidden";
-    public static final String DISPLAY_MODE_DEFAULT = "default";
-    public static final String DISPLAY_MODE_ALIGNED = "aligned";
-    public static final String DISPLAY_MODE_TEMPLATE = "template";
-    public static final String DISPLAY_MODE_NONE = "none";
-    public static final String TEMPLATE_FIELD = "$field";
-    public static final String TEMPLATE_LABEL = "$label";
 
     private Long id;
 
@@ -29,9 +13,9 @@ public class Form implements Serializable, Comparable {
 
     private String name;
 
-    private String displayMode = DISPLAY_MODE_DEFAULT;
+    private String displayMode = "default";
 
-    private String labelMode = LABEL_MODE_BEFORE;
+    private String labelMode = "before";
 
     private String showMode;
 

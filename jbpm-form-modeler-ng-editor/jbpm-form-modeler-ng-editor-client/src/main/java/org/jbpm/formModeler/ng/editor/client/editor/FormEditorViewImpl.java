@@ -52,7 +52,7 @@ public class FormEditorViewImpl extends Composite implements FormEditorView {
     @PostConstruct
     public void initView() {
         initWidget(uiBinder.createAndBindUi(this));
-        tabPanel.setHeight("600px");
+        tabPanel.setHeight("660px");
         tabPanel.add(holdersEditor, "DATA_HOLDERS");
         tabPanel.add(formModeler, "FIELD_BY_SOURCES");
         tabPanel.selectTab(0);

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DefaultLayoutArea implements LayoutArea {
+    private String label = "";
     private List<Long> elementIds = new ArrayList<Long>();
 
     public DefaultLayoutArea() {
@@ -55,5 +56,16 @@ public class DefaultLayoutArea implements LayoutArea {
     @Override
     public boolean isEmpty() {
         return elementIds.isEmpty();
+    }
+
+
+    @Override
+    public String getLabel() {
+        return label;
+    }
+
+    @Override
+    public void setLabel(String label) {
+        this.label = label;
     }
 }

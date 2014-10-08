@@ -1,5 +1,6 @@
 package org.jbpm.formModeler.ng.editor.client.editor.modeler.canvas;
 
+import com.github.gwtbootstrap.client.ui.Form;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.json.client.JSONObject;
@@ -13,7 +14,6 @@ import org.jbpm.formModeler.ng.common.client.rendering.FormRendererManager;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormContext;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormDefinition;
 import org.jbpm.formModeler.ng.common.client.rendering.layouts.FormLayoutRenderer;
-import org.jbpm.formModeler.ng.common.client.rendering.renderers.FormRenderer;
 import org.jbpm.formModeler.ng.editor.events.FormModelerEvent;
 import org.jbpm.formModeler.ng.editor.events.canvas.RefreshCanvasEvent;
 import org.jbpm.formModeler.ng.editor.model.FormEditorContextTO;
@@ -26,6 +26,7 @@ import javax.inject.Inject;
 
 @Dependent
 public class FormCanvas extends Composite {
+
     interface CanvasViewBinder
             extends
             UiBinder<Widget, FormCanvas> {
@@ -42,6 +43,10 @@ public class FormCanvas extends Composite {
 
     @Inject
     private Event<FormModelerEvent> modelerEvent;
+
+    private FormLayoutRenderer layoutRenderer;
+
+    private Form renderedForm;
 
     private FormContext jsonContext;
 
@@ -67,12 +72,12 @@ public class FormCanvas extends Composite {
 
         values = new JSONObject(jsonContext.getContextStatus());
 
-        FormLayoutRenderer layoutRenderer = formRendererManager.getLayoutRendererByType("editor-" + jsonContext.getFormDefinition().getDisplayMode());
+        layoutRenderer = formRendererManager.getLayoutRendererByType("editor-" + jsonContext.getFormDefinition().getLayout().getId());
 
-        Panel content = layoutRenderer.generateForm(jsonContext);
+        renderedForm = layoutRenderer.generateForm(jsonContext);
 
-        if (content != null) {
-            formContent.add(content);
+        if (renderedForm != null) {
+            formContent.add(renderedForm);
         }
     }
 

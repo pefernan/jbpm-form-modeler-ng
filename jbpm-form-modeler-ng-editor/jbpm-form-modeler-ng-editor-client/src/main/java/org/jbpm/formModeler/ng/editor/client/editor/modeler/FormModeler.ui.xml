@@ -34,7 +34,9 @@
         border-collapse: collapse;
         margin: 0px;
         width: 100%;
+        height: 660px;
         padding: 10px;
+
       }
       .TdLateralTable {
         background-color: #FFFFFF !important;
@@ -53,6 +55,7 @@
     </style>
     <b:Navbar ui:field="header">
       <b:ButtonGroup ui:field="layoutButtons"/>
+      <b:ButtonGroup ui:field="labelPositionButtons"/>
     </b:Navbar>
     <table class="BgTable">
       <tr>

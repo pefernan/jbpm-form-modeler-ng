@@ -4,6 +4,7 @@ import org.jbpm.formModeler.ng.model.FormElement;
 import org.jbpm.formModeler.ng.model.Layout;
 import org.jbpm.formModeler.ng.model.LayoutArea;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +12,14 @@ import java.util.Locale;
 
 @Dependent
 public class ColumnLayout implements Layout {
-    int columns = 1;
+    private int columns = 2;
     private List<LayoutArea> areas = new ArrayList<LayoutArea>();
+
+    @PostConstruct
+    protected void init() {
+        areas.add(new DefaultLayoutArea());
+        areas.add(new DefaultLayoutArea());
+    }
 
     @Override
     public String getCode() {
@@ -59,11 +66,13 @@ public class ColumnLayout implements Layout {
         DefaultLayoutArea area;
         if (column >= areas.size()) {
             area = new DefaultLayoutArea();
-            areas.add(position, area);
+            areas.add(column, area);
+            area.addElement(fieldId);
         } else {
-            area = (DefaultLayoutArea) areas.get(position);
+            area = (DefaultLayoutArea) areas.get(column);
+            if(area.isEmpty()) area.addElement(fieldId);
+            else area.addElement(position, fieldId);
         }
-        area.addElement(fieldId);
     }
 
     @Override

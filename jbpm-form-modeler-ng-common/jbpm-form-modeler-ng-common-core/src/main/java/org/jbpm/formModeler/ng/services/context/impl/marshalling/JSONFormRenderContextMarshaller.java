@@ -30,7 +30,7 @@ import java.util.*;
 
 @Default
 @ApplicationScoped
-public class JSONFormRendercontextMarshaller implements FormRenderContextMarshaller {
+public class JSONFormRenderContextMarshaller implements FormRenderContextMarshaller {
     public static final String NAMESPACE_SEPARATOR = "-";
 
     public static final String CTX_UID = "ctxUID";
@@ -40,7 +40,7 @@ public class JSONFormRendercontextMarshaller implements FormRenderContextMarshal
     public static final String VALUES = "values";
     public static final String OPTIONS = "options";
 
-    private Logger log = LoggerFactory.getLogger(JSONFormRendercontextMarshaller.class);
+    private Logger log = LoggerFactory.getLogger(JSONFormRenderContextMarshaller.class);
 
     @Inject
     private FormDefinitionMarshaller formMarshaller;

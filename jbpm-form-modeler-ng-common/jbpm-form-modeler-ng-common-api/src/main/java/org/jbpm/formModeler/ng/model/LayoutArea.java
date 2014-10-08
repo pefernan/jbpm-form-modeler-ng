@@ -1,9 +1,12 @@
 package org.jbpm.formModeler.ng.model;
 
 
+import java.io.Serializable;
 import java.util.List;
 
-public interface LayoutArea {
+public interface LayoutArea extends Serializable {
+    String getLabel();
+    void setLabel(String label);
     public List<Long> getElementIds();
     public void addElement(FormElement element);
     public boolean removeElement(Long elementId);

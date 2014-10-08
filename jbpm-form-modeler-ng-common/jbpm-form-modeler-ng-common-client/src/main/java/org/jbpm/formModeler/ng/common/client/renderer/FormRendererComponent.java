@@ -11,13 +11,11 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
-import org.apache.commons.io.FilenameUtils;
 import org.jbpm.formModeler.ng.common.client.rendering.FormRendererManager;
 import org.jbpm.formModeler.ng.common.client.rendering.event.FieldChangedEvent;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormContext;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormContextStatus;
 import org.jbpm.formModeler.ng.common.client.rendering.layouts.FormLayoutRenderer;
-import org.jbpm.formModeler.ng.common.client.rendering.renderers.FormRenderer;
 import org.uberfire.mvp.Command;
 
 import javax.annotation.PostConstruct;
@@ -60,7 +58,7 @@ public class FormRendererComponent extends Composite {
 
             status = context.getContextStatus();
 
-            FormLayoutRenderer layoutRenderer = formRendererManager.getLayoutRendererByType(context.getFormDefinition().getDisplayMode());
+            FormLayoutRenderer layoutRenderer = formRendererManager.getLayoutRendererByType(context.getFormDefinition().getLayout().getId());
 
             Panel content = layoutRenderer.generateForm(context);
 

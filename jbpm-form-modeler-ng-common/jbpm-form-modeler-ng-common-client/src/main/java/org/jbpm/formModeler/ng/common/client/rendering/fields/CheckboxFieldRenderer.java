@@ -30,17 +30,7 @@ public class CheckboxFieldRenderer extends FieldRenderer {
     public Widget getFieldInput(final FieldDefinition description, final FormContext context) {
         if (description == null) return null;
 
-        final CheckBox checkBox = new CheckBox(new SafeHtml() {
-            @Override
-            public String asString() {
-                JSONObject jsonLabel = new JSONObject(description.getLabel());
-
-                String locale = LocaleInfo.getCurrentLocale().getLocaleName();
-
-                if (jsonLabel.get(locale).isNull() == null) return jsonLabel.get(locale).isString().stringValue();
-                return jsonLabel.get("default").isString().stringValue();
-            }
-        });
+        final CheckBox checkBox = new CheckBox();
         checkBox.setName(description.getId());
         checkBox.setId(description.getId());
 

@@ -2,7 +2,7 @@
   <property name="subject" value="org.jbpm.formModeler.api.model.Field"/>
   <property name="name" value="InputTextFloat"/>
   <property name="displayMode" value="default"/>
-  <property name="labelMode" value="undefined"/>
+  <property name="labelMode" value="before"/>
   <property name="showMode" value=""/>
   <property name="status" value="0"/>
   <field position="0" name="code" type="DropDown" id="14229321341">
@@ -108,7 +108,7 @@
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
     <property name="readonly" value="false"/>
-    <property name="size" value="25"/>
+    <property name="size" value="15"/>
     <property name="formula" value=""/>
     <property name="rangeFormula" value=""/>
     <property name="pattern" value=""/>

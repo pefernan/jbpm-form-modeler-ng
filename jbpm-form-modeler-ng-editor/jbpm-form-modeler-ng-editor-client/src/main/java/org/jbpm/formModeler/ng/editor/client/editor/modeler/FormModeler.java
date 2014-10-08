@@ -1,10 +1,10 @@
 package org.jbpm.formModeler.ng.editor.client.editor.modeler;
 
-import com.github.gwtbootstrap.client.ui.ButtonGroup;
+import com.github.gwtbootstrap.client.ui.*;
 import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.Navbar;
 import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -17,13 +17,12 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jbpm.formModeler.ng.common.client.renderer.FormRendererComponent;
 import org.jbpm.formModeler.ng.common.client.rendering.event.FieldChangedEvent;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormDefinition;
+import org.jbpm.formModeler.ng.common.client.rendering.layouts.FormLayoutRenderer;
 import org.jbpm.formModeler.ng.editor.client.editor.dataHolders.DataHoldersEditor;
 import org.jbpm.formModeler.ng.editor.client.editor.modeler.canvas.FormCanvas;
 import org.jbpm.formModeler.ng.editor.client.editor.modeler.sources.FieldsBySourceEditor;
 import org.jbpm.formModeler.ng.editor.events.canvas.DeleteFieldEvent;
-import org.jbpm.formModeler.ng.editor.events.canvas.RefreshCanvasEvent;
 import org.jbpm.formModeler.ng.editor.events.canvas.StartEditFieldPropertyEvent;
-import org.jbpm.formModeler.ng.editor.events.dataHolders.RefreshHoldersListEvent;
 import org.jbpm.formModeler.ng.editor.model.EditionContextTO;
 import org.jbpm.formModeler.ng.editor.model.FormEditorContextTO;
 import org.jbpm.formModeler.ng.editor.service.FormEditorService;
@@ -57,6 +56,9 @@ public class FormModeler extends Composite {
     ButtonGroup layoutButtons;
 
     @UiField
+    ButtonGroup labelPositionButtons;
+
+    @UiField
     SimplePanel fieldsContainer;
 
     @Inject
@@ -83,8 +85,10 @@ public class FormModeler extends Composite {
 
         fieldsBySourceEditor.initEditor(context);
         canvas.initContext(context);
+        header.getElement().getStyle().setMarginBottom(0, Style.Unit.PX);
 
         initLayoutButtons();
+        initLabelPositionButtons();
     }
 
     protected void initLayoutButtons() {
@@ -113,6 +117,36 @@ public class FormModeler extends Composite {
                             }
                         }).changeFormLayout(context.getCtxUID(), layout);
                     }
+                }
+            });
+        }
+        return result;
+    }
+
+    protected void initLabelPositionButtons() {
+        labelPositionButtons.clear();
+        FormDefinition definition = canvas.getFormDefinition();
+        labelPositionButtons.add(getLabelPositionButton(FormLayoutRenderer.LABEL_MODE_BEFORE, definition));
+        labelPositionButtons.add(getLabelPositionButton(FormLayoutRenderer.LABEL_MODE_LEFT, definition));
+        labelPositionButtons.add(getLabelPositionButton(FormLayoutRenderer.LABEL_MODE_LEFT_ALIGNED, definition));
+    }
+
+    protected Button getLabelPositionButton(final String labelPosition, final FormDefinition definition) {
+        Button result = new Button(labelPosition);
+        if (labelPosition.equals(definition.getLabelMode())) result.setType(ButtonType.INVERSE);
+        else {
+            result.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    editorService.call(new RemoteCallback<String>() {
+                        @Override
+                        public void callback(String response) {
+                            if (response != null) {
+                                canvas.refreshContext(response);
+                                initLabelPositionButtons();
+                            }
+                        }
+                    }).changeFormLabelPosition(context.getCtxUID(), labelPosition);
                 }
             });
         }

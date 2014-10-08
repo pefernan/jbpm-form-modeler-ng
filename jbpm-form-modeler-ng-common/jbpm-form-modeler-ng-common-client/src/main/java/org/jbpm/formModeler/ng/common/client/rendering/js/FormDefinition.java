@@ -24,6 +24,12 @@ public class FormDefinition extends JavaScriptObject {
         return this.labelMode;
     }-*/;
 
+    public final native void setLabelMode(String labelMode) /*-{
+        alert(this.labelMode + " " + labelMode);
+        this.labelMode = labelMode;
+        alert(this.labelMode + " " + labelMode);
+    }-*/;
+
     public final native FormLayoutDefinition getLayout() /*-{
         return this.layout;
     }-*/;

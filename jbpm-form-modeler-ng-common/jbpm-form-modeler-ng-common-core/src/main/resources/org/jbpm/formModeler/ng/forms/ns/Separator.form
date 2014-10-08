@@ -2,7 +2,7 @@
   <property name="subject" value="org.jbpm.formModeler.api.model.Field"/>
   <property name="name" value="Separator"/>
   <property name="displayMode" value="default"/>
-  <property name="labelMode" value="undefined"/>
+  <property name="labelMode" value="before"/>
   <property name="showMode" value=""/>
   <property name="status" value="0"/>
   <field position="0" name="label" type="I18nText" id="879653325">
