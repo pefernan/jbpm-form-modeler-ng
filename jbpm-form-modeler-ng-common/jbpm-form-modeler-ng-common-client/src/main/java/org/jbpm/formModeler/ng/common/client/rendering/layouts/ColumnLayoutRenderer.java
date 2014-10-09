@@ -4,9 +4,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.ui.*;
-import org.jbpm.formModeler.ng.common.client.rendering.fields.FieldRenderer;
 import org.jbpm.formModeler.ng.common.client.rendering.js.*;
-import org.jbpm.formModeler.ng.model.Form;
 
 import javax.enterprise.context.Dependent;
 
@@ -24,19 +22,7 @@ public class ColumnLayoutRenderer extends FormLayoutRenderer {
         if (formDefinition != null) {
             FormLayoutDefinition layout = formDefinition.getLayout();
 
-            Grid content = new Grid(1, layout.getAreas().length());
-            content.setWidth("100%");
-            int columns = 2;
-            JSONObject object = new JSONObject(layout);
-            JSONValue jsonColumns = object.get("columns");
-            if (jsonColumns != null && jsonColumns.isNull() == null) columns = (int) jsonColumns.isNumber().doubleValue();
-            String width = 100 / columns + "%";
-            content.getColumnFormatter().setWidth(0, width);
-            content.getColumnFormatter().setWidth(1, width);
-            HTMLTable.CellFormatter formatter = content.getCellFormatter();
-            for (int i = 0; i < columns; i++) {
-                formatter.setVerticalAlignment(0, i, HasVerticalAlignment.ALIGN_TOP);
-            }
+            Grid content = createGrid(layout);
             for (int i = 0; i < layout.getAreas().length(); i++) {
                 FormLayoutArea area = layout.getAreas().get(i);
                 content.setWidget(0, i, renderArea(area, i, context));
@@ -44,6 +30,27 @@ public class ColumnLayoutRenderer extends FormLayoutRenderer {
             return content;
         }
         return new SimplePanel();
+    }
+
+    protected Grid createGrid(FormLayoutDefinition layout) {
+        Grid content = new Grid(1, layout.getAreas().length());
+        content.setWidth("100%");
+        int columns = 2;
+        JSONObject object = new JSONObject(layout);
+        JSONValue jsonColumns = object.get("columns");
+        if (jsonColumns != null && jsonColumns.isNull() == null) columns = (int) jsonColumns.isNumber().doubleValue();
+        String width = 100 / columns + "%";
+        content.getColumnFormatter().setWidth(0, width);
+        content.getColumnFormatter().setWidth(1, width);
+        for (int i = 0; i < columns; i++) {
+            formatCell(content, i, columns);
+        }
+        return content;
+    }
+
+    protected void formatCell(Grid grid, int index, int maxColumns) {
+        grid.getCellFormatter().setVerticalAlignment(0, index, HasVerticalAlignment.ALIGN_TOP);
+        grid.getColumnFormatter().getElement(index).getStyle().setBorderWidth(1, Style.Unit.PX);
     }
 
     protected Widget renderArea(FormLayoutArea area, int column, FormContext context) {

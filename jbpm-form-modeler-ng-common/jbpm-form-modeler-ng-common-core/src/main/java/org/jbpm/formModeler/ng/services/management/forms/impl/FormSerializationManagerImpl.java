@@ -283,7 +283,7 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
             }
         }
 
-        form.addField(field, groupWithPrevious);
+        form.addField(field);
         form.getLayout().addElement(field);
     }
 

@@ -62,6 +62,7 @@ public class LongFieldRenderer extends FieldRenderer {
                 changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getId(),  String.valueOf(longBox.getValue())));
             }
         });
+        longBox.setEnabled(!description.isReadOnly());
         return longBox;
     }
 }

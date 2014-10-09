@@ -62,6 +62,7 @@ public class IntegerFieldRenderer extends FieldRenderer {
                 changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getId(),  String.valueOf(intbox.getValue())));
             }
         });
+        intbox.setEnabled(!description.isReadOnly());
         return intbox;
     }
 }

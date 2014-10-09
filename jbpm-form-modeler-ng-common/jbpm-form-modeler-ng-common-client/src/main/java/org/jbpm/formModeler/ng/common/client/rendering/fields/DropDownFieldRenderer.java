@@ -62,6 +62,7 @@ public class DropDownFieldRenderer extends FieldRenderer {
                 changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getId(), listBox.getValue()));
             }
         });
+        listBox.setEnabled(!description.isReadOnly());
         return listBox;
     }
 }

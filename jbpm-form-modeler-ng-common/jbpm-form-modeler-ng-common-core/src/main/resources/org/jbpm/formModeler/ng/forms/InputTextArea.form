@@ -1,7 +1,7 @@
 <form id="401118721">
   <property name="name" value="InputTextArea"/>
   <property name="displayMode" value="default"/>
-  <property name="labelMode" value="before"/>
+  <property name="labelMode" value="default"/>
   <property name="showMode" value=""/>
   <property name="status" value="0"/>
   <field position="0" name="code" type="DropDown" id="14229321341">

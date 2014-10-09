@@ -12,14 +12,7 @@ import java.util.Locale;
 
 @Dependent
 public class ColumnLayout implements Layout {
-    private int columns = 2;
     private List<LayoutArea> areas = new ArrayList<LayoutArea>();
-
-    @PostConstruct
-    protected void init() {
-        areas.add(new DefaultLayoutArea());
-        areas.add(new DefaultLayoutArea());
-    }
 
     @Override
     public String getCode() {
@@ -29,14 +22,6 @@ public class ColumnLayout implements Layout {
     @Override
     public String getName(Locale locale) {
         return "columns";
-    }
-
-    public int getColumns() {
-        return columns;
-    }
-
-    public void setColumns(int columns) {
-        this.columns = columns;
     }
 
     @Override
@@ -62,14 +47,12 @@ public class ColumnLayout implements Layout {
 
     @Override
     public void addElement(int column, int position, Long fieldId) {
-        if (column > columns) return;
-        DefaultLayoutArea area;
         if (column >= areas.size()) {
-            area = new DefaultLayoutArea();
+            DefaultLayoutArea area = new DefaultLayoutArea();
             areas.add(column, area);
             area.addElement(fieldId);
         } else {
-            area = (DefaultLayoutArea) areas.get(column);
+            DefaultLayoutArea area = (DefaultLayoutArea) areas.get(column);
             if(area.isEmpty()) area.addElement(fieldId);
             else area.addElement(position, fieldId);
         }

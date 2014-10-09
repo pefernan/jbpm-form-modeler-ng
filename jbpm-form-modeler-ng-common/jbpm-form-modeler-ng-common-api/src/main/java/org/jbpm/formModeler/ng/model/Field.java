@@ -77,8 +77,6 @@ public abstract class Field extends FormElement {
         setFieldRequired(source.getFieldRequired());
         setReadonly(source.getReadonly());
         setBindingExpression(source.getBindingExpression());
-        setRow(source.getRow());
-        setColumn(source.getColumn());
         setForm(source.getForm());
         setCustomProperties(source.getCustomProperties());
     }

@@ -57,6 +57,7 @@ public class TextBoxFieldRenderer extends FieldRenderer {
                 changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getId(),  text.getValue()));
             }
         });
+        text.setEnabled(!description.isReadOnly());
         return text;
     }
 }

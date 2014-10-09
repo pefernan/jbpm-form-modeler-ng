@@ -22,4 +22,19 @@ public interface FormModelerEditorImageResources extends ClientBundle {
 
     @Source("BPM_FileIcons_Form.png")
     ImageResource typeForm();
+
+    @Source("LayoutDefault.png")
+    ImageResource defaultLayout();
+
+    @Source("LayoutColumn.png")
+    ImageResource columnsLayout();
+
+    @Source("LabelDefault.png")
+    ImageResource labelDefault();
+
+    @Source("LabelLeftAligned.png")
+    ImageResource labelLeftAligned();
+
+    @Source("LabelLeft.png")
+    ImageResource labelLeft();
 }

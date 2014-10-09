@@ -11,6 +11,8 @@ import org.jbpm.formModeler.ng.common.client.rendering.event.FieldChangedEvent;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FieldDefinition;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormContext;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormContextStatus;
+import org.jbpm.formModeler.ng.common.client.rendering.layouts.FormLayoutRenderer;
+import org.jbpm.formModeler.ng.common.client.rendering.layouts.utils.FieldLabelHelper;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -21,6 +23,9 @@ public class CheckboxFieldRenderer extends FieldRenderer {
     @Inject
     private Event<FieldChangedEvent> changedEvent;
 
+    @Inject
+    private FieldLabelHelper labelHelper;
+
     @Override
     public String getCode() {
         return "CheckBox";
@@ -30,7 +35,13 @@ public class CheckboxFieldRenderer extends FieldRenderer {
     public Widget getFieldInput(final FieldDefinition description, final FormContext context) {
         if (description == null) return null;
 
-        final CheckBox checkBox = new CheckBox();
+        String label = null;
+        if (context.getFormDefinition().getLabelMode().equals(FormLayoutRenderer.LABEL_MODE_DEFAULT)) {
+            label = labelHelper.getFieldLabel(description);
+        }
+
+        final CheckBox checkBox = new CheckBox(label);
+
         checkBox.setName(description.getId());
         checkBox.setId(description.getId());
 
@@ -45,6 +56,7 @@ public class CheckboxFieldRenderer extends FieldRenderer {
                 changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getId(),  String.valueOf(checkBox.getValue())));
             }
         });
+        checkBox.setEnabled(!description.isReadOnly());
         return checkBox;
     }
 

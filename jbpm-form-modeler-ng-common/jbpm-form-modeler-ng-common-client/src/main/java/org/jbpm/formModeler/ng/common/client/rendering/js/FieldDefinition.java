@@ -38,6 +38,10 @@ public class FieldDefinition extends JavaScriptObject {
         return this.required;
     }-*/;
 
+    public final native boolean isReadOnly() /*-{
+        return this.readonly;
+    }-*/;
+
     public final native JavaScriptObject getData() /*-{
         return this.data;
     }-*/;

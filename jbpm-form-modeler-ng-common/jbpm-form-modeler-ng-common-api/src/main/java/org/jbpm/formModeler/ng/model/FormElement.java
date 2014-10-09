@@ -8,10 +8,6 @@ public abstract class FormElement implements Serializable, Comparable<FormElemen
 
     protected String name;
 
-    protected Integer row;
-
-    protected Integer column;
-
     protected Boolean groupWithPrevious = Boolean.FALSE;
 
     protected Form form;
@@ -40,28 +36,9 @@ public abstract class FormElement implements Serializable, Comparable<FormElemen
         this.form = form;
     }
 
-    public Integer getRow() {
-        return row;
-    }
-
-    public void setRow(Integer row) {
-        this.row = row;
-    }
-
-    public Integer getColumn() {
-        return column;
-    }
-
-    public void setColumn(Integer column) {
-        this.column = column;
-    }
-
     @Override
     public int compareTo(FormElement o) {
-
-        int row = getRow().compareTo(o.getRow());
-        if (row != 0) return row;
-        return getColumn().compareTo(o.getColumn());
+        return this.getId().compareTo(o.getId());
     }
 
     public abstract Map<String, String> getCustomProperties();

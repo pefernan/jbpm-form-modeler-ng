@@ -1,9 +1,6 @@
 package org.jbpm.formModeler.ng.common.client.rendering.layouts;
 
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.ControlLabel;
-import com.github.gwtbootstrap.client.ui.Form;
-import com.github.gwtbootstrap.client.ui.FormLabel;
+import com.github.gwtbootstrap.client.ui.*;
 import com.github.gwtbootstrap.client.ui.constants.FormType;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.i18n.client.LocaleInfo;
@@ -14,20 +11,24 @@ import org.jbpm.formModeler.ng.common.client.rendering.FieldProviderManager;
 import org.jbpm.formModeler.ng.common.client.rendering.fields.FieldRenderer;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FieldDefinition;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormContext;
+import org.jbpm.formModeler.ng.common.client.rendering.layouts.utils.FieldLabelHelper;
 
 import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
 public abstract class FormLayoutRenderer {
-    public static final String LABEL_MODE_BEFORE = "before";
+    public static final String LABEL_MODE_DEFAULT = "default";
     public static final String LABEL_MODE_LEFT = "left";
     public static final String LABEL_MODE_LEFT_ALIGNED = "left-aligned";
 
     @Inject
     protected FieldProviderManager providerManager;
-    protected Map<String, ControlGroup> controlGroups = new HashMap<String, ControlGroup>();
 
+    @Inject
+    private FieldLabelHelper labelHelper;
+
+    protected Map<String, ControlGroup> controlGroups = new HashMap<String, ControlGroup>();
 
     public abstract String getCode();
     public abstract Panel generateFormContent(FormContext context);
@@ -40,10 +41,11 @@ public abstract class FormLayoutRenderer {
         Form form = new Form();
 
         String labelMode = context.getFormDefinition().getLabelMode();
-        if (!labelMode.equals(LABEL_MODE_BEFORE)) {
-            form.setType(FormType.HORIZONTAL);
-        } else {
+
+        if (labelMode.equals(LABEL_MODE_DEFAULT)) {
             form.setType(FormType.VERTICAL);
+        } else {
+            form.setType(FormType.HORIZONTAL);
         }
 
         form.add(generateFormContent(context));
@@ -69,13 +71,20 @@ public abstract class FormLayoutRenderer {
 
         ControlGroup controlGroup = new ControlGroup();
 
-        ControlLabel label = new ControlLabel();
-        label.add(getFieldLabel(fieldDefinition));
+        if (!(context.getFormDefinition().getLabelMode().equals(FormLayoutRenderer.LABEL_MODE_DEFAULT) && renderer.supportsLabel())) {
+            String fieldLabel = labelHelper.getFieldLabel(fieldDefinition);
+            ControlLabel label = new ControlLabel();
+            FormLabel formLabel = new FormLabel(fieldLabel);
+            formLabel.setFor(fieldDefinition.getId());
+            label.add(formLabel);
+            if (context.getFormDefinition().getLabelMode().equals(FormLayoutRenderer.LABEL_MODE_LEFT_ALIGNED)) label.getElement().getStyle().setTextAlign(Style.TextAlign.LEFT);
+            controlGroup.add(label);
+        }
 
-        if (context.getFormDefinition().getLabelMode().equals(FormLayoutRenderer.LABEL_MODE_LEFT_ALIGNED)) label.getElement().getStyle().setTextAlign(Style.TextAlign.LEFT);
-
-        controlGroup.add(label);
-        controlGroup.add(renderer.getFieldInput(fieldDefinition, context));
+        Controls controls = new Controls();
+        controls.add(renderer.getFieldInput(fieldDefinition, context));
+        controls.add(new HelpBlock());
+        controlGroup.add(controls);
 
         controlGroups.put(fieldDefinition.getUid(), controlGroup);
 
@@ -90,22 +99,5 @@ public abstract class FormLayoutRenderer {
             return null;
         }
         return renderer;
-    }
-
-    protected Widget getFieldLabel(FieldDefinition field) {
-
-        JSONObject jsonLabel = new JSONObject(field.getLabel());
-
-        String locale = LocaleInfo.getCurrentLocale().getLocaleName();
-
-        String label;
-        if (jsonLabel.isNull() != null && jsonLabel.keySet().size() == 0) label = "";
-        else if (jsonLabel.get(locale).isNull() == null) label = jsonLabel.get(locale).isString().stringValue();
-        else label = jsonLabel.get("default").isString().stringValue();
-
-        if (field.isRequired()) label = "* " + label;
-        FormLabel fieldLabel = new FormLabel(label);
-        fieldLabel.setFor(field.getId());
-        return fieldLabel;
     }
 }

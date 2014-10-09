@@ -45,8 +45,6 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
     public static final String FIELDS = "fields";
     public static final String FIELD_UID = "uid";
     public static final String FIELD_REQUIRED = "required";
-    public static final String FIELD_ROW = "row";
-    public static final String FIELD_COLUMN = "column";
     public static final String FIELD_LABEL = "label";
     public static final String FIELD_READONLY = "readonly";
     public static final String FIELD_BINDING_EXPRESSION = "bindingExpression";
@@ -236,7 +234,8 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
                 layout.getAreas().add(area);
                 JsonNode jsonArea = it.next();
 
-                for (Iterator<JsonNode> itFields = jsonArea.getElements(); itFields.hasNext();) {
+                JsonNode areaElements = jsonArea.get(ELEMENTS);
+                for (Iterator<JsonNode> itFields = areaElements.getElements(); itFields.hasNext();) {
                     area.addElement(Long.decode(itFields.next().asText()));
                 }
 
@@ -260,7 +259,6 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
 
     protected void unmarshallFields(Form form, JsonNode fields) {
         if (fields != null && !fields.isNull()) {
-            int lastRow = -1;
 
             for (Iterator<String> it = fields.getFieldNames(); it.hasNext();) {
                 JsonNode jsonField = fields.get(it.next());
@@ -284,10 +282,6 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
                     if (value != null && !value.isNull()) {
                         if (FIELD_REQUIRED.equals(propName)) {
                             field.setFieldRequired(value.getBooleanValue());
-                        } else if (FIELD_ROW.equals(propName)) {
-                            field.setRow(value.getIntValue());
-                        } else if (FIELD_COLUMN.equals(propName)) {
-                            field.setColumn(value.getIntValue());
                         } else if (FIELD_LABEL.equals(propName)) {
                             for (Iterator<String> labelIt = value.getFieldNames(); labelIt.hasNext();) {
                                 String lang = labelIt.next();
@@ -304,8 +298,7 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
                     }
                 }
                 field.setCustomProperties(properties);
-                form.addField(field, lastRow == field.getRow());
-                lastRow = field.getRow();
+                form.addField(field);
             }
         }
     }

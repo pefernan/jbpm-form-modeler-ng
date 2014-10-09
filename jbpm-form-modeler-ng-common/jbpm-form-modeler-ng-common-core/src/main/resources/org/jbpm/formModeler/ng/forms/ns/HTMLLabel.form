@@ -2,7 +2,7 @@
   <property name="subject" value="org.jbpm.formModeler.api.model.Field"/>
   <property name="name" value="HTMLLabel"/>
   <property name="displayMode" value="default"/>
-  <property name="labelMode" value="before"/>
+  <property name="labelMode" value="default"/>
   <property name="showMode" value=""/>
   <property name="status" value="0"/>
   <field position="0" name="htmlContent" type="I18nHTMLText" id="559575971">

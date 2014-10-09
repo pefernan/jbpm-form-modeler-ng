@@ -54,8 +54,18 @@
       }
     </style>
     <b:Navbar ui:field="header">
-      <b:ButtonGroup ui:field="layoutButtons"/>
-      <b:ButtonGroup ui:field="labelPositionButtons"/>
+      <b:Nav>
+        <b:NavText ui:field="layoutText"/>
+      </b:Nav>
+      <b:Nav>
+        <b:ButtonGroup ui:field="layoutButtons"/>
+      </b:Nav>
+      <b:Nav>
+        <b:NavText ui:field="labelText"/>
+      </b:Nav>
+      <b:Nav>
+        <b:ButtonGroup ui:field="labelPositionButtons"/>
+      </b:Nav>
     </b:Navbar>
     <table class="BgTable">
       <tr>

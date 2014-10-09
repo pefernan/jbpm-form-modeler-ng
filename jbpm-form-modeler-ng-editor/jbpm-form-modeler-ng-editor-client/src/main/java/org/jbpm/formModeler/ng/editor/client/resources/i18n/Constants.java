@@ -32,4 +32,9 @@ public interface Constants extends Messages {
     public String form_modeler_delete();
     public String form_modeler_confirm_delete();
     public String formResourceTypeDescription();
+
+    public String form_modeler_layout();
+    public String form_modeler_label_position();
+    public String form_modeler_sources();
+    public String form_modeler_fields();
 }

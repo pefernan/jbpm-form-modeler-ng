@@ -5,8 +5,6 @@ import java.util.*;
 
 public class Form implements Serializable, Comparable {
 
-    public static final String LABEL_MODE_HIDDEN = "hidden";
-
     private Long id;
 
     private String subject;
@@ -15,7 +13,7 @@ public class Form implements Serializable, Comparable {
 
     private String displayMode = "default";
 
-    private String labelMode = "before";
+    private String labelMode = "default";
 
     private String showMode;
 
@@ -120,10 +118,6 @@ public class Form implements Serializable, Comparable {
     }
 
     public boolean addField(Field field) {
-        return addField(field, false);
-    }
-
-    public boolean addField(Field field, boolean groupWithPrevious) {
         field.setForm(this);
         return elements.add(field);
     }

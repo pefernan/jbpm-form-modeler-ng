@@ -59,6 +59,7 @@ public class ShortDateFieldRenderer extends FieldRenderer {
                 changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getId(),  strvalue));
             }
         });
+        datepicker.setEnabled(!description.isReadOnly());
         return datepicker;
     }
 }

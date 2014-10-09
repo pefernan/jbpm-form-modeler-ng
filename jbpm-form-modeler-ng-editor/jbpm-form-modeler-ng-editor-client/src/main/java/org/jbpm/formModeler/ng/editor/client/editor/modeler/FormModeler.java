@@ -2,11 +2,12 @@ package org.jbpm.formModeler.ng.editor.client.editor.modeler;
 
 import com.github.gwtbootstrap.client.ui.*;
 import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
+import com.github.gwtbootstrap.client.ui.Image;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
@@ -21,6 +22,8 @@ import org.jbpm.formModeler.ng.common.client.rendering.layouts.FormLayoutRendere
 import org.jbpm.formModeler.ng.editor.client.editor.dataHolders.DataHoldersEditor;
 import org.jbpm.formModeler.ng.editor.client.editor.modeler.canvas.FormCanvas;
 import org.jbpm.formModeler.ng.editor.client.editor.modeler.sources.FieldsBySourceEditor;
+import org.jbpm.formModeler.ng.editor.client.resources.i18n.Constants;
+import org.jbpm.formModeler.ng.editor.client.resources.images.FormModelerEditorImageResources;
 import org.jbpm.formModeler.ng.editor.events.canvas.DeleteFieldEvent;
 import org.jbpm.formModeler.ng.editor.events.canvas.StartEditFieldPropertyEvent;
 import org.jbpm.formModeler.ng.editor.model.EditionContextTO;
@@ -40,6 +43,10 @@ public class FormModeler extends Composite {
 
     }
 
+    private Constants constants = Constants.INSTANCE;
+
+    private FormModelerEditorImageResources images = GWT.create(FormModelerEditorImageResources.class);
+
     @Inject
     private Caller<FormEditorService> editorService;
 
@@ -53,7 +60,13 @@ public class FormModeler extends Composite {
     Navbar header;
 
     @UiField
+    NavText layoutText;
+
+    @UiField
     ButtonGroup layoutButtons;
+
+    @UiField
+    NavText labelText;
 
     @UiField
     ButtonGroup labelPositionButtons;
@@ -86,7 +99,8 @@ public class FormModeler extends Composite {
         fieldsBySourceEditor.initEditor(context);
         canvas.initContext(context);
         header.getElement().getStyle().setMarginBottom(0, Style.Unit.PX);
-
+        layoutText.setText(constants.form_modeler_layout());
+        labelText.setText(constants.form_modeler_label_position());
         initLayoutButtons();
         initLabelPositionButtons();
     }
@@ -100,8 +114,9 @@ public class FormModeler extends Composite {
     }
 
     protected Button getLayoutButton(final String layout, final FormDefinition definition) {
-        Button result = new Button(layout);
-        if (layout.equals(definition.getLayout().getId())) result.setType(ButtonType.INVERSE);
+        Button result = new Button();
+        result.add(new Image(getImageForLayout(layout)));
+        if (layout.equals(definition.getLayout().getId())) result.setEnabled(false);
         else {
             result.addClickHandler(new ClickHandler() {
                 @Override
@@ -123,17 +138,27 @@ public class FormModeler extends Composite {
         return result;
     }
 
+    protected ImageResource getImageForLayout(String layout) {
+        ImageResource resource;
+
+        if (layout.equals("columns")) resource = images.columnsLayout();
+        else resource = images.defaultLayout();
+
+        return resource;
+    }
+
     protected void initLabelPositionButtons() {
         labelPositionButtons.clear();
         FormDefinition definition = canvas.getFormDefinition();
-        labelPositionButtons.add(getLabelPositionButton(FormLayoutRenderer.LABEL_MODE_BEFORE, definition));
+        labelPositionButtons.add(getLabelPositionButton(FormLayoutRenderer.LABEL_MODE_DEFAULT, definition));
         labelPositionButtons.add(getLabelPositionButton(FormLayoutRenderer.LABEL_MODE_LEFT, definition));
         labelPositionButtons.add(getLabelPositionButton(FormLayoutRenderer.LABEL_MODE_LEFT_ALIGNED, definition));
     }
 
     protected Button getLabelPositionButton(final String labelPosition, final FormDefinition definition) {
-        Button result = new Button(labelPosition);
-        if (labelPosition.equals(definition.getLabelMode())) result.setType(ButtonType.INVERSE);
+        Button result = new Button();
+        result.add(new Image(getImageForLabel(labelPosition)));
+        if (labelPosition.equals(definition.getLabelMode())) result.setEnabled(false);
         else {
             result.addClickHandler(new ClickHandler() {
                 @Override
@@ -151,6 +176,16 @@ public class FormModeler extends Composite {
             });
         }
         return result;
+    }
+
+    protected ImageResource getImageForLabel(String labelPosition) {
+        ImageResource resource;
+
+        if (labelPosition.equals(FormLayoutRenderer.LABEL_MODE_LEFT)) resource = images.labelLeft();
+        else if (labelPosition.equals(FormLayoutRenderer.LABEL_MODE_LEFT_ALIGNED)) resource = images.labelLeftAligned();
+        else resource = images.labelDefault();
+
+        return resource;
     }
 
     @PostConstruct

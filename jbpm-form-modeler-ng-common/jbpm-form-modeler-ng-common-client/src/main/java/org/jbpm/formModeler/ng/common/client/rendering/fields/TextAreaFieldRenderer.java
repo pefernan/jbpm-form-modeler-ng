@@ -57,7 +57,7 @@ public class TextAreaFieldRenderer extends FieldRenderer {
                 changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getId(),  textArea.getValue()));
             }
         });
-
+        textArea.setEnabled(!description.isReadOnly());
         return textArea;
     }
 }

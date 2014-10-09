@@ -1,5 +1,6 @@
 package org.jbpm.formModeler.ng.editor.client.editor.modeler.canvas.rendering.layouts;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.*;
 import org.jbpm.formModeler.ng.common.client.rendering.js.*;
 import org.jbpm.formModeler.ng.common.client.rendering.layouts.ColumnLayoutRenderer;
@@ -22,6 +23,19 @@ public class ColumnEditorLayoutRenderer extends ColumnLayoutRenderer {
     public Panel generateFormContent(FormContext context) {
         editorActionsGenerator.init(context);
         return super.generateFormContent(context);
+    }
+
+    @Override
+    protected Grid createGrid(FormLayoutDefinition layout) {
+        Grid content = super.createGrid(layout);
+        content.setHeight("600px");
+        return content;
+    }
+
+    @Override
+    protected void formatCell(Grid grid, int index, int maxColumns) {
+        super.formatCell(grid, index, maxColumns);
+        grid.getColumnFormatter().getElement(index).getStyle().setBorderStyle(Style.BorderStyle.DASHED);
     }
 
     @Override

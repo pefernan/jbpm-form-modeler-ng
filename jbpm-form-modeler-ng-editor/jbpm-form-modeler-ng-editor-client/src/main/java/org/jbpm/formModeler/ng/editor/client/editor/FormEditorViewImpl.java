@@ -8,6 +8,7 @@ import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.jbpm.formModeler.ng.editor.client.editor.dataHolders.DataHoldersEditor;
 import org.jbpm.formModeler.ng.editor.client.editor.modeler.FormModeler;
+import org.jbpm.formModeler.ng.editor.client.resources.i18n.Constants;
 import org.jbpm.formModeler.ng.editor.model.FormEditorContextTO;
 
 import javax.annotation.PostConstruct;
@@ -20,6 +21,8 @@ public class FormEditorViewImpl extends Composite implements FormEditorView {
             UiBinder<Widget, FormEditorViewImpl> {
 
     }
+
+    private Constants constants = Constants.INSTANCE;
 
     @UiField
     TabLayoutPanel tabPanel;
@@ -53,8 +56,8 @@ public class FormEditorViewImpl extends Composite implements FormEditorView {
     public void initView() {
         initWidget(uiBinder.createAndBindUi(this));
         tabPanel.setHeight("660px");
-        tabPanel.add(holdersEditor, "DATA_HOLDERS");
-        tabPanel.add(formModeler, "FIELD_BY_SOURCES");
+        tabPanel.add(holdersEditor, constants.form_modeler_sources());
+        tabPanel.add(formModeler, constants.form_modeler_fields());
         tabPanel.selectTab(0);
     }
 }

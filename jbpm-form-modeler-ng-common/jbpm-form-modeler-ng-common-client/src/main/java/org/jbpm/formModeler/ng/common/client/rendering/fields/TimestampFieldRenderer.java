@@ -59,7 +59,7 @@ public class TimestampFieldRenderer extends FieldRenderer {
                 changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getId(),  strvalue));
             }
         });
-
+        datetimepicker.setEnabled(!description.isReadOnly());
         return datetimepicker;
     }
 }
