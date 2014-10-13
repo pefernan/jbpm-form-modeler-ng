@@ -35,13 +35,7 @@ public class ColumnLayoutRenderer extends FormLayoutRenderer {
     protected Grid createGrid(FormLayoutDefinition layout) {
         Grid content = new Grid(1, layout.getAreas().length());
         content.setWidth("100%");
-        int columns = 2;
-        JSONObject object = new JSONObject(layout);
-        JSONValue jsonColumns = object.get("columns");
-        if (jsonColumns != null && jsonColumns.isNull() == null) columns = (int) jsonColumns.isNumber().doubleValue();
-        String width = 100 / columns + "%";
-        content.getColumnFormatter().setWidth(0, width);
-        content.getColumnFormatter().setWidth(1, width);
+        int columns = layout.getAreas().length();
         for (int i = 0; i < columns; i++) {
             formatCell(content, i, columns);
         }
@@ -51,6 +45,8 @@ public class ColumnLayoutRenderer extends FormLayoutRenderer {
     protected void formatCell(Grid grid, int index, int maxColumns) {
         grid.getCellFormatter().setVerticalAlignment(0, index, HasVerticalAlignment.ALIGN_TOP);
         grid.getColumnFormatter().getElement(index).getStyle().setBorderWidth(1, Style.Unit.PX);
+        String width = 100 / maxColumns + "%";
+        grid.getColumnFormatter().setWidth(index, width);
     }
 
     protected Widget renderArea(FormLayoutArea area, int column, FormContext context) {

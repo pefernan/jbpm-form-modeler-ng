@@ -54,9 +54,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-panel-manager-nswe</artifactId>
-      <scope>provided</scope>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-security-picketlink</artifactId>
     </dependency>
 
     <!-- Errai AS -->
@@ -84,11 +83,6 @@
 
     <dependency>
       <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-cdi-jetty</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
       <artifactId>errai-ui</artifactId>
     </dependency>
 
@@ -101,11 +95,6 @@
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.weld</groupId>
-      <artifactId>weld-spi</artifactId>
     </dependency>
 
     <dependency>
@@ -129,6 +118,11 @@
       <artifactId>gwt-bootstrap</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.owasp.encoder</groupId>
+      <artifactId>encoder</artifactId>
+    </dependency>
+
     <!-- Rouge imports to avoid OSGi errors -->
     <dependency>
       <groupId>org.osgi</groupId>
@@ -143,6 +137,11 @@
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-xjc</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.transaction</groupId>
+      <artifactId>jboss-transaction-api_1.1_spec</artifactId>
     </dependency>
 
     <!--Miscellaneous -->
@@ -165,7 +164,14 @@
     </dependency>
 
     <!-- Guvnor -->
-
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-asset-mgmt-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-asset-mgmt-backend</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-structure-api</artifactId>
@@ -339,6 +345,15 @@
       <scope>runtime</scope>
     </dependency>
 
+    <!-- PicketLink has a hard dependency on JBoss Logging.
+ Since this app deploys to Jetty, we include this as a runtime-scoped dependency.
+ If deploying to JBoss AS or WildFly, you would set this to provided scope. -->
+    <dependency>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
     <!-- formModeler dependencies -->
     <dependency>
       <groupId>org.jbpm</groupId>
@@ -418,6 +433,8 @@
             <compileSourcesArtifact>org.guvnor:guvnor-project-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.guvnor:guvnor-message-console-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.guvnor:guvnor-message-console-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.guvnor:guvnor-asset-mgmt-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.guvnor:guvnor-asset-mgmt-client</compileSourcesArtifact>
 
             <!-- Common dependencies -->
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-project-editor-api</compileSourcesArtifact>
@@ -455,10 +472,9 @@
             <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-social-activities-api</compileSourcesArtifact>
 
           </compileSourcesArtifacts>
-          <runTarget>org.jbpm.formModeler.ng.jBPMFormModeler/jBPM.html</runTarget>
-          <extraJvmArgs>-Xmx2048m -XX:MaxPermSize=256m -Xms1024m -XX:PermSize=128m</extraJvmArgs>
+          <runTarget>form-modeler.html</runTarget>
+          <extraJvmArgs>-Xmx4096m -XX:MaxPermSize=256m</extraJvmArgs>
           <soyc>false</soyc>
-          <server>org.jboss.errai.cdi.server.gwt.JettyLauncher</server>
           <!-- drools-compiler has dependency on org.eclipse.jdt.core.compiler:ecj:jar:3.5.1:compile, see http://code.google.com/p/google-web-toolkit/issues/detail?id=4479 -->
           <gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>
         </configuration>

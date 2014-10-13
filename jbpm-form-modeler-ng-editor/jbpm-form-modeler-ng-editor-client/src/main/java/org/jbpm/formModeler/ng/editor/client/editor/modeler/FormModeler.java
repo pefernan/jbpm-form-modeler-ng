@@ -21,7 +21,7 @@ import org.jbpm.formModeler.ng.common.client.rendering.js.FormDefinition;
 import org.jbpm.formModeler.ng.common.client.rendering.layouts.FormLayoutRenderer;
 import org.jbpm.formModeler.ng.editor.client.editor.dataHolders.DataHoldersEditor;
 import org.jbpm.formModeler.ng.editor.client.editor.modeler.canvas.FormCanvas;
-import org.jbpm.formModeler.ng.editor.client.editor.modeler.sources.FieldsBySourceEditor;
+import org.jbpm.formModeler.ng.editor.client.editor.modeler.fieldsTree.FieldsTreeEditor;
 import org.jbpm.formModeler.ng.editor.client.resources.i18n.Constants;
 import org.jbpm.formModeler.ng.editor.client.resources.images.FormModelerEditorImageResources;
 import org.jbpm.formModeler.ng.editor.events.canvas.DeleteFieldEvent;
@@ -75,7 +75,7 @@ public class FormModeler extends Composite {
     SimplePanel fieldsContainer;
 
     @Inject
-    private FieldsBySourceEditor fieldsBySourceEditor;
+    private FieldsTreeEditor fieldsTreeEditor;
 
     @UiField
     SimplePanel canvasContainer;
@@ -96,7 +96,7 @@ public class FormModeler extends Composite {
     public void initEditor(FormEditorContextTO ctx) {
         this.context = ctx;
 
-        fieldsBySourceEditor.initEditor(context);
+        fieldsTreeEditor.initEditor(context);
         canvas.initContext(context);
         header.getElement().getStyle().setMarginBottom(0, Style.Unit.PX);
         layoutText.setText(constants.form_modeler_layout());
@@ -191,7 +191,7 @@ public class FormModeler extends Composite {
     @PostConstruct
     public void initView() {
         initWidget(uiBinder.createAndBindUi(this));
-        fieldsContainer.add(fieldsBySourceEditor);
+        fieldsContainer.add(fieldsTreeEditor);
         canvasContainer.add(canvas);
     }
 
@@ -224,7 +224,7 @@ public class FormModeler extends Composite {
                                        }
                                        if (jsonResponse != null) {
                                            canvas.refreshContext(jsonResponse);
-                                           fieldsBySourceEditor.loadFormSources();
+                                           fieldsTreeEditor.loadFormSources();
                                        }
                                    }
                                }, new ErrorCallback<Object>() {

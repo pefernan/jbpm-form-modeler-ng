@@ -304,7 +304,7 @@ public class FormEditorPanelPresenter {
     }
 
     @OnSave
-    private void onSave() {
+    public void onSave() {
         if ( isReadOnly ) {
             Window.alert(CommonConstants.INSTANCE.CantSaveReadOnly());
         } else {

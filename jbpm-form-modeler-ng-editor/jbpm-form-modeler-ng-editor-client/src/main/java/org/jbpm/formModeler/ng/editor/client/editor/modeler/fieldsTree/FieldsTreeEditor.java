@@ -1,4 +1,4 @@
-package org.jbpm.formModeler.ng.editor.client.editor.modeler.sources;
+package org.jbpm.formModeler.ng.editor.client.editor.modeler.fieldsTree;
 
 
 import com.github.gwtbootstrap.client.ui.base.IconAnchor;
@@ -24,11 +24,11 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-public class FieldsBySourceEditor extends Composite {
+public class FieldsTreeEditor extends Composite {
 
     interface SourcesViewBinder
             extends
-            UiBinder<Widget, FieldsBySourceEditor> {
+            UiBinder<Widget, FieldsTreeEditor> {
 
     }
 

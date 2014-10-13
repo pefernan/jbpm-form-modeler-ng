@@ -7,6 +7,7 @@ import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.jbpm.formModeler.ng.editor.events.canvas.RefreshCanvasEvent;
 import org.jbpm.formModeler.ng.editor.events.dataHolders.DeleteDataHolderEvent;
 import org.jbpm.formModeler.ng.editor.events.dataHolders.NewDataHolderEvent;
@@ -43,7 +44,6 @@ import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.paging.PageRequest;
 import org.uberfire.paging.PageResponse;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -51,7 +51,6 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -66,7 +65,7 @@ public class FormEditorServiceImpl implements FormEditorService {
     private IOService ioService;
 
     @Inject
-    private Identity identity;
+    private User identity;
 
     @Inject
     private SessionInfo sessionInfo;
@@ -288,7 +287,7 @@ public class FormEditorServiceImpl implements FormEditorService {
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {
-        final String name = identity.getName();
+        final String name = identity.getIdentifier();
         final Date when = new Date();
         final CommentedOption co = new CommentedOption(sessionInfo.getId(),
                 name,
