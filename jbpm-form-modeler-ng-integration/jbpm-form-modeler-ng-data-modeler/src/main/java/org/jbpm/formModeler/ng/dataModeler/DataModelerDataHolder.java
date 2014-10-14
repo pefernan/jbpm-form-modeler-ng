@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.formModeler.dataModeler.model;
+package org.jbpm.formModeler.ng.dataModeler;
 
-import org.jbpm.formModeler.dataModeler.integration.DataModelerService;
+import org.jbpm.formModeler.ng.dataModeler.DataModelerService;
 import org.jbpm.formModeler.ng.model.DataFieldHolder;
 import org.jbpm.formModeler.ng.services.context.FormRenderContext;
 import org.jbpm.formModeler.ng.services.management.dataHolders.builders.PojoDataHolder;
@@ -28,12 +28,12 @@ public class DataModelerDataHolder extends PojoDataHolder {
 
     private Class holderClass;
 
-    public DataModelerDataHolder(String holderId, String holderClass, String renderColor) {
-        super(holderId, holderClass, renderColor);
+    public DataModelerDataHolder(String holderId, String holderClass) {
+        super(holderId, holderClass);
     }
 
-    public DataModelerDataHolder(String holderId, Class holderClass, String renderColor) {
-        super(holderId, holderClass.getCanonicalName(), renderColor);
+    public DataModelerDataHolder(String holderId, Class holderClass) {
+        super(holderId, holderClass.getCanonicalName());
         this.holderClass = holderClass;
     }
 

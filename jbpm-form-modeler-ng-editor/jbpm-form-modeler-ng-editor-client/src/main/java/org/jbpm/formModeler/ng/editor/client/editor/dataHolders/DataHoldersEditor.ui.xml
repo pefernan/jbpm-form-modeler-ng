@@ -41,13 +41,6 @@
 
               </b:ControlGroup>
 
-              <b:ControlGroup ui:field="colorGroup">
-                <b:ControlLabel for="color"  >Holder Color</b:ControlLabel>
-
-                <b:Controls>
-                  <b:TextBox b:id="color" ui:field="color" placeholder="!Insert a color"/>
-                </b:Controls>
-              </b:ControlGroup>
             </b:Fieldset>
             <b:Button ui:field="okButton" type="PRIMARY" text="!Create Holder"></b:Button>
           </b:Well>

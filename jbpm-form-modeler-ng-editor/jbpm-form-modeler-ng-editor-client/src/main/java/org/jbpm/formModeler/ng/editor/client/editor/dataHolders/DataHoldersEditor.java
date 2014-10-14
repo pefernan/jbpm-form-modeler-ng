@@ -83,12 +83,6 @@ public class DataHoldersEditor extends Composite {
     VerticalPanel holderTypes;
 
     @UiField
-    ControlGroup colorGroup;
-
-    @UiField
-    TextBox color;
-
-    @UiField
     Button okButton;
 
     private String holderType = "";
@@ -114,7 +108,6 @@ public class DataHoldersEditor extends Composite {
                 info.setUniqueId(id.getText());
                 info.setType(holderType);
                 info.setClassName(className);
-                info.setRenderColor(color.getText());
                 formModelerEvent.fire(new NewDataHolderEvent(context.getCtxUID(), info));
             }
         });
@@ -160,17 +153,6 @@ public class DataHoldersEditor extends Composite {
             }
         };
         grid.addColumn(className, "Class");
-
-        final SafeHtmlCell cell = new SafeHtmlCell();
-        Column<DataHolderTO, SafeHtml> holderColor = new Column<DataHolderTO, SafeHtml>(cell) {
-            public SafeHtml getValue( DataHolderTO row ) {
-                SafeHtmlBuilder sb = new SafeHtmlBuilder();
-                String html = "<div style='width: 100%; background-color:" + row.getRenderColor() + ";'>&nbsp;</div>";
-                sb.appendHtmlConstant(html);
-                return sb.toSafeHtml();
-            }
-        };
-        grid.addColumn(holderColor, "");
 
         holdersList.add(grid);
     }
@@ -290,32 +272,5 @@ public class DataHoldersEditor extends Composite {
 
     public void refreshGrid(@Observes RefreshHoldersListEvent refreshHoldersListEvent) {
         if (context != null && context.getCtxUID().equals(refreshHoldersListEvent.getContext())) refreshDataHoldersTable();
-    }
-
-    private class HolderColor {
-        private String color;
-
-        private HolderColor(String color) {
-            this.color = color;
-        }
-
-        private String getColor() {
-            return color;
-        }
-
-        private void setColor(String color) {
-            this.color = color;
-        }
-    }
-
-    private static class ColortCell extends AbstractCell<HolderColor> {
-
-        @Override
-        public void render(Context context, HolderColor value, SafeHtmlBuilder sb) {
-            if (value != null) {
-                String html = "<div style='width:100%; background-color:" + value.getColor() + ";'></div>";
-                sb.appendHtmlConstant(html);
-            }
-        }
     }
 }

@@ -103,14 +103,8 @@ public class ProcessDataHolderBuilder implements RangedDataHolderBuilder {
         variables.put("age", "java.lang.Integer");
         variables.put("user", "org.jbpm.formModeler.ng.renderer.backend.test.User");
 
-        String[] colors = dataHolderManager.getHolderColors().keySet().toArray(new String[dataHolderManager.getHolderColors().size()]);
-
-        int colorIndex = 0;
         for (String key : variables.keySet()) {
-            if (colorIndex == colors.length) colorIndex = 0;
-            String color = colors[colorIndex];
-            colorIndex ++;
-            DataHolderBuildConfig holderConfig = new DataHolderBuildConfig(key, color, variables.get(key));
+            DataHolderBuildConfig holderConfig = new DataHolderBuildConfig(key, variables.get(key));
             holderConfig.addAttribute("path", path);
             DataHolder holder = dataHolderManager.createDataHolderByValueType(holderConfig, new HashMap<String, Object>());
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.formModeler.dataModeler.integration;
+package org.jbpm.formModeler.ng.dataModeler;
 
 import java.net.URI;
 import java.util.Locale;
@@ -25,7 +25,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.common.services.project.service.POMService;
-import org.jbpm.formModeler.dataModeler.model.DataModelerDataHolder;
 import org.jbpm.formModeler.ng.model.DataHolder;
 import org.jbpm.formModeler.ng.services.context.FormRenderContext;
 import org.jbpm.formModeler.ng.services.context.FormRenderContextManager;
@@ -96,14 +95,14 @@ public class DataModelerService implements RangedDataHolderBuilder {
 
         Path path = (Path) config.getAttribute( "path" );
         if (path == null) {
-            dataHolder = new DataModelerDataHolder( config.getHolderId(), config.getClassName(), config.getRenderColor() );
+            dataHolder = new DataModelerDataHolder(config.getHolderId(), config.getClassName());
         } else {
-            Class holderClass = findHolderClass( config.getClassName(), path);
+            Class holderClass = findHolderClass(config.getClassName(), path);
             if ( holderClass == null ) {
                 return null;
             }
             DataModelTO dataModelTO = dataModelerService.loadModel( projectService.resolveProject(path));
-            dataHolder = new DataModelerDataHolder( config.getHolderId(), holderClass, config.getRenderColor() );
+            dataHolder = new DataModelerDataHolder(config.getHolderId(), holderClass);
         }
 
         return dataHolder;
@@ -180,7 +179,7 @@ public class DataModelerService implements RangedDataHolderBuilder {
 
     @Override
     public String getDataHolderName( Locale locale ) {
-        ResourceBundle bundle = ResourceBundle.getBundle( "org.jbpm.formModeler.dataModeler.messages", locale );
+        ResourceBundle bundle = ResourceBundle.getBundle( "org.jbpm.formModeler.ng.dataModeler.messages", locale );
         return bundle.getString( "dataHolder_dataModeler" );
     }
 }

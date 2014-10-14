@@ -32,10 +32,9 @@ public class BasicTypeDataHolder extends DataHolder {
 
     protected Set<DataFieldHolder> dataFieldHolders;
 
-    BasicTypeDataHolder(String uniqueId, String className, String renderColor) {
+    BasicTypeDataHolder(String uniqueId, String className) {
         this.uniqueId = uniqueId;
         this.className = className;
-        this.renderColor = renderColor;
         this.fieldManager = BeanProvider.getContextualReference(FieldManager.class, true);
         try {
             this.field = fieldManager.getFieldByClass(className);

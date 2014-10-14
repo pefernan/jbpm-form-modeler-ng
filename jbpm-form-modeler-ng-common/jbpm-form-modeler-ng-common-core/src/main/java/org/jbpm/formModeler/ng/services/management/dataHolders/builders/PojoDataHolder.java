@@ -33,10 +33,9 @@ public class PojoDataHolder extends DataHolder {
 
     protected Set<DataFieldHolder> dataFieldHolders;
 
-    public PojoDataHolder(String uniqueId, String className, String renderColor) {
+    public PojoDataHolder(String uniqueId, String className) {
         this.uniqueId = uniqueId;
         this.className = className;
-        this.renderColor = renderColor;
         this.fieldManager = BeanProvider.getContextualReference(FieldManager.class, true);
     }
 

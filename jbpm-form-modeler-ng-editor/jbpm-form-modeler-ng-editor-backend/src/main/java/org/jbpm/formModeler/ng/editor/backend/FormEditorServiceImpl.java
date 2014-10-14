@@ -228,7 +228,6 @@ public class FormEditorServiceImpl implements FormEditorService {
         to.setType(holder.getTypeCode());
         to.setUniqueId(holder.getUniqueId());
         to.setClassName(holder.getClassName());
-        to.setRenderColor(holder.getRenderColor());
 
         to.setCanHaveChild(holder.canHaveChildren());
 
@@ -339,7 +338,7 @@ public class FormEditorServiceImpl implements FormEditorService {
         FormRenderContext context = contextManager.getFormRenderContext(event.getContext());
         if (context != null) {
             DataHolderTO info = event.getDataHolder();
-            DataHolderBuildConfig config = new DataHolderBuildConfig(info.getUniqueId(), info.getRenderColor(), info.getClassName());
+            DataHolderBuildConfig config = new DataHolderBuildConfig(info.getUniqueId(), info.getClassName());
             config.addAttribute("path", context.getAttributes().get("path"));
             config.addAttribute("context", context);
             DataHolder holder = dataHolderManager.createDataHolderByType(info.getType(), config);

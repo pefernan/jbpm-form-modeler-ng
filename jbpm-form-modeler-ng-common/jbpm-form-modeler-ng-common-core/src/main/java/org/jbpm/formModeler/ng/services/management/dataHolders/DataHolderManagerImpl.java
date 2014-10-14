@@ -30,22 +30,9 @@ public class DataHolderManagerImpl implements DataHolderManager {
     @Inject
     private Instance<DataHolderBuilder> holderBuilders;
     private Set<DataHolderBuilder> builders;
-    private Map<String, String> colors;
 
     @PostConstruct
     protected void initializeHolders() {
-        colors = new HashMap<String, String>();
-
-        colors.put("#FF8881", "holder_color_red");
-        colors.put("#FF54A7", "holder_color_pink");
-        colors.put("#FBB767", "holder_color_orange");
-        colors.put("#E9E371", "holder_color_yellow");
-        colors.put("#A7E690", "holder_color_green");
-        colors.put("#9BCAFA", "holder_color_blue");
-        colors.put("#0000A0", "holder_color_dark_blue");
-        colors.put("#B29FE4", "holder_color_violet");
-        colors.put("#BBBBBB", "holder_color_grey");
-        colors.put("#000000", "holder_color_black");
 
         builders = new TreeSet<DataHolderBuilder>(new Comparator<DataHolderBuilder>() {
             @Override
@@ -57,11 +44,6 @@ public class DataHolderManagerImpl implements DataHolderManager {
         for (DataHolderBuilder holderBuilder : holderBuilders) {
             builders.add(holderBuilder);
         }
-    }
-
-    @Override
-    public Map<String, String> getHolderColors() {
-        return colors;
     }
 
     @Override

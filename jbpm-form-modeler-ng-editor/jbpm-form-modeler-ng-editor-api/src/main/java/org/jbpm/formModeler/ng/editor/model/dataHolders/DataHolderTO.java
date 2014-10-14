@@ -9,7 +9,6 @@ public class DataHolderTO extends AbstractPageRow {
     private String type;
     private String uniqueId;
     private String className;
-    private String renderColor;
     private boolean canHaveChild;
     private DataHolderFieldTO[] fields;
 
@@ -38,14 +37,6 @@ public class DataHolderTO extends AbstractPageRow {
 
     public void setClassName(String className) {
         this.className = className;
-    }
-
-    public String getRenderColor() {
-        return renderColor;
-    }
-
-    public void setRenderColor(String renderColor) {
-        this.renderColor = renderColor;
     }
 
     public boolean isCanHaveChild() {

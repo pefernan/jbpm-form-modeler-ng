@@ -48,12 +48,10 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
     public static final String FIELD_LABEL = "label";
     public static final String FIELD_READONLY = "readonly";
     public static final String FIELD_BINDING_EXPRESSION = "bindingExpression";
-    public static final String FIELD_HOLDER_COLOR = "holderColor";
     public static final String FIELD_DATA = "data";
 
     public static final String DATAHOLDERS = "dataHolders";
     public static final String DATAHOLDER_CLASSNAME = "className";
-    public static final String DATAHOLDER_COLOR = "color";
 
     public static final String STATUS = "status";
     public static final String VALUES = "values";
@@ -140,7 +138,6 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
             generator.writeStringField(ID, holder.getUniqueId());
             generator.writeStringField(TYPE, holder.getTypeCode());
             generator.writeStringField(DATAHOLDER_CLASSNAME, holder.getClassName());
-            generator.writeStringField(DATAHOLDER_COLOR, holder.getRenderColor());
             generator.writeEndObject();
         }
         generator.writeEndArray();
@@ -167,12 +164,6 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
             generator.writeStringField(FIELD_BINDING_EXPRESSION, field.getBindingExpression());
             generator.writeBooleanField(FIELD_READONLY, field.getReadonly());
             generator.writeBooleanField(FIELD_REQUIRED, field.getFieldRequired());
-
-            String color = "";
-
-            DataHolder dataHolder = BindingUtils.getDataHolderForField(field);
-            if (dataHolder != null) color = dataHolder.getRenderColor();
-            generator.writeStringField(FIELD_HOLDER_COLOR, color);
 
             generator.writeObjectFieldStart(FIELD_DATA);
 
@@ -247,7 +238,7 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
         if (dataHolders != null && !dataHolders.isNull()) {
             for (Iterator<JsonNode> it = dataHolders.getElements(); it.hasNext();) {
                 JsonNode jsonHolder = it.next();
-                DataHolderBuildConfig config = new DataHolderBuildConfig(jsonHolder.get(ID).getTextValue(), jsonHolder.get(DATAHOLDER_COLOR).getTextValue(), jsonHolder.get(DATAHOLDER_CLASSNAME).getTextValue());
+                DataHolderBuildConfig config = new DataHolderBuildConfig(jsonHolder.get(ID).getTextValue(), jsonHolder.get(DATAHOLDER_CLASSNAME).getTextValue());
                 config.setAttributes(context);
 
                 DataHolder holder = dataHolderManager.createDataHolderByType(jsonHolder.get(TYPE).getTextValue(), config);

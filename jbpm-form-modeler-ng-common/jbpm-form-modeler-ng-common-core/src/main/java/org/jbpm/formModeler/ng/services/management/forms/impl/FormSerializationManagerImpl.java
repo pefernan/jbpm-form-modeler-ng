@@ -166,12 +166,11 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
                 String holderId = getNodeAttributeValue(node, ATTR_ID);
                 String holderType = getNodeAttributeValue(node, ATTR_TYPE);
                 String holderValue = getNodeAttributeValue(node, ATTR_VALUE);
-                String holderRenderColor = getNodeAttributeValue(node, ATTR_NAME);
                 String holderSupportedType = getNodeAttributeValue(node, ATTR_SUPPORTED_TYPE);
 
                 if (!StringUtils.isEmpty(holderId) && !StringUtils.isEmpty(holderType) && !StringUtils.isEmpty(holderValue)) {
 
-                    DataHolderBuildConfig config = new DataHolderBuildConfig(holderId, holderRenderColor, holderValue);
+                    DataHolderBuildConfig config = new DataHolderBuildConfig(holderId, holderValue);
                     if (context.get("path") != null)config.addAttribute("path", context.get("path"));
                     if (!StringUtils.isEmpty(holderSupportedType))
                         config.addAttribute(ATTR_SUPPORTED_TYPE, holderSupportedType);
@@ -325,7 +324,6 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
         rootNode.addAttribute(ATTR_ID, dataHolder.getUniqueId());
         rootNode.addAttribute(ATTR_TYPE, dataHolder.getTypeCode());
         rootNode.addAttribute(ATTR_VALUE, dataHolder.getClassName());
-        rootNode.addAttribute(ATTR_NAME, dataHolder.getRenderColor());
 
         parent.addChild(rootNode);
     }

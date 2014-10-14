@@ -60,13 +60,13 @@ public class FormModelerServicesTest {
 
         assertNotNull("Unable to create form.", newForm);
 
-        DataHolderBuildConfig config = new DataHolderBuildConfig("string", "red", String.class.getName());
+        DataHolderBuildConfig config = new DataHolderBuildConfig("string", String.class.getName());
 
         DataHolder basicHolder = dataHolderManager.createDataHolderByValueType(config, new HashMap<String, Object>());
 
         assertNotNull("Unable to create basic type DataHolder.", basicHolder);
 
-        config = new DataHolderBuildConfig("pojo1", "blue", Pojo1.class.getName());
+        config = new DataHolderBuildConfig("pojo1", Pojo1.class.getName());
 
         DataHolder pojoHolder = dataHolderManager.createDataHolderByValueType(config, new HashMap<String, Object>());
 
@@ -80,7 +80,7 @@ public class FormModelerServicesTest {
 
         assertEquals("Added fields from Pojo != 5.", newForm.getElements().size(), 5);
 
-        DataHolderBuildConfig config2 = new DataHolderBuildConfig("boolean", "yellow", Boolean.class.getName());
+        DataHolderBuildConfig config2 = new DataHolderBuildConfig("boolean", Boolean.class.getName());
 
         DataHolder basicHolder2 = dataHolderManager.createDataHolderByValueType(config2, new HashMap<String, Object>());
 

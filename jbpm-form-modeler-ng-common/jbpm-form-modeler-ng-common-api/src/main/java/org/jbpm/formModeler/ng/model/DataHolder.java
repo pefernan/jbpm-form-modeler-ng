@@ -23,7 +23,6 @@ import java.util.Set;
 public abstract class DataHolder implements Comparable<DataHolder>, Serializable {
     protected String uniqueId;
     protected String className;
-    protected String renderColor;
 
     public String getUniqueId() {
         return uniqueId;
@@ -39,14 +38,6 @@ public abstract class DataHolder implements Comparable<DataHolder>, Serializable
 
     public String getClassName() {
         return className;
-    }
-
-    public String getRenderColor() {
-        return renderColor;
-    }
-
-    public void setRenderColor(String renderColor) {
-        this.renderColor = renderColor;
     }
 
     public abstract String getTypeCode();

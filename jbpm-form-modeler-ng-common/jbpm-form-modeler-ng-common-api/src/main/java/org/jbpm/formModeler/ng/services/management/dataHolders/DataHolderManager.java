@@ -8,8 +8,6 @@ import java.util.Set;
 
 public interface DataHolderManager extends Serializable {
 
-    Map<String, String> getHolderColors();
-
     Set<DataHolderBuilder> getHolderBuilders();
 
     DataHolderBuilder getBuilderByBuilderType(String builderId);
