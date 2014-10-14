@@ -12,7 +12,7 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class FormDefinitionResourceType extends FormResourceTypeDefinition implements ClientResourceType {
 
-    private static final Image IMAGE = new Image(FormModelerEditorResources.INSTANCE.images().typeForm());
+    private static final Image IMAGE = new Image(FormModelerEditorResources.INSTANCE.getEditorImages().typeForm());
 
     @Override
     public IsWidget getIcon() {

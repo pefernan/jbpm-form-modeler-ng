@@ -57,6 +57,8 @@ public interface FormManager extends Serializable {
 
     boolean addDataHolderField(Form form, DataHolder holder, DataFieldHolder field);
 
+    boolean addFieldByType(Form form, String fieldType);
+
     void setSystemForms(List<Form> systemForms);
 
     boolean changeFieldType(Form form, Field field, String code);

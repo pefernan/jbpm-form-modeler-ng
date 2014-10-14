@@ -34,23 +34,17 @@
         border-collapse: collapse;
         margin: 0px;
         width: 100%;
-        height: 660px;
-        padding: 10px;
+        height: 600px;
 
       }
       .TdLateralTable {
         background-color: #FFFFFF !important;
         vertical-align: top;
-        padding: 10px;
         width: 20%;
       }
       .TdCentralTable {
         background-color: #FFFFFF !important;
         vertical-align: top;
-        padding-top: 10px;
-        padding-right: 0;
-        padding-bottom: 10px;
-        padding-left: 10px;
       }
     </style>
     <b:Navbar ui:field="header">
@@ -71,7 +65,7 @@
       <tr>
         <td class="TdLateralTable">
           <div class="well well-small">
-            <div style="height:600px;">
+            <div style="height:600px; overflow:auto;">
               <g:SimplePanel ui:field="fieldsContainer"/>
             </div>
           </div>

@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.Widget;
 import org.jbpm.formModeler.ng.common.client.rendering.event.FieldChangedEvent;
@@ -13,6 +14,8 @@ import org.jbpm.formModeler.ng.common.client.rendering.js.FormContext;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormContextStatus;
 import org.jbpm.formModeler.ng.common.client.rendering.layouts.FormLayoutRenderer;
 import org.jbpm.formModeler.ng.common.client.rendering.layouts.utils.FieldLabelHelper;
+import org.jbpm.formModeler.ng.common.client.rendering.resources.i18n.FieldTypeLabels;
+import org.jbpm.formModeler.ng.common.client.rendering.resources.images.FieldTypeImages;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -63,5 +66,14 @@ public class CheckboxFieldRenderer extends FieldRenderer {
     @Override
     public boolean supportsLabel() {
         return true;
+    }
+
+    @Override
+    public ImageResource getImage() {
+        return FieldTypeImages.INSTANCE.checkbox();
+    }
+
+    public String getLabel() {
+        return FieldTypeLabels.INSTANCE.checkbox();
     }
 }

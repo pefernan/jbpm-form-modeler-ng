@@ -7,8 +7,9 @@ public class DataHolderFieldTO {
     private String icon;
     private String holderId;
     private String id;
-    private String className;
-    private boolean binded;
+    private String typeCode;
+    private boolean binded = false;
+    private String bindedFieldId;
 
     public String getHolderId() {
         return holderId;
@@ -26,12 +27,12 @@ public class DataHolderFieldTO {
         this.id = id;
     }
 
-    public String getClassName() {
-        return className;
+    public String getTypeCode() {
+        return typeCode;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
+    public void setTypeCode(String typeCode) {
+        this.typeCode = typeCode;
     }
 
     public String getIcon() {
@@ -48,5 +49,13 @@ public class DataHolderFieldTO {
 
     public void setBinded(boolean binded) {
         this.binded = binded;
+    }
+
+    public void setBindedFieldId(String bindedFieldId) {
+        this.bindedFieldId = bindedFieldId;
+    }
+
+    public String getBindedFieldId() {
+        return bindedFieldId;
     }
 }

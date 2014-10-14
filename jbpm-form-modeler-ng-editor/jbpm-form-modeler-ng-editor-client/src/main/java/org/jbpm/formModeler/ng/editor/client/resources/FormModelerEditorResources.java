@@ -18,10 +18,13 @@ package org.jbpm.formModeler.ng.editor.client.resources;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import org.jbpm.formModeler.ng.editor.client.resources.images.FormModelerEditorImageResources;
+import org.jbpm.formModeler.ng.editor.client.resources.images.tree.FieldsTreeResources;
 
 public interface FormModelerEditorResources extends ClientBundle {
 
     public static final FormModelerEditorResources INSTANCE = GWT.create(FormModelerEditorResources.class );
 
-    FormModelerEditorImageResources images();
+    FormModelerEditorImageResources getEditorImages();
+
+    FieldsTreeResources getTreeResources();
 }

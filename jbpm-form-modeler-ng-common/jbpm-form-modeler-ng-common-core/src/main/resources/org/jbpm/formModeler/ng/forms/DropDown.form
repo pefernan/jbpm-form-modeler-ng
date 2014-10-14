@@ -43,7 +43,7 @@
     <property name="accesskey" value=""/>
     <property name="bindingExpression" value="field/label"/>
   </field>
-  <field position="3" name="provider" type="DropDown" id="937759424">
+  <field position="3" name="provider" type="DropDown" id="93737592424">
     <property name="fieldRequired" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
@@ -59,7 +59,7 @@
     <property name="provider" value="org.jbpm.formModeler.ng.services.management.forms.impl.selectValuesProviders.SelectValuesProviderProvider"/>
     <property name="bindingExpression" value="field/provider"/>
   </field>
-  <field position="4" name="size" type="InputTextInteger" id="1565746574">
+  <field position="4" name="size" type="InputTextInteger" id="115657465574">
     <property name="fieldRequired" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
@@ -74,7 +74,7 @@
     <property name="accesskey" value=""/>
     <property name="bindingExpression" value="field/width"/>
   </field>
-  <field position="5" name="fieldRequired" type="CheckBox" id="937759424">
+  <field position="5" name="fieldRequired" type="CheckBox" id="937754329424">
     <property name="fieldRequired" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
@@ -89,7 +89,7 @@
     <property name="accesskey" value=""/>
     <property name="bindingExpression" value="field/fieldRequired"/>
   </field>
-  <field position="6" name="readonly" type="CheckBox" id="937759424">
+  <field position="6" name="readonly" type="CheckBox" id="9377756759424">
     <property name="fieldRequired" value="false"/>
     <property name="groupWithPrevious" value="true"/>
     <property name="height" value=""/>
@@ -119,5 +119,5 @@
     <property name="accesskey" value=""/>
     <property name="bindingExpression" value="field/bindingExpression"/>
   </field>
-  <dataHolder inputId="field" name="#0000A0" type="className" outId="field" value="org.jbpm.formModeler.ng.model.Field" id="field"/>
+  <dataHolder inputId="field" name="#0000A0" type="className" outId="field" value="org.jbpm.formModeler.ng.model.DropDown" id="field"/>
 </form>

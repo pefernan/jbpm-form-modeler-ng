@@ -10,7 +10,9 @@
   <name>jBPM Form Modeler NG - Integration</name>
   <description>jBPM Form Modeler NG - Integration</description>
   <packaging>pom</packaging>
+
   <modules>
     <module>jbpm-form-modeller-ng-process-backend</module>
+    <module>jbpm-form-modeler-ng-data-modeler</module>
   </modules>
 </project>

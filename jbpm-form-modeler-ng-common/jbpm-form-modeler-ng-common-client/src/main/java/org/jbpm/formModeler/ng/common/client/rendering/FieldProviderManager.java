@@ -8,8 +8,10 @@ import org.jbpm.formModeler.ng.common.client.rendering.fields.TextBoxFieldRender
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 @ApplicationScoped
 public class FieldProviderManager {
@@ -19,6 +21,8 @@ public class FieldProviderManager {
     @Inject
     private HashMap<String, FieldRenderer> providersMap;
 
+    private List<FieldRenderer> visibleRenderers = new ArrayList<FieldRenderer>();
+
     @Inject
     private TextBoxFieldRenderer defaultProvider;
 
@@ -27,8 +31,9 @@ public class FieldProviderManager {
         Collection<IOCBeanDef<FieldRenderer>> providers = iocManager.lookupBeans(FieldRenderer.class);
         if (providers != null) {
             for (IOCBeanDef providerDef : providers) {
-                FieldRenderer provider = (FieldRenderer) providerDef.getInstance();
-                providersMap.put(provider.getCode(), provider);
+                FieldRenderer renderer = (FieldRenderer) providerDef.getInstance();
+                if (renderer.isVisible()) visibleRenderers.add(renderer);
+                providersMap.put(renderer.getCode(), renderer);
             }
         }
     }
@@ -37,5 +42,9 @@ public class FieldProviderManager {
         FieldRenderer result = providersMap.get(type);
         if (result == null) return defaultProvider;
         return result;
+    }
+
+    public List<FieldRenderer> getVisibleRenderers() {
+        return visibleRenderers;
     }
 }

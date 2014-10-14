@@ -22,24 +22,16 @@ public class FieldDefinition extends JavaScriptObject {
         return this.type;
     }-*/;
 
-    public final native int getRow() /*-{
-        return this.row;
-    }-*/;
-
-    public final native int getColumn() /*-{
-        return this.column;
-    }-*/;
-
-    public final native String getHolderColor() /*-{
-        return this.holderColor;
-    }-*/;
-
     public final native boolean isRequired() /*-{
         return this.required;
     }-*/;
 
     public final native boolean isReadOnly() /*-{
         return this.readonly;
+    }-*/;
+
+    public final native String getBindingExpression() /*-{
+        return this.bindingExpression;
     }-*/;
 
     public final native JavaScriptObject getData() /*-{

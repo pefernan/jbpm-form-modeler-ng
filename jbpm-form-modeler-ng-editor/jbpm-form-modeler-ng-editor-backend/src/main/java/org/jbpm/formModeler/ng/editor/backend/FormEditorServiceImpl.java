@@ -14,10 +14,7 @@ import org.jbpm.formModeler.ng.editor.events.dataHolders.NewDataHolderEvent;
 import org.jbpm.formModeler.ng.editor.events.dataHolders.RefreshHoldersListEvent;
 import org.jbpm.formModeler.ng.editor.model.EditionContextTO;
 import org.jbpm.formModeler.ng.editor.model.FormEditorContextTO;
-import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderBuilderTO;
-import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderFieldTO;
-import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderTO;
-import org.jbpm.formModeler.ng.editor.model.dataHolders.RangedDataHolderBuilderTO;
+import org.jbpm.formModeler.ng.editor.model.dataHolders.*;
 import org.jbpm.formModeler.ng.editor.service.FormEditorService;
 import org.jbpm.formModeler.ng.model.*;
 import org.jbpm.formModeler.ng.services.LocaleManager;
@@ -29,6 +26,7 @@ import org.jbpm.formModeler.ng.services.management.dataHolders.DataHolderBuildCo
 import org.jbpm.formModeler.ng.services.management.dataHolders.DataHolderBuilder;
 import org.jbpm.formModeler.ng.services.management.dataHolders.DataHolderManager;
 import org.jbpm.formModeler.ng.services.management.dataHolders.RangedDataHolderBuilder;
+import org.jbpm.formModeler.ng.services.management.forms.FieldManager;
 import org.jbpm.formModeler.ng.services.management.forms.FormDefinitionMarshaller;
 import org.jbpm.formModeler.ng.services.management.forms.FormLayoutManager;
 import org.jbpm.formModeler.ng.services.management.forms.FormManager;
@@ -98,6 +96,9 @@ public class FormEditorServiceImpl implements FormEditorService {
     private FormManager formManager;
 
     @Inject
+    private FieldManager fieldManager;
+
+    @Inject
     private FormLayoutManager layoutManager;
 
     @Inject
@@ -127,7 +128,7 @@ public class FormEditorServiceImpl implements FormEditorService {
                 break;
             }
             if ( i >= pageRequest.getStartRowIndex() ) {
-                tradeRatePageRowList.add(buildDataHolderTo(holder, false, context.getForm(), false));
+                tradeRatePageRowList.add(buildDataHolderTo(holder, false, context.getForm()));
             }
             i++;
         }
@@ -141,10 +142,10 @@ public class FormEditorServiceImpl implements FormEditorService {
     }
 
     @Override
-    public DataHolderTO[] getAvailableDataHolders(String ctxUID) {
+    public FormDataHoldersTO getAvailableDataHolders(String ctxUID) {
         FormRenderContext context = contextManager.getFormRenderContext(ctxUID);
 
-        if (context == null) return new DataHolderTO[0];
+        if (context == null) return new FormDataHoldersTO();
 
         return getAvailabeHoldersList(context.getForm());
     }
@@ -163,10 +164,10 @@ public class FormEditorServiceImpl implements FormEditorService {
     }
 
     @Override
-    public DataHolderTO[] addFieldFromHolder(String ctxUID, DataHolderFieldTO fieldTO) {
+    public FormDataHoldersTO addFieldFromHolder(String ctxUID, DataHolderFieldTO fieldTO) {
         FormRenderContext context = contextManager.getFormRenderContext(ctxUID);
 
-        if (context == null) return new DataHolderTO[0];
+        if (context == null) return new FormDataHoldersTO();
 
         DataHolder holder = context.getForm().getDataHolderById(fieldTO.getHolderId());
 
@@ -179,21 +180,50 @@ public class FormEditorServiceImpl implements FormEditorService {
         }
 
         return getAvailabeHoldersList(context.getForm());
-
     }
 
-    protected DataHolderTO[] getAvailabeHoldersList(Form form) {
-        List<DataHolderTO> result = new ArrayList<DataHolderTO>();
+    @Override
+    public String addFieldFromTypeCode(String ctxUID, String code) {
+        FormRenderContext context = contextManager.getFormRenderContext(ctxUID);
 
-        for (DataHolder holder : form.getHolders()) {
-            DataHolderTO holderTO = buildDataHolderTo(holder, true, form, true);
-            if (holderTO.getFields().length > 0) result.add(holderTO);
+        if (context == null) return null;
+
+        if (formManager.addFieldByType(context.getForm(), code)) {
+            context.setFormTemplate(formDefinitionMarshaller.marshall(context.getForm()));
+            return contextMarshaller.marshallContext(context);
         }
 
-        return result.toArray(new DataHolderTO[result.size()]);
+        return null;
     }
 
-    protected DataHolderTO buildDataHolderTo(DataHolder holder, boolean addChild, Form form, boolean onlyNonBinded) {
+    protected FormDataHoldersTO getAvailabeHoldersList(Form form) {
+
+        FormDataHoldersTO formDataHoldersTO = new FormDataHoldersTO();
+
+        Comparator<DataHolderTO> holderComparator = new Comparator<DataHolderTO>() {
+            @Override
+            public int compare(DataHolderTO o1, DataHolderTO o2) {
+                return o1.getUniqueId().compareTo(o2.getUniqueId());
+            }
+        };
+
+        Set<DataHolderTO> complex = new TreeSet<DataHolderTO>(holderComparator);
+        Set<DataHolderTO> simple = new TreeSet<DataHolderTO>(holderComparator);
+
+        for (DataHolder holder : form.getHolders()) {
+            DataHolderTO holderTO = buildDataHolderTo(holder, true, form);
+            if (holderTO.getFields().length > 0) {
+                if (holder.canHaveChildren()) complex.add(holderTO);
+                else simple.add(holderTO);
+            }
+        }
+
+        formDataHoldersTO.setComplexHolders(complex.toArray(new DataHolderTO[complex.size()]));
+        formDataHoldersTO.setSimpleHolders(simple.toArray(new DataHolderTO[simple.size()]));
+        return formDataHoldersTO;
+    }
+
+    protected DataHolderTO buildDataHolderTo(DataHolder holder, boolean addChild, Form form) {
         DataHolderTO to = new DataHolderTO();
         to.setType(holder.getTypeCode());
         to.setUniqueId(holder.getUniqueId());
@@ -205,13 +235,21 @@ public class FormEditorServiceImpl implements FormEditorService {
         List<DataHolderFieldTO> fields = new ArrayList<DataHolderFieldTO>();
         if (addChild) {
             for (DataFieldHolder field : holder.getFieldHolders()) {
-                //if (onlyNonBinded && BindingUtils.isFieldBinded(form, field)) continue;
                 DataHolderFieldTO fieldTO = new DataHolderFieldTO();
                 fieldTO.setHolderId(to.getUniqueId());
                 fieldTO.setId(field.getId());
-                fieldTO.setClassName(field.getClassName());
+                Field type = fieldManager.getFieldByClass(field.getClassName());
+                fieldTO.setTypeCode(type.getCode());
                 fieldTO.setIcon(field.getIcon());
-                fieldTO.setBinded(BindingUtils.isFieldBinded(form, field));
+
+                String bindingExpression = "";
+                if (holder.canHaveChildren()) bindingExpression = holder.getUniqueId() + "/";
+                bindingExpression += field.getId();
+                Field formField = BindingUtils.getFielForBindingExpression(bindingExpression, form);
+                if (formField != null) {
+                    fieldTO.setBinded(true);
+                    fieldTO.setBindedFieldId(formField.getId().toString());
+                }
                 fields.add(fieldTO);
             }
         }

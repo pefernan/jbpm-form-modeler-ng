@@ -59,4 +59,9 @@ public class I18nTextFieldRenderer extends FieldRenderer {
         text.setEnabled(!description.isReadOnly());
         return text;
     }
+
+    @Override
+    public boolean isVisible() {
+        return false;
+    }
 }

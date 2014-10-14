@@ -22,6 +22,7 @@ import org.jbpm.formModeler.ng.common.client.rendering.layouts.FormLayoutRendere
 import org.jbpm.formModeler.ng.editor.client.editor.dataHolders.DataHoldersEditor;
 import org.jbpm.formModeler.ng.editor.client.editor.modeler.canvas.FormCanvas;
 import org.jbpm.formModeler.ng.editor.client.editor.modeler.fieldsTree.FieldsTreeEditor;
+import org.jbpm.formModeler.ng.editor.client.resources.FormModelerEditorResources;
 import org.jbpm.formModeler.ng.editor.client.resources.i18n.Constants;
 import org.jbpm.formModeler.ng.editor.client.resources.images.FormModelerEditorImageResources;
 import org.jbpm.formModeler.ng.editor.events.canvas.DeleteFieldEvent;
@@ -45,7 +46,7 @@ public class FormModeler extends Composite {
 
     private Constants constants = Constants.INSTANCE;
 
-    private FormModelerEditorImageResources images = GWT.create(FormModelerEditorImageResources.class);
+    private FormModelerEditorImageResources images = FormModelerEditorResources.INSTANCE.getEditorImages();
 
     @Inject
     private Caller<FormEditorService> editorService;

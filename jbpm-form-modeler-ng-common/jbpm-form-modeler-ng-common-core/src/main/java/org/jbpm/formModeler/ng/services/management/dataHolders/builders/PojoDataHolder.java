@@ -33,7 +33,7 @@ public class PojoDataHolder extends DataHolder {
 
     protected Set<DataFieldHolder> dataFieldHolders;
 
-    PojoDataHolder(String uniqueId, String className, String renderColor) {
+    public PojoDataHolder(String uniqueId, String className, String renderColor) {
         this.uniqueId = uniqueId;
         this.className = className;
         this.renderColor = renderColor;

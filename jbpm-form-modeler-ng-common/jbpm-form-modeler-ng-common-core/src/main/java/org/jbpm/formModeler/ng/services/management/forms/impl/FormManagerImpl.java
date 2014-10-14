@@ -229,14 +229,8 @@ public class FormManagerImpl implements FormManager {
             fieldName = holder.getUniqueId() + "_" + holderField.getId();
         }
 
-        int i = 0;
-        String tmpFName = fieldName;
-        while (form.getField(tmpFName) != null) {
-            tmpFName = fieldName + "_" + i;
-        }
-
         field.setId(generateUniqueId());
-        field.setName(tmpFName);
+        field.setName(getNewFieldName(form, fieldName));
         field.setLabel(label);
         field.setBindingExpression(inputBinging);
 
@@ -248,6 +242,39 @@ public class FormManagerImpl implements FormManager {
         return added;
     }
 
+    @Override
+    public boolean addFieldByType(Form form, String fieldType) {
+        if (form == null || StringUtils.isEmpty(fieldType)) return false;
+
+        Map label = new HashMap();
+
+        Field field = fieldManager.getFieldByCode(fieldType);
+
+        field.setId(generateUniqueId());
+
+        String name = getNewFieldName(form, fieldType);
+        field.setName(name);
+
+        label.put(localeManager.getDefaultLang(), name);
+        field.setLabel(label);
+
+        boolean added = form.addField(field);
+        if (added) {
+            field.setForm(form);
+            form.getLayout().addElement(field);
+        }
+
+        return added;
+    }
+
+    protected String getNewFieldName(Form form, String fieldName) {
+        int i = 0;
+        String tmpFName = fieldName;
+        while (form.getField(tmpFName) != null) {
+            tmpFName = fieldName + "_" + i;
+        }
+        return tmpFName;
+    }
 
     protected static Long generateUniqueId() {
         UUID idOne = UUID.randomUUID();

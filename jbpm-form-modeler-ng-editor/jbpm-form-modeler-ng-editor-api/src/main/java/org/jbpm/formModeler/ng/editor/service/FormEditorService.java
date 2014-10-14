@@ -7,6 +7,7 @@ import org.jbpm.formModeler.ng.editor.model.FormEditorContextTO;
 import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderBuilderTO;
 import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderFieldTO;
 import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderTO;
+import org.jbpm.formModeler.ng.editor.model.dataHolders.FormDataHoldersTO;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.paging.PageRequest;
@@ -29,9 +30,11 @@ public interface FormEditorService {
 
     PageResponse<DataHolderTO> listFormDataHolders(PageRequest pageRequest, String ctxUID);
 
-    DataHolderTO[] getAvailableDataHolders(String ctxUID);
+    FormDataHoldersTO getAvailableDataHolders(String ctxUID);
 
-    DataHolderTO[] addFieldFromHolder(String ctxUID, DataHolderFieldTO fieldTO);
+    FormDataHoldersTO addFieldFromHolder(String ctxUID, DataHolderFieldTO fieldTO);
+
+    String addFieldFromTypeCode(String ctxUID, String code);
 
     DataHolderBuilderTO[] getAvailableDataHolderBuilders(String ctxUID);
 

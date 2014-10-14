@@ -391,7 +391,10 @@
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-form-modeler-ng-renderer-client</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-form-modeler-ng-data-modeler</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-form-modeller-ng-process-backend</artifactId>
@@ -473,7 +476,7 @@
 
           </compileSourcesArtifacts>
           <runTarget>form-modeler.html</runTarget>
-          <extraJvmArgs>-Xmx4096m -XX:MaxPermSize=256m</extraJvmArgs>
+          <extraJvmArgs>-Xmx4096m -XX:MaxPermSize=256m -Dorg.kie.demo=true -Dorg.kie.clean.onstartup=true -Djava.security.auth.login.config=./src/main/resources/login-cli.conf</extraJvmArgs>
           <soyc>false</soyc>
           <!-- drools-compiler has dependency on org.eclipse.jdt.core.compiler:ecj:jar:3.5.1:compile, see http://code.google.com/p/google-web-toolkit/issues/detail?id=4479 -->
           <gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>

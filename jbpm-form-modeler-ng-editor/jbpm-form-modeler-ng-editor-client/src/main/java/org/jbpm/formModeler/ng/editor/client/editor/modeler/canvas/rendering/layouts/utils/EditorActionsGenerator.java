@@ -11,6 +11,7 @@ import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FieldDefinition;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormContext;
+import org.jbpm.formModeler.ng.editor.client.resources.i18n.Constants;
 import org.jbpm.formModeler.ng.editor.events.FormModelerEvent;
 import org.jbpm.formModeler.ng.editor.events.canvas.DeleteFieldEvent;
 import org.jbpm.formModeler.ng.editor.events.canvas.RefreshCanvasEvent;
@@ -26,6 +27,8 @@ import java.util.List;
 
 @Dependent
 public class EditorActionsGenerator {
+
+    private Constants constants = Constants.INSTANCE;
 
     private List<Panel> dropAreas = new ArrayList<Panel>();
 
@@ -129,12 +132,12 @@ public class EditorActionsGenerator {
         final HorizontalPanel propertyButtons = new HorizontalPanel();
         propertyButtons.getElement().getStyle().setBackgroundColor("#F5F5F5");
 
-        HTML holder = new HTML();
-        holder.setHeight("20px");
-        holder.setWidth("20px");
-        holder.getElement().getStyle().setBackgroundColor(field.getHolderColor());
-
-        propertyButtons.add(holder);
+        if (field.getBindingExpression() != null && !field.getBindingExpression().isEmpty()) {
+            com.github.gwtbootstrap.client.ui.Label holder = new com.github.gwtbootstrap.client.ui.Label();
+            String text = "{" + constants.form_modeler_source() + field.getBindingExpression() + "}";
+            holder.setText(text);
+            propertyButtons.add(holder);
+        }
 
         IconAnchor move = new IconAnchor();
         move.setIcon(IconType.MOVE);
