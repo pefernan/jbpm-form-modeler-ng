@@ -23,9 +23,6 @@ import javax.inject.Inject;
 @ApplicationScoped
 public class DropDownFieldRenderer extends FieldRenderer {
 
-    @Inject
-    private Event<FieldChangedEvent> changedEvent;
-
     @Override
     public String getCode() {
         return "DropDown";
@@ -62,7 +59,7 @@ public class DropDownFieldRenderer extends FieldRenderer {
         listBox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent event) {
-                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getId(), listBox.getValue()));
+                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getUid(), description.getId(), listBox.getValue()));
             }
         });
         listBox.setEnabled(!description.isReadOnly());

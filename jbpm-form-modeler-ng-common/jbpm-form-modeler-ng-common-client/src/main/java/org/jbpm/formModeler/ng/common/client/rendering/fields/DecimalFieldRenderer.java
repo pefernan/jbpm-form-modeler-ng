@@ -57,7 +57,7 @@ public class DecimalFieldRenderer extends FieldRenderer {
         doubleBox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent changeEvent) {
-                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getId(), String.valueOf(doubleBox.getValue())));
+                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getUid(), description.getId(), doubleBox.getText()));
             }
         });
         doubleBox.setEnabled(!description.isReadOnly());
@@ -69,7 +69,19 @@ public class DecimalFieldRenderer extends FieldRenderer {
         return FieldTypeImages.INSTANCE.decimal();
     }
 
+    @Override
     public String getLabel() {
         return FieldTypeLabels.INSTANCE.decimal();
+    }
+
+    @Override
+    public boolean isValidValue(String value) {
+        if (isEmpty(value)) return true;
+        try {
+            Double doubleValue = Double.valueOf(value);
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
     }
 }

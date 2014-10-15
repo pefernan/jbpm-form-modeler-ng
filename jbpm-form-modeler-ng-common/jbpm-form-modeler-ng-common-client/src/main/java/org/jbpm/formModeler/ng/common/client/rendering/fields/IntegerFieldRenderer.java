@@ -60,7 +60,7 @@ public class IntegerFieldRenderer extends FieldRenderer {
         intbox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent changeEvent) {
-                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getId(),  String.valueOf(intbox.getValue())));
+                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getUid(), description.getId(),  intbox.getText()));
             }
         });
         intbox.setEnabled(!description.isReadOnly());
@@ -74,5 +74,16 @@ public class IntegerFieldRenderer extends FieldRenderer {
 
     public String getLabel() {
         return FieldTypeLabels.INSTANCE.number();
+    }
+
+    @Override
+    public boolean isValidValue(String value) {
+        if (isEmpty(value)) return true;
+        try {
+            Integer doubleValue = Integer.valueOf(value);
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
     }
 }

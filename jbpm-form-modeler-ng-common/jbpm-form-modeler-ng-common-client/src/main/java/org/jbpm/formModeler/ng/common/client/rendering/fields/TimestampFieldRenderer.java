@@ -21,8 +21,6 @@ import java.util.Date;
 
 @ApplicationScoped
 public class TimestampFieldRenderer extends FieldRenderer {
-    @Inject
-    private Event<FieldChangedEvent> changedEvent;
 
     @Override
     public String getCode() {
@@ -59,7 +57,7 @@ public class TimestampFieldRenderer extends FieldRenderer {
                 Date value = dateValueChangeEvent.getValue();
                 String strvalue = null;
                 if (value != null) strvalue = String.valueOf(value.getTime());
-                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getId(),  strvalue));
+                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getUid(), description.getId(),  strvalue));
             }
         });
         datetimepicker.setEnabled(!description.isReadOnly());
@@ -73,5 +71,16 @@ public class TimestampFieldRenderer extends FieldRenderer {
 
     public String getLabel() {
         return FieldTypeLabels.INSTANCE.timestamp();
+    }
+
+    @Override
+    public boolean isValidValue(String value) {
+        if (isEmpty(value)) return true;
+        try {
+            Date date = new Date(Long.valueOf(value));
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
     }
 }

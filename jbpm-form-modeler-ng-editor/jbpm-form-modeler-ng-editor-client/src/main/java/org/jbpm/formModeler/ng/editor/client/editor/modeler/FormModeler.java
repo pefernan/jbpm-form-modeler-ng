@@ -258,7 +258,7 @@ public class FormModeler extends Composite {
             public void execute() {
                 FieldChangedEvent event = rendererComponent.getFieldChangedEvent();
                 if (event != null) {
-                    if (event.getFieldId().equals("code")) {
+                    if (event.getFieldName().equals("code")) {
                         editorService.call(new RemoteCallback<EditionContextTO>() {
                             @Override
                             public void callback(EditionContextTO response) {
@@ -266,7 +266,7 @@ public class FormModeler extends Composite {
                                 updateFieldContext(editionCtxUID, rendererComponent.getFormValues(), false);
                                 loadEditionForm(response);
                             }
-                        }).changeFieldType(event.getCtxUID(), event.getFieldId(), event.getNewValue(), context.getCtxUID());
+                        }).changeFieldType(event.getCtxUID(), event.getFieldName(), event.getNewValue(), context.getCtxUID());
                     } else {
                         updateFieldContext(editionCtxUID, rendererComponent.getFormValues(), true);
                     }

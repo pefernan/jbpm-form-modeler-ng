@@ -20,8 +20,6 @@ import javax.inject.Inject;
 
 @ApplicationScoped
 public class TextAreaFieldRenderer extends FieldRenderer {
-    @Inject
-    private Event<FieldChangedEvent> changedEvent;
 
     @Override
     public String getCode() {
@@ -57,7 +55,7 @@ public class TextAreaFieldRenderer extends FieldRenderer {
         textArea.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent changeEvent) {
-                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getId(),  textArea.getValue()));
+                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getUid(), description.getId(),  textArea.getValue()));
             }
         });
         textArea.setEnabled(!description.isReadOnly());

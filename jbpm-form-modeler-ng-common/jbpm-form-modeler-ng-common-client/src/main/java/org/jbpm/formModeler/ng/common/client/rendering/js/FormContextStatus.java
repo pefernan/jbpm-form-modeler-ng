@@ -22,4 +22,20 @@ public class FormContextStatus extends JavaScriptObject {
     public final native JavaScriptObject getValues() /*-{
         return this.values;
     }-*/;
+
+    public final native void addWrongField(String fieldId) /*-{
+        this.wrongFields.push(fieldId);
+    }-*/;
+
+    public final native void removeWrongField(String fieldId) /*-{
+        delete this.wrongFields[fieldId];
+    }-*/;
+
+    public final native boolean isFieldWrong(String fieldId) /*-{
+        return this.wrongFields.indexOf(fieldId) != -1;
+    }-*/;
+
+    public final native boolean hasWrongFields() /*-{
+        return this.wrongFields.length > 0;
+    }-*/;
 }

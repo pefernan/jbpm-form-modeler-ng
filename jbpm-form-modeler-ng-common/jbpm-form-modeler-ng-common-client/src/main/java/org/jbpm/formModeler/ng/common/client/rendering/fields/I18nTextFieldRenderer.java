@@ -17,8 +17,6 @@ import javax.inject.Inject;
 
 @ApplicationScoped
 public class I18nTextFieldRenderer extends FieldRenderer {
-    @Inject
-    private Event<FieldChangedEvent> changedEvent;
 
     @Override
     public String getCode() {
@@ -53,7 +51,7 @@ public class I18nTextFieldRenderer extends FieldRenderer {
         text.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent changeEvent) {
-                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getId(),  text.getValue()));
+                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getUid(), description.getId(),  text.getValue()));
             }
         });
         text.setEnabled(!description.isReadOnly());

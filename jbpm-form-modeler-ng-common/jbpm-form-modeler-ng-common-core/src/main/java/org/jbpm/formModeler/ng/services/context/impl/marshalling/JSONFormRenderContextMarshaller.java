@@ -38,6 +38,7 @@ public class JSONFormRenderContextMarshaller implements FormRenderContextMarshal
 
     public static final String STATUS = "status";
     public static final String VALUES = "values";
+    public static final String WRONG_FIELDS = "wrongFields";
     public static final String OPTIONS = "options";
 
     private Logger log = LoggerFactory.getLogger(JSONFormRenderContextMarshaller.class);
@@ -92,6 +93,8 @@ public class JSONFormRenderContextMarshaller implements FormRenderContextMarshal
                 generator.writeObjectFieldStart(VALUES);
                 generator.writeEndObject();
             }
+            generator.writeArrayFieldStart(WRONG_FIELDS);
+            generator.writeEndArray();
 
             marshallDropDownOptions(form, "", context, generator);
 

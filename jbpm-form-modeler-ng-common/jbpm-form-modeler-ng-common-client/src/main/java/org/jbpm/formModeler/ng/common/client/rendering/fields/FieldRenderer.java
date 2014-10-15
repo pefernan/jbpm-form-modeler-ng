@@ -34,4 +34,12 @@ public abstract class FieldRenderer {
     public String getLabel() {
         return FieldTypeLabels.INSTANCE.defaultLabel();
     }
+
+    public boolean isEmpty(String value) {
+        return value == null || value.isEmpty();
+    }
+
+    public boolean isValidValue(String value) {
+        return true;
+    }
 }

@@ -21,8 +21,6 @@ import java.util.Date;
 
 @ApplicationScoped
 public class ShortDateFieldRenderer extends FieldRenderer {
-    @Inject
-    private Event<FieldChangedEvent> changedEvent;
 
     @Override
     public String getCode() {
@@ -59,7 +57,7 @@ public class ShortDateFieldRenderer extends FieldRenderer {
                 Date value = dateValueChangeEvent.getValue();
                 String strvalue = null;
                 if (value != null) strvalue = String.valueOf(value.getTime());
-                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getId(),  strvalue));
+                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getUid(), description.getId(),  strvalue));
             }
         });
         datepicker.setEnabled(!description.isReadOnly());
@@ -78,5 +76,16 @@ public class ShortDateFieldRenderer extends FieldRenderer {
     @Override
     public boolean isVisible() {
         return false;
+    }
+
+    @Override
+    public boolean isValidValue(String value) {
+        if (isEmpty(value)) return true;
+        try {
+            Date date = new Date(Long.valueOf(value));
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
     }
 }

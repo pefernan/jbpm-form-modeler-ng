@@ -23,8 +23,6 @@ import javax.inject.Inject;
 
 @ApplicationScoped
 public class CheckboxFieldRenderer extends FieldRenderer {
-    @Inject
-    private Event<FieldChangedEvent> changedEvent;
 
     @Inject
     private FieldLabelHelper labelHelper;
@@ -56,7 +54,7 @@ public class CheckboxFieldRenderer extends FieldRenderer {
         checkBox.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent changeEvent) {
-                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getId(),  String.valueOf(checkBox.getValue())));
+                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getUid(), description.getId(),  String.valueOf(checkBox.getValue())));
             }
         });
         checkBox.setEnabled(!description.isReadOnly());

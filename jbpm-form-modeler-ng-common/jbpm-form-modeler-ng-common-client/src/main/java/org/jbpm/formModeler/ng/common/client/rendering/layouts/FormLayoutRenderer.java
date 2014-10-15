@@ -100,4 +100,8 @@ public abstract class FormLayoutRenderer {
         }
         return renderer;
     }
+
+    public FieldProviderManager getProviderManager() {
+        return providerManager;
+    }
 }

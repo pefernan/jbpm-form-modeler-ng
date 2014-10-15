@@ -20,8 +20,6 @@ import javax.inject.Inject;
 
 @ApplicationScoped
 public class LongFieldRenderer extends FieldRenderer {
-    @Inject
-    private Event<FieldChangedEvent> changedEvent;
 
     @Override
     public String getCode() {
@@ -62,7 +60,7 @@ public class LongFieldRenderer extends FieldRenderer {
         longBox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent changeEvent) {
-                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getId(),  String.valueOf(longBox.getValue())));
+                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getUid(), description.getId(),  longBox.getText()));
             }
         });
         longBox.setEnabled(!description.isReadOnly());
@@ -81,5 +79,16 @@ public class LongFieldRenderer extends FieldRenderer {
     @Override
     public boolean isVisible() {
         return false;
+    }
+
+    @Override
+    public boolean isValidValue(String value) {
+        if (isEmpty(value)) return true;
+        try {
+            Long doubleValue = Long.valueOf(value);
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
     }
 }
