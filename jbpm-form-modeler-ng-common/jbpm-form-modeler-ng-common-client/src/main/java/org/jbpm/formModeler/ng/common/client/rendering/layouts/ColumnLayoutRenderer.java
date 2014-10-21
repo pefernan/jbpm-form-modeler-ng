@@ -1,9 +1,8 @@
 package org.jbpm.formModeler.ng.common.client.rendering.layouts;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.ui.*;
+import org.jbpm.formModeler.ng.common.client.rendering.FormLayoutRenderer;
 import org.jbpm.formModeler.ng.common.client.rendering.js.*;
 
 import javax.enterprise.context.Dependent;

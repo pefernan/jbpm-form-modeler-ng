@@ -5,15 +5,13 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.ui.Widget;
+import org.jbpm.formModeler.ng.common.client.rendering.InputContainer;
 import org.jbpm.formModeler.ng.common.client.rendering.event.FieldChangedEvent;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FieldDefinition;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormContext;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormContextStatus;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
 @ApplicationScoped
 public class I18nTextFieldRenderer extends FieldRenderer {
@@ -24,7 +22,7 @@ public class I18nTextFieldRenderer extends FieldRenderer {
     }
 
     @Override
-    public Widget getFieldInput(final FieldDefinition description, final FormContext context) {
+    public InputContainer getFieldInput(final FieldDefinition description, final FormContext context) {
         if (description == null) return null;
         final TextBox text = new TextBox();
         text.setName(description.getId());
@@ -55,7 +53,14 @@ public class I18nTextFieldRenderer extends FieldRenderer {
             }
         });
         text.setEnabled(!description.isReadOnly());
-        return text;
+
+        InputContainer inputContainer = new InputContainer(text, getFieldLabel(description), this.supportsLabel(), description, context.getFormDefinition()) {
+            public void setReadOnly(boolean readOnly) {
+                text.setEnabled(!readOnly);
+            }
+        };
+
+        return inputContainer;
     }
 
     @Override

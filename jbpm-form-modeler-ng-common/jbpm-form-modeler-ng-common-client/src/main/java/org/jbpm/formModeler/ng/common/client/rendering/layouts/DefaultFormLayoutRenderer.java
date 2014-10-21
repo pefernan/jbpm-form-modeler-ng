@@ -1,14 +1,11 @@
 package org.jbpm.formModeler.ng.common.client.rendering.layouts;
 
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.FormLabel;
-import com.google.gwt.i18n.client.LocaleInfo;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
-import org.jbpm.formModeler.ng.common.client.rendering.fields.FieldRenderer;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+import org.jbpm.formModeler.ng.common.client.rendering.FormLayoutRenderer;
 import org.jbpm.formModeler.ng.common.client.rendering.js.*;
-import org.jbpm.formModeler.ng.model.Form;
 
 import javax.enterprise.context.Dependent;
 

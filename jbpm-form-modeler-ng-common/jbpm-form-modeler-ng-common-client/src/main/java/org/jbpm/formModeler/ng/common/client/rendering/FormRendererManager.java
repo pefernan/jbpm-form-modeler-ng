@@ -3,7 +3,6 @@ package org.jbpm.formModeler.ng.common.client.rendering;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jbpm.formModeler.ng.common.client.rendering.layouts.DefaultFormLayoutRenderer;
-import org.jbpm.formModeler.ng.common.client.rendering.layouts.FormLayoutRenderer;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;

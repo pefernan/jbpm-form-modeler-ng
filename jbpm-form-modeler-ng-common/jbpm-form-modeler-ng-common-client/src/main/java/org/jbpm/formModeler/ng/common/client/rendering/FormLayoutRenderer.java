@@ -1,13 +1,11 @@
-package org.jbpm.formModeler.ng.common.client.rendering.layouts;
+package org.jbpm.formModeler.ng.common.client.rendering;
 
-import com.github.gwtbootstrap.client.ui.*;
+import com.github.gwtbootstrap.client.ui.ControlGroup;
+import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.constants.FormType;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.i18n.client.LocaleInfo;
-import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
-import org.jbpm.formModeler.ng.common.client.rendering.FieldProviderManager;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import org.jbpm.formModeler.ng.common.client.rendering.fields.FieldRenderer;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FieldDefinition;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormContext;
@@ -28,13 +26,13 @@ public abstract class FormLayoutRenderer {
     @Inject
     private FieldLabelHelper labelHelper;
 
-    protected Map<String, ControlGroup> controlGroups = new HashMap<String, ControlGroup>();
+    protected Map<String, InputContainer> inputContainers = new HashMap<String, InputContainer>();
 
     public abstract String getCode();
     public abstract Panel generateFormContent(FormContext context);
 
-    public ControlGroup getFieldControlGroup(String fieldId) {
-        return controlGroups.get(fieldId);
+    public InputContainer getInputContainer(String fieldId) {
+        return inputContainers.get(fieldId);
     }
 
     public Form generateForm(FormContext context) {
@@ -69,26 +67,11 @@ public abstract class FormLayoutRenderer {
 
         if (renderer == null) return null;
 
-        ControlGroup controlGroup = new ControlGroup();
+        InputContainer container = renderer.getFieldInput(fieldDefinition, context);
 
-        if (!(context.getFormDefinition().getLabelMode().equals(FormLayoutRenderer.LABEL_MODE_DEFAULT) && renderer.supportsLabel())) {
-            String fieldLabel = labelHelper.getFieldLabel(fieldDefinition);
-            ControlLabel label = new ControlLabel();
-            FormLabel formLabel = new FormLabel(fieldLabel);
-            formLabel.setFor(fieldDefinition.getId());
-            label.add(formLabel);
-            if (context.getFormDefinition().getLabelMode().equals(FormLayoutRenderer.LABEL_MODE_LEFT_ALIGNED)) label.getElement().getStyle().setTextAlign(Style.TextAlign.LEFT);
-            controlGroup.add(label);
-        }
+        inputContainers.put(fieldDefinition.getUid(), container);
 
-        Controls controls = new Controls();
-        controls.add(renderer.getFieldInput(fieldDefinition, context));
-        controls.add(new HelpBlock());
-        controlGroup.add(controls);
-
-        controlGroups.put(fieldDefinition.getUid(), controlGroup);
-
-        return controlGroup;
+        return container.getControlGroup();
     }
 
     protected FieldRenderer getFieldRenderer(FieldDefinition field) {

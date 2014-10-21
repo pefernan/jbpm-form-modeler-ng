@@ -6,16 +6,12 @@ import org.jbpm.formModeler.ng.common.client.renderer.checkers.FieldCheckResult;
 import org.jbpm.formModeler.ng.common.client.renderer.checkers.FieldValueChecker;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FieldDefinition;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormContext;
-import org.jbpm.formModeler.ng.common.client.rendering.layouts.DefaultFormLayoutRenderer;
-import org.jbpm.formModeler.ng.common.client.rendering.layouts.FormLayoutRenderer;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import java.awt.image.renderable.RenderContext;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 
 @Dependent

@@ -6,7 +6,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.Widget;
+import org.jbpm.formModeler.ng.common.client.rendering.InputContainer;
 import org.jbpm.formModeler.ng.common.client.rendering.event.FieldChangedEvent;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FieldDefinition;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormContext;
@@ -24,7 +24,7 @@ public class DecimalFieldRenderer extends FieldRenderer {
     }
 
     @Override
-    public Widget getFieldInput(final FieldDefinition description, final FormContext context) {
+    public InputContainer getFieldInput(final FieldDefinition description, final FormContext context) {
         if (description == null) return null;
         final DoubleBox doubleBox = new DoubleBox();
         doubleBox.setName(description.getId());
@@ -61,7 +61,14 @@ public class DecimalFieldRenderer extends FieldRenderer {
             }
         });
         doubleBox.setEnabled(!description.isReadOnly());
-        return doubleBox;
+
+        InputContainer inputContainer = new InputContainer(doubleBox, getFieldLabel(description), this.supportsLabel(), description, context.getFormDefinition()) {
+            public void setReadOnly(boolean readOnly) {
+                doubleBox.setEnabled(!readOnly);
+            }
+        };
+
+        return inputContainer;
     }
 
     @Override

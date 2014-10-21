@@ -7,7 +7,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.Widget;
+import org.jbpm.formModeler.ng.common.client.rendering.InputContainer;
 import org.jbpm.formModeler.ng.common.client.rendering.event.FieldChangedEvent;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FieldDefinition;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FieldOption;
@@ -17,8 +17,6 @@ import org.jbpm.formModeler.ng.common.client.rendering.resources.i18n.FieldTypeL
 import org.jbpm.formModeler.ng.common.client.rendering.resources.images.FieldTypeImages;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
 @ApplicationScoped
 public class DropDownFieldRenderer extends FieldRenderer {
@@ -29,7 +27,7 @@ public class DropDownFieldRenderer extends FieldRenderer {
     }
 
     @Override
-    public Widget getFieldInput(final FieldDefinition description, final FormContext context) {
+    public InputContainer getFieldInput(final FieldDefinition description, final FormContext context) {
         final ListBox listBox = new ListBox();
 
         listBox.setName(description.getId());
@@ -63,7 +61,14 @@ public class DropDownFieldRenderer extends FieldRenderer {
             }
         });
         listBox.setEnabled(!description.isReadOnly());
-        return listBox;
+
+        InputContainer inputContainer = new InputContainer(listBox, getFieldLabel(description), this.supportsLabel(), description, context.getFormDefinition()) {
+            public void setReadOnly(boolean readOnly) {
+                listBox.setEnabled(!readOnly);
+            }
+        };
+
+        return inputContainer;
     }
 
     @Override

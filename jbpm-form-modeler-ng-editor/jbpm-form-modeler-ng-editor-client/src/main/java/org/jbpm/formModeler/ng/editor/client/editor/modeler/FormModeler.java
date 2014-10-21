@@ -18,7 +18,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jbpm.formModeler.ng.common.client.renderer.FormRendererComponent;
 import org.jbpm.formModeler.ng.common.client.rendering.event.FieldChangedEvent;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormDefinition;
-import org.jbpm.formModeler.ng.common.client.rendering.layouts.FormLayoutRenderer;
+import org.jbpm.formModeler.ng.common.client.rendering.FormLayoutRenderer;
 import org.jbpm.formModeler.ng.editor.client.editor.dataHolders.DataHoldersEditor;
 import org.jbpm.formModeler.ng.editor.client.editor.modeler.canvas.FormCanvas;
 import org.jbpm.formModeler.ng.editor.client.editor.modeler.fieldsTree.FieldsTreeEditor;

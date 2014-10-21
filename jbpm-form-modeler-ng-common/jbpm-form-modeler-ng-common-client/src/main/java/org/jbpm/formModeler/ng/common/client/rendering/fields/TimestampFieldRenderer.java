@@ -6,7 +6,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.Widget;
+import org.jbpm.formModeler.ng.common.client.rendering.InputContainer;
 import org.jbpm.formModeler.ng.common.client.rendering.event.FieldChangedEvent;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FieldDefinition;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormContext;
@@ -15,8 +15,6 @@ import org.jbpm.formModeler.ng.common.client.rendering.resources.i18n.FieldTypeL
 import org.jbpm.formModeler.ng.common.client.rendering.resources.images.FieldTypeImages;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
 import java.util.Date;
 
 @ApplicationScoped
@@ -28,7 +26,7 @@ public class TimestampFieldRenderer extends FieldRenderer {
     }
 
     @Override
-    public Widget getFieldInput(final FieldDefinition description, final FormContext context) {
+    public InputContainer getFieldInput(final FieldDefinition description, final FormContext context) {
         if (description == null) return null;
         final DateTimeBox datetimepicker = new DateTimeBox();
         datetimepicker.setId(description.getId());
@@ -61,7 +59,14 @@ public class TimestampFieldRenderer extends FieldRenderer {
             }
         });
         datetimepicker.setEnabled(!description.isReadOnly());
-        return datetimepicker;
+
+        InputContainer inputContainer = new InputContainer(datetimepicker, getFieldLabel(description), this.supportsLabel(), description, context.getFormDefinition()) {
+            public void setReadOnly(boolean readOnly) {
+                datetimepicker.setEnabled(!readOnly);
+            }
+        };
+
+        return inputContainer;
     }
 
     @Override
