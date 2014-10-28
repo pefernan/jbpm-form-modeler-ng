@@ -20,7 +20,7 @@ public class DefaultValueChecker implements FieldValueChecker {
 
     @Override
     public FieldCheckResult checkFieldValue(FieldDefinition field, String value, FormContext context) {
-        FieldRenderer renderer = fieldProviderManager.getProviderByType(field.getType());
+        FieldRenderer renderer = fieldProviderManager.getProviderByType(field.getCode());
         if (field.isRequired() && renderer.isEmpty(value)) return new FieldCheckResult(true, CheckerConstants.INSTANCE.requiredError(fieldLabelHelper.getFieldLabel(field)));
 
         if (!renderer.isValidValue(value)) return new FieldCheckResult(true, CheckerConstants.INSTANCE.fieldFormat(fieldLabelHelper.getFieldLabel(field)));

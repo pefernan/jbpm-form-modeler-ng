@@ -239,7 +239,6 @@ public class FormEditorServiceImpl implements FormEditorService {
                 fieldTO.setId(field.getId());
                 Field type = fieldManager.getFieldByClass(field.getClassName());
                 fieldTO.setTypeCode(type.getCode());
-                fieldTO.setIcon(field.getIcon());
 
                 String bindingExpression = "";
                 if (holder.canHaveChildren()) bindingExpression = holder.getUniqueId() + "/";
@@ -426,17 +425,17 @@ public class FormEditorServiceImpl implements FormEditorService {
     }
 
     @Override
-    public EditionContextTO startFieldEdition(String ctxUID, String fieldUID) {
+    public EditionContextTO startFieldEdition(String ctxUID, Long fieldId, String fieldJson) {
         FormRenderContext context = contextManager.getFormRenderContext(ctxUID);
         if (context != null) {
-            Field field = context.getForm().getFieldById(Long.decode(fieldUID));
+            Field field = context.getForm().getFieldById(fieldId);
             if (field != null) {
                 Form editionForm = formManager.getFormForFieldEdition(field.getCode());
                 if (editionForm != null) {
                     Map<String, Object> data = new HashMap<String, Object>();
                     data.put("field", field);
                     data.put("code", field.getCode());
-                    ContextConfiguration config = new ContextConfiguration(editionForm, data, context.getCurrentLocale());
+                    ContextConfiguration config = new ContextConfiguration(editionForm, data, context.getCurrentLocale(), fieldJson);
                     FormRenderContext editionContext = contextManager.newContext(config);
                     return new EditionContextTO(editionContext.getUID(), editionContext.getMarshalledCopy());
                 }
@@ -446,10 +445,9 @@ public class FormEditorServiceImpl implements FormEditorService {
     }
 
     @Override
-    public String editFieldValue(String ctxUID, String editionCtxUID, String editionMarshalledCtx, boolean persist) {
+    public void editFieldValue(String ctxUID, String editionCtxUID, String editionMarshalledCtx, boolean persist) {
         FormRenderContext context = contextManager.getFormRenderContext(ctxUID);
         FormRenderContext editionContext = contextManager.getFormRenderContext(editionCtxUID);
-        String ctxJson = null;
         if (context != null && editionContext != null) {
             try {
                 if (persist) {
@@ -458,12 +456,10 @@ public class FormEditorServiceImpl implements FormEditorService {
                     contextManager.removeContext(editionContext);
                 }
                 context.setFormTemplate(formDefinitionMarshaller.marshall(context.getForm()));
-                ctxJson = contextManager.marshallContext(context);
             } catch (Exception ex) {
                 log.warn("Unable to persist context {}", editionContext.getUID(), ex);
             }
         }
-        return ctxJson;
     }
 
     @Override

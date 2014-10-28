@@ -28,12 +28,12 @@ public class IntegerFieldRenderer extends FieldRenderer {
     public InputContainer getFieldInput(final FieldDefinition description, final FormContext context) {
         if (description == null) return null;
         final IntegerBox intbox = new IntegerBox();
-        intbox.setName(description.getId());
-        intbox.setId(description.getId());
+        intbox.setName(description.getName());
+        intbox.setId(description.getName());
 
         final FormContextStatus status = context.getContextStatus();
 
-        String strvalue = status.getFieldValue(description.getId());
+        String strvalue = status.getFieldValue(description.getName());
 
         Integer value = 0;
         if (strvalue != null && !"".equals(strvalue)) {
@@ -42,7 +42,7 @@ public class IntegerFieldRenderer extends FieldRenderer {
 
         intbox.setValue(value);
 
-        JSONObject jsonProperties = new JSONObject(description.getData());
+        JSONObject jsonProperties = new JSONObject(description);
 
         JSONValue maxLength = jsonProperties.get("maxLength");
 
@@ -58,12 +58,14 @@ public class IntegerFieldRenderer extends FieldRenderer {
         intbox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent changeEvent) {
-                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getUid(), description.getId(),  intbox.getText()));
+                fieldChanged(description, context, intbox.getText());
             }
         });
         intbox.setEnabled(!description.isReadOnly());
 
         InputContainer inputContainer = new InputContainer(intbox, getFieldLabel(description), this.supportsLabel(), description, context.getFormDefinition()) {
+
+
             public void setReadOnly(boolean readOnly) {
                 intbox.setEnabled(!readOnly);
             }
@@ -84,7 +86,7 @@ public class IntegerFieldRenderer extends FieldRenderer {
     public boolean isValidValue(String value) {
         if (isEmpty(value)) return true;
         try {
-            Integer doubleValue = Integer.valueOf(value);
+            Integer intValue = Integer.valueOf(value);
             return true;
         } catch (Exception ex) {
             return false;

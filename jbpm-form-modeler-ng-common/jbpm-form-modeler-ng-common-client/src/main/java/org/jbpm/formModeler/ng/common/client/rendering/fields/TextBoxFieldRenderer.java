@@ -28,16 +28,14 @@ public class TextBoxFieldRenderer extends FieldRenderer {
     public InputContainer getFieldInput(final FieldDefinition description, final FormContext context) {
         if (description == null) return null;
         final TextBox text = new TextBox();
-        text.setName(description.getId());
-        text.setId(description.getId());
+        text.setName(description.getName());
+        text.setId(String.valueOf(description.getId()));
 
         final FormContextStatus status = context.getContextStatus();
 
-        String value = status.getFieldValue(description.getId());
+        text.setValue(status.getFieldValue(description.getName()));
 
-        text.setValue(value);
-
-        JSONObject jsonProperties = new JSONObject(description.getData());
+        JSONObject jsonProperties = new JSONObject(description);
 
         JSONValue maxLength = jsonProperties.get("maxLength");
 
@@ -53,7 +51,7 @@ public class TextBoxFieldRenderer extends FieldRenderer {
         text.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent changeEvent) {
-                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getUid(), description.getId(),  text.getValue()));
+                fieldChanged(description, context, text.getValue());
             }
         });
         text.setEnabled(!description.isReadOnly());

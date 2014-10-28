@@ -1,24 +1,18 @@
 package org.jbpm.formModeler.ng.model.impl.fields;
 
-import org.jbpm.formModeler.ng.model.BasicTypeField;
+import org.jbpm.formModeler.ng.model.BasicField;
 import org.jbpm.formModeler.ng.model.FieldValueMarshaller;
 import org.jbpm.formModeler.ng.services.context.impl.marshalling.fieldMarshallers.BooleanMarshaller;
 
 import javax.inject.Inject;
-import java.util.Map;
 
-public class CheckBox extends BasicTypeField {
+public class CheckBox extends BasicField {
     @Inject
     private BooleanMarshaller marshaller;
 
     @Override
     public String getCode() {
         return "CheckBox";
-    }
-
-    @Override
-    public String getIcon() {
-        return "checkbox.png";
     }
 
     @Override
@@ -32,11 +26,7 @@ public class CheckBox extends BasicTypeField {
     }
 
     @Override
-    public Map<String, String> getCustomProperties() {
-        return null;
-    }
-
-    @Override
-    public void setCustomProperties(Map<String, String> properties) {
+    public void setMarshaller(FieldValueMarshaller marshaller) {
+        if (marshaller instanceof BooleanMarshaller) this.marshaller = (BooleanMarshaller) marshaller;
     }
 }

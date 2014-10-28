@@ -11,11 +11,7 @@ import org.jbpm.formModeler.ng.model.impl.layouts.DefaultLayoutArea;
 import org.jbpm.formModeler.ng.services.LocaleManager;
 import org.jbpm.formModeler.ng.services.management.dataHolders.DataHolderBuildConfig;
 import org.jbpm.formModeler.ng.services.management.dataHolders.DataHolderManager;
-import org.jbpm.formModeler.ng.services.management.forms.FieldManager;
-import org.jbpm.formModeler.ng.services.management.forms.FormDefinitionMarshaller;
-import org.jbpm.formModeler.ng.services.management.forms.FormLayoutManager;
-import org.jbpm.formModeler.ng.services.management.forms.FormManager;
-import org.jbpm.formModeler.ng.services.management.forms.utils.BindingUtils;
+import org.jbpm.formModeler.ng.services.management.forms.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,6 +66,9 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
 
     @Inject
     private DataHolderManager dataHolderManager;
+
+    @Inject
+    private FieldDefinitionMarshaller fieldDefinitionMarshaller;
 
     @Override
     public String marshall(Form form) {
@@ -149,36 +148,18 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
         for (FormElement formElement : form.getElements()) {
             Field field = (Field) formElement;
 
-            generator.writeObjectFieldStart(field.getId().toString());
-            generator.writeStringField(FIELD_UID, field.getId().toString());
-            generator.writeStringField(ID, field.getName());
-            generator.writeStringField(TYPE, field.getCode());
+            String fieldJson =  fieldDefinitionMarshaller.marshall(field);
 
-            generator.writeObjectFieldStart(FIELD_LABEL);
-            for (String lang : field.getLabel().keySet()) {
-                generator.writeStringField(lang, field.getLabel().get(lang));
-                if(lang.equals(localeManager.getDefaultLang())) generator.writeStringField("default", field.getLabel().get(lang));
+            if (fieldJson != null) {
+                generator.writeFieldName(field.getId().toString());
+                generator.writeRawValue(fieldJson);
             }
-            generator.writeEndObject();
-
-            generator.writeStringField(FIELD_BINDING_EXPRESSION, field.getBindingExpression());
-            generator.writeBooleanField(FIELD_READONLY, field.getReadonly());
-            generator.writeBooleanField(FIELD_REQUIRED, field.getFieldRequired());
-
-            generator.writeObjectFieldStart(FIELD_DATA);
-
-            Map<String, String> properties = field.getCustomProperties();
-
-            if (properties != null) {
-                for (String key : properties.keySet()) {
-                    generator.writeStringField(key, properties.get(key));
-                }
-            }
-
-            generator.writeEndObject();
-            generator.writeEndObject();
         }
         generator.writeEndObject();
+    }
+    @Override
+    public Form unmarshall(String formTemplate) {
+        return unmarshall(formTemplate, new HashMap<String, Object>());
     }
 
     @Override
@@ -254,41 +235,7 @@ public class JSONFormDefinitionMarshaller implements FormDefinitionMarshaller {
             for (Iterator<String> it = fields.getFieldNames(); it.hasNext();) {
                 JsonNode jsonField = fields.get(it.next());
 
-                String code = jsonField.get(TYPE).getTextValue();
-
-                if (StringUtils.isEmpty(code)) continue;
-
-                Field field = fieldManager.getFieldByCode(code);
-
-                if (field == null) continue;
-
-                field.setId(Long.decode(jsonField.get(FIELD_UID).getTextValue()));
-                field.setName(jsonField.get(ID).getTextValue());
-
-                Map<String, String> properties = new HashMap<String, String>();
-
-                for (Iterator<String> fieldsIt = jsonField.getFieldNames(); fieldsIt.hasNext();) {
-                    String propName = fieldsIt.next();
-                    JsonNode value = jsonField.get(propName);
-                    if (value != null && !value.isNull()) {
-                        if (FIELD_REQUIRED.equals(propName)) {
-                            field.setFieldRequired(value.getBooleanValue());
-                        } else if (FIELD_LABEL.equals(propName)) {
-                            for (Iterator<String> labelIt = value.getFieldNames(); labelIt.hasNext();) {
-                                String lang = labelIt.next();
-                                if (lang.equals("default")) lang = localeManager.getDefaultLang();
-                                field.getLabel().put(lang, value.get(lang).getTextValue());
-                            }
-                        } else if (FIELD_READONLY.equals(propName)) {
-                            field.setReadonly(value.getBooleanValue());
-                        } else if (FIELD_BINDING_EXPRESSION.equals(propName)) {
-                            field.setBindingExpression(value.getTextValue());
-                        } else {
-                            if (!propName.equals(TYPE) && !propName.equals(ID) && !propName.equals(FIELD_UID)) properties.put(propName, value.getTextValue());
-                        }
-                    }
-                }
-                field.setCustomProperties(properties);
+                Field field = fieldDefinitionMarshaller.unmarshall(jsonField.toString());
                 form.addField(field);
             }
         }

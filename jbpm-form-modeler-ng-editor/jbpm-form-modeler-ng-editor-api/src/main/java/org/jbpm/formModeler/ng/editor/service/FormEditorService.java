@@ -44,9 +44,9 @@ public interface FormEditorService {
 
     Path save(ObservablePath path, String ctxUID, Metadata content, String commitMessage);
 
-    EditionContextTO startFieldEdition(String ctxUID, String fieldUID);
+    EditionContextTO startFieldEdition(String ctxUID, Long fieldId, String fieldJson);
 
-    String editFieldValue(String ctxUID, String editionCtxUID, String editionMarshalledCtx, boolean persist);
+    void editFieldValue(String ctxUID, String editionCtxUID, String editionMarshalledCtx, boolean persist);
 
     EditionContextTO changeFieldType(String ctxUID, String fieldName, String code, String editionCtxUID);
 

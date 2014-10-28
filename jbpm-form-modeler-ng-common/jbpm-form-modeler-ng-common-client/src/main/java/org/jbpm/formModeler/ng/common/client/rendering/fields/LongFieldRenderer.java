@@ -28,12 +28,12 @@ public class LongFieldRenderer extends FieldRenderer {
     public InputContainer getFieldInput(final FieldDefinition description, final FormContext context) {
         if (description == null) return null;
         final LongBox longBox = new LongBox();
-        longBox.setName(description.getId());
-        longBox.setId(description.getId());
+        longBox.setName(description.getName());
+        longBox.setId(description.getName());
 
         final FormContextStatus status = context.getContextStatus();
 
-        String strvalue = status.getFieldValue(description.getId());
+        String strvalue = status.getFieldValue(description.getName());
 
         Long value = new Long(0);
         if (strvalue != null && !"".equals(strvalue)) {
@@ -42,7 +42,7 @@ public class LongFieldRenderer extends FieldRenderer {
 
         longBox.setValue(value);
 
-        JSONObject jsonProperties = new JSONObject(description.getData());
+        JSONObject jsonProperties = new JSONObject(description);
 
         JSONValue maxLength = jsonProperties.get("maxLength");
 
@@ -58,7 +58,7 @@ public class LongFieldRenderer extends FieldRenderer {
         longBox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent changeEvent) {
-                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getUid(), description.getId(),  longBox.getText()));
+                fieldChanged(description, context, longBox.getText());
             }
         });
         longBox.setEnabled(!description.isReadOnly());
@@ -89,7 +89,7 @@ public class LongFieldRenderer extends FieldRenderer {
     public boolean isValidValue(String value) {
         if (isEmpty(value)) return true;
         try {
-            Long doubleValue = Long.valueOf(value);
+            Long longValue = Long.valueOf(value);
             return true;
         } catch (Exception ex) {
             return false;

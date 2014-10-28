@@ -1,0 +1,122 @@
+{"id": "672441336", "name": "InputTextLong", "displayMode": "default", "labelMode": "default", "layout": {
+    "id": "default",
+    "areas": [
+        {
+            "elements": ["14229321341"]
+        },
+        {
+            "elements": ["142293341"]
+        },
+        {
+            "elements": ["1437651781"]
+        },
+        {
+            "elements": ["1565746574"]
+        },
+        {
+            "elements": ["431764065"]
+        },
+        {
+            "elements": ["831881035"]
+        },
+        {
+            "elements": ["514255595"]
+        },
+        {
+            "elements": ["2073732259"]
+        }
+    ]
+}, "fields": {
+    "14229321341": {
+        "id": "14229321341",
+        "width": "15",
+        "name": "code",
+        "label": "{\"ca\":\"Tipus de camp:\",\"en\":\"Field type:\",\"es\":\"Tipo de campo:\"}",
+        "provider": "org.jbpm.formModeler.ng.services.management.forms.impl.selectValuesProviders.FieldTypeSelectValuesProvider",
+        "code": "DropDown",
+        "required": "false",
+        "readonly": "false",
+        "bindingExpression": "code"
+    },
+    "142293341": {
+        "id": "142293341",
+        "maxLength": "100",
+        "name": "name",
+        "label": "{\"de\":\"Feldname:\",\"zh\":\"字段名称：\",\"ca\":\"Nom del camp:\",\"pt\":\"Nome do campo:\",\"fr\":\"Nom du champ :\",\"en\":\"Field name:\",\"es\":\"Nombre del campo:\",\"ja\":\"フィールド名:\"}",
+        "code": "InputText",
+        "required": "false",
+        "readonly": "false",
+        "bindingExpression": "field/name",
+        "size": "15"
+    },
+    "1437651781": {
+        "id": "1437651781",
+        "maxLength": "100",
+        "name": "label",
+        "label": "{\"de\":\"Bezeichnung:\",\"zh\":\"标签：\",\"ca\":\"Etiqueta:\",\"pt\":\"Rótulo:\",\"fr\":\"Étiquette :\",\"en\":\"Label:\",\"es\":\"Etiqueta:\",\"ja\":\"ラベル:\"}",
+        "code": "I18nText",
+        "required": "false",
+        "readonly": "false",
+        "bindingExpression": "field/label",
+        "size": "15"
+    },
+    "1565746574": {
+        "id": "1565746574",
+        "maxLength": "100",
+        "name": "size",
+        "label": "{\"de\":\"Größe:\",\"zh\":\"大小：\",\"ca\":\"Grandària:\",\"pt\":\"Tamanho:\",\"fr\":\"Taille :\",\"en\":\"Size:\",\"es\":\"Tamaño:\",\"ja\":\"サイズ:\"}",
+        "code": "InputTextInteger",
+        "required": "false",
+        "readonly": "false",
+        "bindingExpression": "field/size",
+        "size": "15"
+    },
+    "431764065": {
+        "id": "431764065",
+        "maxLength": "100",
+        "name": "maxLength",
+        "label": "{\"de\":\"Max. Länge:\",\"zh\":\"最大长度：\",\"ca\":\"Longitud màxima:\",\"pt\":\"Comprimento máximo:\",\"fr\":\"Longueur Max :\",\"en\":\"Max length:\",\"es\":\"Longitud máxima:\",\"ja\":\"最大長:\"}",
+        "code": "InputTextInteger",
+        "required": "false",
+        "readonly": "false",
+        "bindingExpression": "field/maxLength",
+        "size": "15"
+    },
+    "831881035": {
+        "id": "831881035",
+        "name": "required",
+        "label": "{\"de\":\"Erforderlich\",\"zh\":\"必需的\",\"ca\":\"Requerit\",\"pt\":\"Solicitado\",\"fr\":\"Requis\",\"en\":\"Required\",\"es\":\"Requerido\",\"ja\":\"必須\"}",
+        "code": "CheckBox",
+        "required": "false",
+        "readonly": "false",
+        "bindingExpression": "field/required"
+    },
+    "514255595": {
+        "id": "514255595",
+        "name": "readonly",
+        "label": "{\"de\":\"Schreibgeschützt\",\"zh\":\"只读的\",\"ca\":\"Sols lectura\",\"pt\":\"Apenas de leitura\",\"fr\":\"Lecture seule\",\"en\":\"Read only\",\"es\":\"Sólo lectura\",\"ja\":\"読み取り専用\"}",
+        "code": "CheckBox",
+        "required": "false",
+        "readonly": "false",
+        "bindingExpression": "field/readonly"
+    },
+    "2073732259": {
+        "id": "2073732259",
+        "maxLength": "100",
+        "name": "bindingExpression",
+        "label": "{\"de\":\"Eingabe Binding Ausdruck:\",\"zh\":\"输入绑定表达式：\",\"ca\":\"Exp. enllaç entrada:\",\"pt\":\"Expressão binding de entrada:\",\"fr\":\"Expression Liaison Entrées :\",\"en\":\"Input binding expression:\",\"es\":\"Expresión de enlace de entrada:\",\"ja\":\"入力バインド式:\"}",
+        "code": "InputText",
+        "required": "false",
+        "readonly": "false",
+        "bindingExpression": "field/bindingExpression",
+        "size": "15"
+    }
+}, "dataHolders": [
+    {
+        "id": "field",
+        "type": "className",
+        "className": "org.jbpm.formModeler.ng.model.impl.fields.InputTextLong"
+    }
+], "status": {
+    "values": {}
+}}

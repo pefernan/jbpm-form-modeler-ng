@@ -15,7 +15,7 @@
  */
 package org.jbpm.formModeler.ng.services.management.dataHolders.builders;
 
-import org.jbpm.formModeler.ng.model.BasicTypeField;
+import org.jbpm.formModeler.ng.model.BasicField;
 import org.jbpm.formModeler.ng.model.DataHolder;
 import org.jbpm.formModeler.ng.model.Field;
 import org.jbpm.formModeler.ng.services.management.dataHolders.AbstractRangedDataHolderBuilder;
@@ -60,7 +60,7 @@ public class BasicTypeHolderBuilder extends AbstractRangedDataHolderBuilder {
     public Map<String, String> getHolderSources(String context) {
         Map<String, String> result = new TreeMap<String, String>();
         try {
-            List<BasicTypeField> allFieldTypes = fieldManager.getBasicFields();
+            List<BasicField> allFieldTypes = fieldManager.getBasicFields();
             for (Field field : allFieldTypes) {
                 if (!fieldManager.isVisible(field.getCode())) continue;
                 String supportedClassName = field.getFieldClass();

@@ -16,7 +16,8 @@
 package org.jbpm.formModeler.ng.services.management.forms.impl;
 
 import org.apache.commons.lang.SerializationUtils;
-import org.jbpm.formModeler.ng.model.BasicTypeField;
+import org.jbpm.formModeler.ng.model.BasicField;
+import org.jbpm.formModeler.ng.model.ComplexField;
 import org.jbpm.formModeler.ng.model.Field;
 import org.jbpm.formModeler.ng.services.management.forms.FieldManager;
 import org.slf4j.Logger;
@@ -37,14 +38,17 @@ import java.util.Map;
 @ApplicationScoped
 public class FieldManagerImpl implements FieldManager {
 
-    private List<BasicTypeField> fieldTypes;
+    private List<BasicField> fieldTypes;
+    private List<ComplexField> complexTypes;
     private List<Field> decoratorTypes;
-    private List<Field> complexTypes;
 
     private Logger log = LoggerFactory.getLogger(FieldManager.class);
 
     @Inject
-    protected Instance<BasicTypeField> basicFields;
+    protected Instance<BasicField> basicFields;
+
+    @Inject
+    protected Instance<ComplexField> complexFields;
 
     private ArrayList<String> hiddenFieldTypesCodes = new ArrayList<String>();
 
@@ -57,9 +61,10 @@ public class FieldManagerImpl implements FieldManager {
     @PostConstruct
     protected void init() {
 
-        fieldTypes = new ArrayList<BasicTypeField>();
+        fieldTypes = new ArrayList<BasicField>();
+        complexTypes = new ArrayList<ComplexField>();
 
-        for (BasicTypeField field : basicFields) {
+        for (BasicField field : basicFields) {
             fieldTypes.add(field);
             // Storing primitive fields for backguards comptaibility
             if (field.getCode().equals("InputTextByte")) {
@@ -89,6 +94,10 @@ public class FieldManagerImpl implements FieldManager {
             }
         }
 
+        for (ComplexField field : complexFields) {
+            complexTypes.add(field);
+        }
+
         hiddenFieldTypesCodes.add("I18nText");
         hiddenFieldTypesCodes.add("CustomInput");
 
@@ -107,8 +116,13 @@ public class FieldManagerImpl implements FieldManager {
     }
 
     @Override
-    public List<BasicTypeField> getBasicFields() {
+    public List<BasicField> getBasicFields() {
         return fieldTypes;
+    }
+
+    @Override
+    public List<ComplexField> getComplexFields() {
+        return complexTypes;
     }
 
     @Override
@@ -116,6 +130,10 @@ public class FieldManagerImpl implements FieldManager {
         List<Field> result = new ArrayList<Field>();
 
         for (Field typeField : fieldTypes) {
+            if (typeField.getFieldClass().equals(field.getFieldClass())) result.add(typeField);
+        }
+
+        for (Field typeField : complexFields) {
             if (typeField.getFieldClass().equals(field.getFieldClass())) result.add(typeField);
         }
 
@@ -127,12 +145,18 @@ public class FieldManagerImpl implements FieldManager {
         for (Field field : fieldTypes) {
             if (field.getCode().equals(typeCode)) return (Field) SerializationUtils.clone(field);
         }
+        for (Field field : complexFields) {
+            if (field.getCode().equals(typeCode)) return (Field) SerializationUtils.clone(field);
+        }
         return (Field) SerializationUtils.clone(backguardCompatibilityFields.get(typeCode));
     }
 
     @Override
     public Field getFieldByClass(String classType) {
         for (Field field : fieldTypes) {
+            if (field.getFieldClass().equals(classType)) return (Field)SerializationUtils.clone(field);
+        }
+        for (Field field : complexFields) {
             if (field.getFieldClass().equals(classType)) return (Field)SerializationUtils.clone(field);
         }
         return (Field) SerializationUtils.clone(compatibleClasses.get(classType));

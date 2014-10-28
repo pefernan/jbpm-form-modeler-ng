@@ -5,12 +5,9 @@ import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonEncoding;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.jbpm.formModeler.ng.model.DataHolder;
-import org.jbpm.formModeler.ng.model.Field;
-import org.jbpm.formModeler.ng.model.Form;
-import org.jbpm.formModeler.ng.model.FormElement;
+import org.codehaus.jackson.type.TypeReference;
+import org.jbpm.formModeler.ng.model.*;
 import org.jbpm.formModeler.ng.model.impl.fields.DropDown;
 import org.jbpm.formModeler.ng.services.LocaleManager;
 import org.jbpm.formModeler.ng.services.context.FormRenderContext;
@@ -26,6 +23,7 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.*;
 
 @Default
@@ -133,10 +131,9 @@ public class JSONFormRenderContextMarshaller implements FormRenderContextMarshal
     }
 
     private void marshallStatus(Form form, Map inputData, String namespace, FormRenderContext context, JsonGenerator generator) throws IOException {
-        generator.writeObjectFieldStart(VALUES);
+        generator.writeFieldName(VALUES);
 
-        List<DropDown> dropDowns = new ArrayList<DropDown>();
-
+        Map<String, Object> mapToMarshall = new HashMap<String, Object>();
         for (FormElement formElement : form.getElements()) {
 
             Field field = (Field) formElement;
@@ -144,7 +141,7 @@ public class JSONFormRenderContextMarshaller implements FormRenderContextMarshal
             String fieldId = StringUtils.isEmpty(namespace) ? field.getName() : namespace + NAMESPACE_SEPARATOR + field.getName();
 
             if (StringUtils.isEmpty(field.getBindingExpression())) {
-                generator.writeNullField(fieldId);
+                mapToMarshall.put(fieldId, null);
                 continue;
             }
 
@@ -158,13 +155,18 @@ public class JSONFormRenderContextMarshaller implements FormRenderContextMarshal
                 value = getBindedValue(field, dataHolder, inputData, namespace);
             }
 
-            if (value == null) generator.writeNullField(fieldId);
-
-            generator.writeStringField(fieldId, field.getMarshaller().marshallValue(value, context));
-
-            if (field.getCode().equals(DropDown.CODE)) dropDowns.add((DropDown) field);
+            if (value == null) mapToMarshall.put(fieldId, null);
+            else {
+                value = field.getMarshaller().marshallValue(value, context);
+                mapToMarshall.put(fieldId, value);
+            }
         }
-        generator.writeEndObject();
+        ObjectMapper mapper = new ObjectMapper();
+        StringWriter writer = new StringWriter();
+        mapper.writeValue(writer, mapToMarshall);
+        String valuesJSON = writer.toString();
+        generator.writeRawValue(valuesJSON);
+        writer.close();
     }
 
     protected Object getBindedValue(Field field, DataHolder holder, Map<String, Object> bindingData, String namespace) {
@@ -209,11 +211,9 @@ public class JSONFormRenderContextMarshaller implements FormRenderContextMarshal
 
             ObjectMapper mapper = new ObjectMapper();
 
-            JsonNode node = mapper.readTree(marshalledValues);
+            Map<String, String> valuesMap = mapper.readValue(marshalledValues, new TypeReference<HashMap<String,String>>(){});
 
-            for (Iterator<String> it = node.getFieldNames(); it.hasNext();) {
-                String fieldId = it.next();
-
+            for (String fieldId : valuesMap.keySet()) {
                 Field field = form.getField(fieldId);
 
                 if (field != null) {
@@ -231,7 +231,7 @@ public class JSONFormRenderContextMarshaller implements FormRenderContextMarshal
                         previousValue = getBindedValue(field, dataHolder, result, "");
                     }
 
-                    Object value = field.getMarshaller().unMarshallValue(node.get(fieldId).getTextValue(), previousValue, context);
+                    Object value = field.getMarshaller().unMarshallValue(valuesMap.get(fieldId), previousValue, context);
 
                     boolean simpleBinding = StringUtils.isEmpty(bindingString) || bindingString.indexOf("/") == -1;
 

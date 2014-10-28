@@ -22,7 +22,7 @@ public abstract class Field extends FormElement {
 
     protected Map<String, String> label = new HashMap<String, String>();
 
-    protected Boolean fieldRequired = Boolean.FALSE;
+    protected Boolean required = Boolean.FALSE;
 
     protected Boolean readonly = Boolean.FALSE;
 
@@ -34,7 +34,7 @@ public abstract class Field extends FormElement {
 
     public abstract FieldValueMarshaller getMarshaller();
 
-    public abstract String getIcon();
+    public abstract void setMarshaller(FieldValueMarshaller marshaller);
 
     public Map<String, String> getLabel() {
         return label;
@@ -44,12 +44,12 @@ public abstract class Field extends FormElement {
         this.label = label;
     }
 
-    public Boolean getFieldRequired() {
-        return fieldRequired;
+    public Boolean getRequired() {
+        return required;
     }
 
-    public void setFieldRequired(Boolean fieldRequired) {
-        this.fieldRequired = fieldRequired;
+    public void setRequired(Boolean required) {
+        this.required = required;
     }
 
     public Boolean getReadonly() {
@@ -74,10 +74,9 @@ public abstract class Field extends FormElement {
         setId(source.getId());
         setName(source.getName());
         setLabel(source.getLabel());
-        setFieldRequired(source.getFieldRequired());
+        setRequired(source.getRequired());
         setReadonly(source.getReadonly());
         setBindingExpression(source.getBindingExpression());
         setForm(source.getForm());
-        setCustomProperties(source.getCustomProperties());
     }
 }

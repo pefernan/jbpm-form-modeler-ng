@@ -22,11 +22,6 @@ public class InputTextCharacter extends InputText {
     }
 
     @Override
-    public String getIcon() {
-        return "textbox.png";
-    }
-
-    @Override
     public String getFieldClass() {
         return Character.class.getName();
     }

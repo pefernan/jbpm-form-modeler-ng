@@ -1,14 +1,12 @@
 package org.jbpm.formModeler.ng.model.impl.fields;
 
-import org.jbpm.formModeler.ng.model.BasicTypeField;
+import org.jbpm.formModeler.ng.model.BasicField;
 import org.jbpm.formModeler.ng.model.FieldValueMarshaller;
 import org.jbpm.formModeler.ng.services.context.impl.marshalling.fieldMarshallers.StringMarshaller;
 
 import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
 
-public class DropDown extends BasicTypeField {
+public class DropDown extends BasicField {
     public static final String CODE = "DropDown";
 
     private Integer width = 15;
@@ -23,11 +21,6 @@ public class DropDown extends BasicTypeField {
     }
 
     @Override
-    public String getIcon() {
-        return "select.png";
-    }
-
-    @Override
     public String getFieldClass() {
         return String.class.getName();
     }
@@ -35,6 +28,11 @@ public class DropDown extends BasicTypeField {
     @Override
     public FieldValueMarshaller getMarshaller() {
         return marshaller;
+    }
+
+    @Override
+    public void setMarshaller(FieldValueMarshaller marshaller) {
+        if (marshaller instanceof StringMarshaller) this.marshaller = (StringMarshaller) marshaller;
     }
 
     public Integer getWidth() {
@@ -51,23 +49,5 @@ public class DropDown extends BasicTypeField {
 
     public void setProvider(String provider) {
         this.provider = provider;
-    }
-
-    @Override
-    public Map<String, String> getCustomProperties() {
-        Map<String, String> result = new HashMap<String, String>();
-        result.put("width", String.valueOf(width));
-        result.put("provider", provider);
-        return result;
-    }
-
-    @Override
-    public void setCustomProperties(Map<String, String> properties) {
-        try {
-            width = Integer.decode(properties.get("width"));
-        } catch (Exception ex) {
-            width = 15;
-        }
-        provider = properties.get("provider");
     }
 }

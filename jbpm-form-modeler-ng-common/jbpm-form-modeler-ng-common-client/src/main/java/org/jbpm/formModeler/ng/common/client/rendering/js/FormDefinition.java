@@ -32,8 +32,17 @@ public class FormDefinition extends JavaScriptObject {
         return this.layout;
     }-*/;
 
-    public final native FieldDefinition getFieldDefinition(String fieldUid) /*-{
-        return this.fields[fieldUid];
+    public final native FieldDefinition getFieldDefinition(String fieldId) /*-{
+        return this.fields[fieldId];
+    }-*/;
+
+    public final native void addFieldDefinition(String fieldId, FieldDefinition field) /*-{
+        this.fields[fieldId] = field;
+    }-*/;
+
+    public final native FieldDefinition removeFieldDefinition(String fieldId) /*-{
+        this.layout.removeField(fieldId);
+        delete this.fields[fieldId];
     }-*/;
 
     public final native JsArray<FieldDefinition> getFieldDefinitions() /*-{

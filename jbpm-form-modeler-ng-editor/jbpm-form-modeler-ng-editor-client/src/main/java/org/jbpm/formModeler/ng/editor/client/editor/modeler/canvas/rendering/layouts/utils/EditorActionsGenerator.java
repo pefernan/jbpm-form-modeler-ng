@@ -124,7 +124,7 @@ public class EditorActionsGenerator {
                                        Window.alert("Something wong happened: " + message);
                                        return false;
                                    }
-                               }).moveSelectedFieldToFieldPosition(ctxUID, Long.decode(selectedField.getUid()), row, column);
+                               }).moveSelectedFieldToFieldPosition(ctxUID, new Long(selectedField.getId()), row, column);
         }
     }
 
@@ -155,7 +155,7 @@ public class EditorActionsGenerator {
         edit.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                fieldPropertyEvent.fire(new StartEditFieldPropertyEvent(ctxUID, field.getUid()));
+                fieldPropertyEvent.fire(new StartEditFieldPropertyEvent(ctxUID, field.getId()));
             }
         });
         edit.getElement().getStyle().setPaddingLeft(3, Style.Unit.PX);
@@ -167,7 +167,7 @@ public class EditorActionsGenerator {
             @Override
             public void onClick(ClickEvent event) {
                 if (Window.confirm("!!Are you sure?")) {
-                    deleteFieldEvent.fire(new DeleteFieldEvent(ctxUID, field.getUid()));
+                    deleteFieldEvent.fire(new DeleteFieldEvent(ctxUID, field.getId()));
                 }
             }
         });

@@ -9,5 +9,6 @@ import java.util.Map;
  */
 public interface FormDefinitionMarshaller {
     String marshall(Form form);
+    Form unmarshall(String marshalledForm);
     Form unmarshall(String marshalledForm, Map<String, Object> context);
 }

@@ -139,7 +139,7 @@ public class PojoDataHolder extends DataHolder {
                     try {
                         String className = methodClazz.getName();
                         org.jbpm.formModeler.ng.model.Field formField = fieldManager.getFieldByClass(className);
-                        fieldHolder = new DataFieldHolder(this, propertyName, className, formField.getIcon());
+                        fieldHolder = new DataFieldHolder(this, propertyName, className);
                         dataFieldHolders.add(fieldHolder);
                     } catch (Exception e) {
                         //The

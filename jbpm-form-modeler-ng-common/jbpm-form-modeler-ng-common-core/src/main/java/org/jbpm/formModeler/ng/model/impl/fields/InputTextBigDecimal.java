@@ -23,11 +23,6 @@ public class InputTextBigDecimal extends InputText {
     }
 
     @Override
-    public String getIcon() {
-        return "box_number.png";
-    }
-
-    @Override
     public String getFieldClass() {
         return BigDecimal.class.getName();
     }
@@ -35,5 +30,10 @@ public class InputTextBigDecimal extends InputText {
     @Override
     public FieldValueMarshaller getMarshaller() {
         return marshaller;
+    }
+
+    @Override
+    public void setMarshaller(FieldValueMarshaller marshaller) {
+        if (marshaller instanceof NumberMarshaller) this.marshaller = (NumberMarshaller) marshaller;
     }
 }

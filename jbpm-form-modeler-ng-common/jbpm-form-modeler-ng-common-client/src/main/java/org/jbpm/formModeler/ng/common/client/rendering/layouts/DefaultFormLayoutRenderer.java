@@ -26,6 +26,7 @@ public class DefaultFormLayoutRenderer extends FormLayoutRenderer {
             FormLayoutDefinition layout = formDefinition.getLayout();
             for (int row = 0; row < layout.getAreas().length(); row++) {
                 FormLayoutArea area = layout.getAreas().get(row);
+                if (area.getElements().length() == 0) continue;
                 renderArea(formContent, row);
                 HorizontalPanel horizontalPanel = new HorizontalPanel();
                 formContent.add(horizontalPanel);

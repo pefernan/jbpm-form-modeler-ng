@@ -6,7 +6,7 @@
   <property name="showMode" value=""/>
   <property name="status" value="0"/>
   <field position="0" name="htmlContent" type="I18nHTMLText" id="559575971">
-    <property name="fieldRequired" value="false"/>
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value="4"/>
     <property name="readonly" value="false"/>

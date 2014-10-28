@@ -54,6 +54,13 @@ public class ContextConfiguration {
         this.locale = locale;
     }
 
+    public ContextConfiguration(Form form, Map<String, Object> inputData, Locale locale, String serializedStatus) {
+        this.form = form;
+        this.inputData = inputData;
+        this.locale = locale;
+        this.serializedStatus = serializedStatus;
+    }
+
     public Form getForm() {
         return form;
     }

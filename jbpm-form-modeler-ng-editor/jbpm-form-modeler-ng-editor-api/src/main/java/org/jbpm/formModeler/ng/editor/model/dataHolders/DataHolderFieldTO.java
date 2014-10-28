@@ -4,7 +4,6 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class DataHolderFieldTO {
-    private String icon;
     private String holderId;
     private String id;
     private String typeCode;
@@ -33,14 +32,6 @@ public class DataHolderFieldTO {
 
     public void setTypeCode(String typeCode) {
         this.typeCode = typeCode;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
     }
 
     public boolean isBinded() {

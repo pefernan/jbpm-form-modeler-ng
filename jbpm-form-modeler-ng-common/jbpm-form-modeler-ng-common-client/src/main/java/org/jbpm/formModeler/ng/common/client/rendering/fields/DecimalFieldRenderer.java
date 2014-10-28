@@ -27,12 +27,12 @@ public class DecimalFieldRenderer extends FieldRenderer {
     public InputContainer getFieldInput(final FieldDefinition description, final FormContext context) {
         if (description == null) return null;
         final DoubleBox doubleBox = new DoubleBox();
-        doubleBox.setName(description.getId());
-        doubleBox.setId(description.getId());
+        doubleBox.setName(description.getName());
+        doubleBox.setId(description.getName());
 
         final FormContextStatus status = context.getContextStatus();
 
-        String strvalue = status.getFieldValue(description.getId());
+        String strvalue = status.getFieldValue(description.getName());
 
         Double value = 0.0;
         if (strvalue != null && !"".equals(strvalue)) {
@@ -41,7 +41,7 @@ public class DecimalFieldRenderer extends FieldRenderer {
 
         doubleBox.setValue(value);
 
-        JSONObject jsonProperties = new JSONObject(description.getData());
+        JSONObject jsonProperties = new JSONObject(description);
 
         JSONValue maxLength = jsonProperties.get("maxLength");
 
@@ -57,7 +57,8 @@ public class DecimalFieldRenderer extends FieldRenderer {
         doubleBox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent changeEvent) {
-                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getUid(), description.getId(), doubleBox.getText()));
+                Object value = doubleBox.getValue();
+                fieldChanged(description, context, doubleBox.getText());
             }
         });
         doubleBox.setEnabled(!description.isReadOnly());

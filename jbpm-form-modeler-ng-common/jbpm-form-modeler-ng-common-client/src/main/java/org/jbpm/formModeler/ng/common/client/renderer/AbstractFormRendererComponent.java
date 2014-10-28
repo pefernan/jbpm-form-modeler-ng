@@ -36,30 +36,32 @@ public abstract class AbstractFormRendererComponent extends Composite {
 
     public boolean renderFormContent(String form) {
         try {
-            Panel formContent = getFormContainer();
-            formContent.clear();
-
             context = JsonUtils.safeEval(form);
 
             status = context.getContextStatus();
 
             setFormLayoutRenderer(context);
 
-            Panel content = renderer.generateForm(context);
-
-            if (content != null) {
-                formContent.add(content);
-                return true;
-            }
+            refresh();
+            return true;
         } catch (Exception ex) {
             Window.alert("Something wrong happened rendering form: " + ex.getMessage());
         }
         return false;
     }
 
-
     public void setFormLayoutRenderer(FormContext ctx) {
         renderer = formRendererManager.getLayoutRendererByType(ctx.getFormDefinition().getLayout().getId());
+    }
+
+    public void refresh() {
+        Panel content = renderer.generateForm(context);
+        Panel formContent = getFormContainer();
+        formContent.clear();
+
+        if (content != null) {
+            formContent.add(content);
+        }
     }
 
     public void checkFieldValue(@Observes FieldChangedEvent fieldChangedEvent) {
@@ -67,21 +69,25 @@ public abstract class AbstractFormRendererComponent extends Composite {
             this.fieldChangedEvent = fieldChangedEvent;
             status.setFieldValue(fieldChangedEvent.getFieldName(), fieldChangedEvent.getNewValue());
 
-            FieldDefinition fieldDefinition = context.getFormDefinition().getFieldDefinition(fieldChangedEvent.getFieldUid());
+            FieldDefinition fieldDefinition = context.getFormDefinition().getFieldDefinition(fieldChangedEvent.getFieldId());
             FieldCheckResult checkresult = checkerManager.checkFieldValue(fieldDefinition, fieldChangedEvent.getNewValue(), context);
 
-            InputContainer container = renderer.getInputContainer(fieldChangedEvent.getFieldUid());
+            InputContainer container = renderer.getInputContainer(fieldChangedEvent.getFieldId());
             if (checkresult.isWrong()) {
                 container.setWrong(true);
                 container.setHelpMessage(checkresult.getMessage());
-                context.getContextStatus().addWrongField(fieldChangedEvent.getFieldUid());
-            } else if (context.getContextStatus().isFieldWrong(fieldChangedEvent.getFieldUid())) {
+                context.getContextStatus().addWrongField(fieldChangedEvent.getFieldId());
+            } else if (context.getContextStatus().isFieldWrong(fieldChangedEvent.getFieldId())) {
                 container.setWrong(false);
                 container.setHelpMessage("");
-                context.getContextStatus().removeWrongField(fieldChangedEvent.getFieldUid());
+                context.getContextStatus().removeWrongField(fieldChangedEvent.getFieldId());
             }
             if (onFieldChange != null) onFieldChange.execute();
         }
+    }
+
+    public FormLayoutRenderer getRenderer() {
+        return renderer;
     }
 
     public boolean hasWrongFields() {

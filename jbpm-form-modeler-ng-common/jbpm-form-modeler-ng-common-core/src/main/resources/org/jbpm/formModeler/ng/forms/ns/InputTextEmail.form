@@ -5,8 +5,8 @@
   <property name="labelMode" value="default"/>
   <property name="showMode" value=""/>
   <property name="status" value="0"/>
-  <field position="0" name="fieldName" type="InputText" id="1980326510">
-    <property name="fieldRequired" value="false"/>
+  <field position="0" name="name" type="InputText" id="1980326510">
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="true"/>
     <property name="height" value=""/>
     <property name="readonly" value="false"/>
@@ -14,13 +14,13 @@
     <property name="formula" value=""/>
     <property name="rangeFormula" value=""/>
     <property name="pattern" value=""/>
-    <property name="maxlength" value="512"/>
+    <property name="maxLength" value="512"/>
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
   </field>
   <field position="1" name="label" type="I18nText" id="374626027">
-    <property name="fieldRequired" value="false"/>
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
     <property name="readonly" value="false"/>
@@ -28,13 +28,13 @@
     <property name="formula" value=""/>
     <property name="rangeFormula" value=""/>
     <property name="pattern" value=""/>
-    <property name="maxlength" value="512"/>
+    <property name="maxLength" value="512"/>
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
   </field>
   <field position="2" name="errorMessage" type="I18nText" id="1365364313">
-    <property name="fieldRequired" value="false"/>
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
     <property name="readonly" value="false"/>
@@ -42,13 +42,13 @@
     <property name="formula" value=""/>
     <property name="rangeFormula" value=""/>
     <property name="pattern" value=""/>
-    <property name="maxlength" value="512"/>
+    <property name="maxLength" value="512"/>
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
   </field>
   <field position="3" name="labelCSSClass" type="InputText" id="1422768524">
-    <property name="fieldRequired" value="false"/>
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
     <property name="readonly" value="false"/>
@@ -56,13 +56,13 @@
     <property name="formula" value=""/>
     <property name="rangeFormula" value=""/>
     <property name="pattern" value=""/>
-    <property name="maxlength" value="512"/>
+    <property name="maxLength" value="512"/>
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
   </field>
   <field position="4" name="labelCSSStyle" type="InputText" id="1665003309">
-    <property name="fieldRequired" value="false"/>
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="true"/>
     <property name="height" value=""/>
     <property name="readonly" value="false"/>
@@ -70,13 +70,13 @@
     <property name="formula" value=""/>
     <property name="rangeFormula" value=""/>
     <property name="pattern" value=""/>
-    <property name="maxlength" value="512"/>
+    <property name="maxLength" value="512"/>
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
   </field>
   <field position="5" name="title" type="I18nText" id="811128901">
-    <property name="fieldRequired" value="false"/>
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
     <property name="readonly" value="false"/>
@@ -84,13 +84,13 @@
     <property name="formula" value=""/>
     <property name="rangeFormula" value=""/>
     <property name="pattern" value=""/>
-    <property name="maxlength" value="512"/>
+    <property name="maxLength" value="512"/>
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
   </field>
   <field position="6" name="styleclass" type="InputText" id="1849553733">
-    <property name="fieldRequired" value="false"/>
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
     <property name="readonly" value="false"/>
@@ -98,13 +98,13 @@
     <property name="formula" value=""/>
     <property name="rangeFormula" value=""/>
     <property name="pattern" value=""/>
-    <property name="maxlength" value="512"/>
+    <property name="maxLength" value="512"/>
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
   </field>
   <field position="7" name="cssStyle" type="InputText" id="2128967002">
-    <property name="fieldRequired" value="false"/>
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="true"/>
     <property name="height" value=""/>
     <property name="readonly" value="false"/>
@@ -112,13 +112,13 @@
     <property name="formula" value=""/>
     <property name="rangeFormula" value=""/>
     <property name="pattern" value=""/>
-    <property name="maxlength" value="512"/>
+    <property name="maxLength" value="512"/>
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
   </field>
   <field position="9" name="size" type="InputText" id="2020714476">
-    <property name="fieldRequired" value="false"/>
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
     <property name="readonly" value="false"/>
@@ -126,13 +126,13 @@
     <property name="formula" value=""/>
     <property name="rangeFormula" value=""/>
     <property name="pattern" value=""/>
-    <property name="maxlength" value="512"/>
+    <property name="maxLength" value="512"/>
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
   </field>
-  <field position="10" name="maxlength" type="InputTextLong" id="431764065">
-    <property name="fieldRequired" value="false"/>
+  <field position="10" name="maxLength" type="InputTextLong" id="431764065">
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="true"/>
     <property name="height" value=""/>
     <property name="readonly" value="false"/>
@@ -140,13 +140,13 @@
     <property name="formula" value=""/>
     <property name="rangeFormula" value=""/>
     <property name="pattern" value=""/>
-    <property name="maxlength" value="512"/>
+    <property name="maxLength" value="512"/>
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
   </field>
-  <field position="11" name="fieldRequired" type="CheckBox" id="1196257791">
-    <property name="fieldRequired" value="false"/>
+  <field position="11" name="required" type="CheckBox" id="1196257791">
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
     <property name="readonly" value="false"/>
@@ -154,13 +154,13 @@
     <property name="formula" value=""/>
     <property name="rangeFormula" value=""/>
     <property name="pattern" value=""/>
-    <property name="maxlength" value="512"/>
+    <property name="maxLength" value="512"/>
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
   </field>
   <field position="13" name="readonly" type="CheckBox" id="1355824773">
-    <property name="fieldRequired" value="false"/>
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="true"/>
     <property name="height" value=""/>
     <property name="readonly" value="false"/>
@@ -168,13 +168,13 @@
     <property name="formula" value=""/>
     <property name="rangeFormula" value=""/>
     <property name="pattern" value=""/>
-    <property name="maxlength" value="512"/>
+    <property name="maxLength" value="512"/>
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
   </field>
   <field position="14" name="defaultValueFormula" type="InputText" id="597546336">
-    <property name="fieldRequired" value="false"/>
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
     <property name="readonly" value="false"/>
@@ -182,13 +182,13 @@
     <property name="formula" value=""/>
     <property name="rangeFormula" value=""/>
     <property name="pattern" value=""/>
-    <property name="maxlength" value="512"/>
+    <property name="maxLength" value="512"/>
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
   </field>
   <field position="16" name="bindingExpression" type="InputText" id="2026939785">
-    <property name="fieldRequired" value="false"/>
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
     <property name="readonly" value="false"/>
@@ -196,7 +196,7 @@
     <property name="formula" value=""/>
     <property name="rangeFormula" value=""/>
     <property name="pattern" value=""/>
-    <property name="maxlength" value="512"/>
+    <property name="maxLength" value="512"/>
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>

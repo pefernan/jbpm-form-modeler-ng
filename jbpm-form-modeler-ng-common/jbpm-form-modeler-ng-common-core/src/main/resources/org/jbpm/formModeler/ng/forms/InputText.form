@@ -5,15 +5,15 @@
   <property name="showMode" value=""/>
   <property name="status" value="0"/>
   <field position="0" name="code" type="DropDown" id="14229321341">
-    <property name="fieldRequired" value="false"/>
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="readonly" value="false"/>
     <property name="size" value="15"/>
     <property name="provider" value="org.jbpm.formModeler.ng.services.management.forms.impl.selectValuesProviders.FieldTypeSelectValuesProvider"/>
     <property name="bindingExpression" value="code"/>
   </field>
-  <field position="1" name="fieldName" type="InputText" id="142293341">
-    <property name="fieldRequired" value="false"/>
+  <field position="1" name="name" type="InputText" id="142293341">
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
     <property name="readonly" value="false"/>
@@ -21,14 +21,14 @@
     <property name="formula" value=""/>
     <property name="rangeFormula" value=""/>
     <property name="pattern" value=""/>
-    <property name="maxlength" value="512"/>
+    <property name="maxLength" value="512"/>
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
     <property name="bindingExpression" value="field/name"/>
   </field>
   <field position="2" name="label" type="I18nText" id="1437651781">
-    <property name="fieldRequired" value="false"/>
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
     <property name="readonly" value="false"/>
@@ -36,14 +36,14 @@
     <property name="formula" value=""/>
     <property name="rangeFormula" value=""/>
     <property name="pattern" value=""/>
-    <property name="maxlength" value="512"/>
+    <property name="maxLength" value="512"/>
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
     <property name="bindingExpression" value="field/label"/>
   </field>
   <field position="3" name="size" type="InputTextInteger" id="1565746574">
-    <property name="fieldRequired" value="false"/>
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
     <property name="readonly" value="false"/>
@@ -51,14 +51,14 @@
     <property name="formula" value=""/>
     <property name="rangeFormula" value=""/>
     <property name="pattern" value=""/>
-    <property name="maxlength" value="512"/>
+    <property name="maxLength" value="512"/>
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
     <property name="bindingExpression" value="field/size"/>
   </field>
-  <field position="4" name="maxlength" type="InputTextInteger" id="431764065">
-    <property name="fieldRequired" value="false"/>
+  <field position="4" name="maxLength" type="InputTextInteger" id="431764065">
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
     <property name="readonly" value="false"/>
@@ -66,14 +66,14 @@
     <property name="formula" value=""/>
     <property name="rangeFormula" value=""/>
     <property name="pattern" value=""/>
-    <property name="maxlength" value="512"/>
+    <property name="maxLength" value="512"/>
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
     <property name="bindingExpression" value="field/maxLength"/>
   </field>
-  <field position="5" name="fieldRequired" type="CheckBox" id="831881035">
-    <property name="fieldRequired" value="false"/>
+  <field position="5" name="required" type="CheckBox" id="831881035">
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
     <property name="readonly" value="false"/>
@@ -81,14 +81,14 @@
     <property name="formula" value=""/>
     <property name="rangeFormula" value=""/>
     <property name="pattern" value=""/>
-    <property name="maxlength" value="512"/>
+    <property name="maxLength" value="512"/>
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
-    <property name="bindingExpression" value="field/fieldRequired"/>
+    <property name="bindingExpression" value="field/required"/>
   </field>
   <field position="6" name="readonly" type="CheckBox" id="514255595">
-    <property name="fieldRequired" value="false"/>
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="true"/>
     <property name="height" value=""/>
     <property name="readonly" value="false"/>
@@ -96,14 +96,14 @@
     <property name="formula" value=""/>
     <property name="rangeFormula" value=""/>
     <property name="pattern" value=""/>
-    <property name="maxlength" value="512"/>
+    <property name="maxLength" value="512"/>
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>
     <property name="bindingExpression" value="field/readonly"/>
   </field>
   <field position="7" name="bindingExpression" type="InputText" id="2073732259">
-    <property name="fieldRequired" value="false"/>
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="height" value=""/>
     <property name="readonly" value="false"/>
@@ -111,7 +111,7 @@
     <property name="formula" value=""/>
     <property name="rangeFormula" value=""/>
     <property name="pattern" value=""/>
-    <property name="maxlength" value="512"/>
+    <property name="maxLength" value="512"/>
     <property name="styleclass" value=""/>
     <property name="cssStyle" value=""/>
     <property name="accesskey" value=""/>

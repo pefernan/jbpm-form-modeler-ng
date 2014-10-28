@@ -7,7 +7,7 @@ public class FormContextStatus extends JavaScriptObject {
     protected FormContextStatus() {
     }
 
-    public final native void setFieldValue(String fieldId, String value) /*-{
+    public final native void setFieldValue(String fieldId, Object value) /*-{
         this.values[fieldId] = value;
     }-*/;
 
@@ -28,7 +28,7 @@ public class FormContextStatus extends JavaScriptObject {
     }-*/;
 
     public final native void removeWrongField(String fieldId) /*-{
-        delete this.wrongFields[fieldId];
+        this.wrongFields.splice(this.wrongFields.indexOf(fieldId), 1);
     }-*/;
 
     public final native boolean isFieldWrong(String fieldId) /*-{

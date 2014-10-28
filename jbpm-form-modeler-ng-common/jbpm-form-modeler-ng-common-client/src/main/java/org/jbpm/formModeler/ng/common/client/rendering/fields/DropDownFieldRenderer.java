@@ -30,14 +30,12 @@ public class DropDownFieldRenderer extends FieldRenderer {
     public InputContainer getFieldInput(final FieldDefinition description, final FormContext context) {
         final ListBox listBox = new ListBox();
 
-        listBox.setName(description.getId());
-        listBox.setId(description.getId());
+        listBox.setName(description.getName());
+        listBox.setId(description.getName());
 
         final FormContextStatus status = context.getContextStatus();
 
-        String value = status.getFieldValue(description.getId());
-
-        JsArray<FieldOption> options = status.getFieldOptions(description.getId());
+        JsArray<FieldOption> options = status.getFieldOptions(description.getName());
         if (options != null) {
             for (int i = 0; i < options.length(); i++) {
                 FieldOption option = options.get(i);
@@ -45,9 +43,9 @@ public class DropDownFieldRenderer extends FieldRenderer {
             }
         }
 
-        listBox.setSelectedValue(value);
+        listBox.setSelectedValue(status.getFieldValue(description.getName()));
 
-        JSONObject jsonProperties = new JSONObject(description.getData());
+        JSONObject jsonProperties = new JSONObject(description);
 
         JSONValue size = jsonProperties.get("size");
         if (size != null) {
@@ -57,7 +55,7 @@ public class DropDownFieldRenderer extends FieldRenderer {
         listBox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent event) {
-                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getUid(), description.getId(), listBox.getValue()));
+                fieldChanged(description, context, listBox.getValue());
             }
         });
         listBox.setEnabled(!description.isReadOnly());

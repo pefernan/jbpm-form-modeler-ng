@@ -26,16 +26,14 @@ public class TextAreaFieldRenderer extends FieldRenderer {
     public InputContainer getFieldInput(final FieldDefinition description, final FormContext context) {
         if (description == null) return null;
         final TextArea textArea = new TextArea();
-        textArea.setName(description.getId());
-        textArea.setId(description.getId());
+        textArea.setName(description.getName());
+        textArea.setId(description.getName());
 
         final FormContextStatus status = context.getContextStatus();
 
-        String value = status.getFieldValue(description.getId());
+        textArea.setValue(status.getFieldValue(description.getName()));
 
-        textArea.setValue(value);
-
-        JSONObject jsonProperties = new JSONObject(description.getData());
+        JSONObject jsonProperties = new JSONObject(description);
 
         JSONValue height = jsonProperties.get("height");
 
@@ -51,7 +49,7 @@ public class TextAreaFieldRenderer extends FieldRenderer {
         textArea.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent changeEvent) {
-                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getUid(), description.getId(),  textArea.getValue()));
+                fieldChanged(description, context, textArea.getValue());
             }
         });
         textArea.setEnabled(!description.isReadOnly());

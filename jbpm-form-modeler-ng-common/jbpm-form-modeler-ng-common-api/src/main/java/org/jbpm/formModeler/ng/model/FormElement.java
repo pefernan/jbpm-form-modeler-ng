@@ -40,7 +40,4 @@ public abstract class FormElement implements Serializable, Comparable<FormElemen
     public int compareTo(FormElement o) {
         return this.getId().compareTo(o.getId());
     }
-
-    public abstract Map<String, String> getCustomProperties();
-    public abstract void setCustomProperties(Map<String, String> properties);
 }

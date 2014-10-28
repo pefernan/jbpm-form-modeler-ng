@@ -6,35 +6,31 @@ public class FieldDefinition extends JavaScriptObject {
     protected FieldDefinition() {
     }
 
-    public final native String getUid() /*-{
-        return this.uid;
-    }-*/;
-
     public final native String getId() /*-{
         return this.id;
     }-*/;
 
-    public final native JavaScriptObject getLabel() /*-{
+    public final native String getName() /*-{
+        return this.name;
+    }-*/;
+
+    public final native String getLabel() /*-{
         return this.label;
     }-*/;
 
-    public final native String getType() /*-{
-        return this.type;
+    public final native String getCode() /*-{
+        return this.code;
     }-*/;
 
     public final native boolean isRequired() /*-{
-        return this.required;
+        return this.required == "true";
     }-*/;
 
     public final native boolean isReadOnly() /*-{
-        return this.readonly;
+        return this.readonly == "true";
     }-*/;
 
     public final native String getBindingExpression() /*-{
         return this.bindingExpression;
-    }-*/;
-
-    public final native JavaScriptObject getData() /*-{
-        return this.data;
     }-*/;
 }

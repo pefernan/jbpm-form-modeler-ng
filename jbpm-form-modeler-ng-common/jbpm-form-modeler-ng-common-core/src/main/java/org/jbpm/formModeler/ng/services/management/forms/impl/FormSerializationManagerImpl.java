@@ -43,7 +43,6 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Properties;
 
@@ -241,34 +240,26 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
         field.setId(Long.valueOf(nodeField.getAttributes().getNamedItem(ATTR_ID).getNodeValue()));
         field.setName(nodeField.getAttributes().getNamedItem(ATTR_NAME).getNodeValue());
 
-        Map<String, String> properties = new HashMap<String, String>();
 
         NodeList fieldPropsNodes = nodeField.getChildNodes();
-        Boolean groupWithPrevious = false;
         for (int j = 0; j < fieldPropsNodes.getLength(); j++) {
             Node nodeFieldProp = fieldPropsNodes.item(j);
             if (nodeFieldProp.getNodeName().equals(NODE_PROPERTY)) {
                 String propName = nodeFieldProp.getAttributes().getNamedItem(ATTR_NAME).getNodeValue();
                 String value = StringEscapeUtils.unescapeXml(nodeFieldProp.getAttributes().getNamedItem(ATTR_VALUE).getNodeValue());
                 if (propName != null && value != null) {
-                    if ("fieldRequired".equals(propName)) {
-                        field.setFieldRequired(Boolean.valueOf(value));
-                    } else if ("groupWithPrevious".equals(propName)) {
-                        groupWithPrevious = Boolean.valueOf(value);
+                    if ("required".equals(propName)) {
+                        field.setRequired(Boolean.valueOf(value));
                     } else if ("label".equals(propName)) {
                         field.setLabel(deserializeI18nEntrySet(value));
                     } else if ("readonly".equals(propName)) {
                         field.setReadonly(Boolean.valueOf(value));
                     } else if ("bindingExpression".equals(propName)) {
                         field.setBindingExpression(value);
-                    } else {
-                        properties.put(propName, value);
                     }
                 }
             }
         }
-
-        field.setCustomProperties(properties);
 
         if (resources != null) {
             field.setLabel(new HashMap());
@@ -304,18 +295,10 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
 
         if (field.getLabel() != null) addXMLNode("label", serializeI18nSet(field.getLabel()), rootNode);
         addXMLNode("readonly", (field.getReadonly() != null ? String.valueOf(field.getReadonly()) : null), rootNode);
-        addXMLNode("fieldRequired", (field.getFieldRequired() != null ? String.valueOf(field.getFieldRequired()) : null), rootNode);
+        addXMLNode("required", (field.getRequired() != null ? String.valueOf(field.getRequired()) : null), rootNode);
         addXMLNode("groupWithPrevious", String.valueOf(group), rootNode);
         if (!StringUtils.isEmpty(field.getBindingExpression()))
             addXMLNode("bindingExpression", field.getBindingExpression(), rootNode);
-
-        Map<String, String> properties = field.getCustomProperties();
-
-        if (properties != null) {
-            for (String key : properties.keySet()) {
-                addXMLNode(key, properties.get(key), rootNode);
-            }
-        }
         parent.addChild(rootNode);
     }
 

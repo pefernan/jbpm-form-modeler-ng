@@ -3,21 +3,21 @@ package org.jbpm.formModeler.ng.editor.events.canvas;
 import org.jbpm.formModeler.ng.editor.events.FormModelerEvent;
 
 public class DeleteFieldEvent extends FormModelerEvent {
-    private String fieldUid;
+    private String fieldId;
 
     public DeleteFieldEvent() {
     }
 
-    public DeleteFieldEvent(String context, String fieldUid) {
+    public DeleteFieldEvent(String context, String fieldId) {
         this.context = context;
-        this.fieldUid = fieldUid;
+        this.fieldId = fieldId;
     }
 
-    public String getFieldUid() {
-        return fieldUid;
+    public String getFieldId() {
+        return fieldId;
     }
 
-    public void setFieldUid(String fieldUid) {
-        this.fieldUid = fieldUid;
+    public void setFieldId(String fieldId) {
+        this.fieldId = fieldId;
     }
 }

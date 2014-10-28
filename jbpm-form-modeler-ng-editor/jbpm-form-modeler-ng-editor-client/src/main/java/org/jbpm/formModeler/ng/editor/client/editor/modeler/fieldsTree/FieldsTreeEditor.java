@@ -259,16 +259,16 @@ public class FieldsTreeEditor extends Composite {
 
     public void unSelect(@Observes StartEditFieldPropertyEvent event) {
         if (event.getContext().equals(context.getCtxUID())) {
-            if (!event.getFieldUid().equals(currentField)) {
+            if (!event.getFieldId().equals(currentField)) {
                 Panel currentPanel = bindedFieldsPanels.get(currentField);
                 if (currentPanel != null) {
                     currentPanel.removeStyleName("bindedElementOn");
                 }
-                currentPanel = bindedFieldsPanels.get(event.getFieldUid());
+                currentPanel = bindedFieldsPanels.get(event.getFieldId());
                 if (currentPanel != null) {
                     currentPanel.addStyleName("bindedElementOn");
                 }
-                currentField = event.getFieldUid();
+                currentField = event.getFieldId();
             }
         }
     }

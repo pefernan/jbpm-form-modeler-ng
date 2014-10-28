@@ -4,7 +4,7 @@
   <property name="displayMode" value="default"/>
   <property name="status" value="0"/>
   <field position="0" name="dbid" type="InputTextLong" id="3264234352712">
-    <property name="fieldRequired" value="false"/>
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="label" value="quot;enquot;,quot;Dbidquot;"/>
     <property name="readonly" value="false"/>
@@ -15,7 +15,7 @@
     <property name="fieldClass" value="java.lang.Long"/>
   </field>
   <field position="1" name="name" type="InputText" id="3264544672712">
-    <property name="fieldRequired" value="false"/>
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="label" value="quot;enquot;,quot;Namequot;"/>
     <property name="readonly" value="false"/>
@@ -26,7 +26,7 @@
     <property name="fieldClass" value="java.lang.String"/>
   </field>
   <field position="2" name="surname" type="InputText" id="3264544672712">
-    <property name="fieldRequired" value="false"/>
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="true"/>
     <property name="label" value="quot;enquot;,quot;Surnamequot;"/>
     <property name="readonly" value="false"/>
@@ -37,7 +37,7 @@
     <property name="fieldClass" value="java.lang.String"/>
   </field>
   <field position="3" name="birthday" type="InputShortDate" id="578188446">
-    <property name="fieldRequired" value="false"/>
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="label" value="quot;enquot;,quot;Birthdayquot;"/>
     <property name="readonly" value="false"/>
@@ -48,7 +48,7 @@
     <property name="fieldClass" value="java.util.Date"/>
   </field>
   <field position="4" name="startDate" type="InputDate" id="57818844646">
-    <property name="fieldRequired" value="false"/>
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="label" value="quot;enquot;,quot;StartDatequot;"/>
     <property name="readonly" value="false"/>
@@ -59,7 +59,7 @@
     <property name="fieldClass" value="java.util.Date"/>
   </field>
   <field position="5" name="married" type="CheckBox" id="1881018412">
-    <property name="fieldRequired" value="false"/>
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="label" value="quot;enquot;,quot;Marriedquot;"/>
     <property name="readonly" value="false"/>
@@ -70,7 +70,7 @@
     <property name="fieldClass" value="java.lang.Boolean"/>
   </field>
   <field position="6" name="address" type="InputText" id="32645275412">
-    <property name="fieldRequired" value="false"/>
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="label" value="quot;enquot;,quot;Addressquot;"/>
     <property name="readonly" value="false"/>
@@ -81,7 +81,7 @@
     <property name="fieldClass" value="java.lang.String"/>
   </field>
   <field position="7" name="phone" type="InputText" id="32645276512">
-    <property name="fieldRequired" value="false"/>
+    <property name="required" value="false"/>
     <property name="groupWithPrevious" value="false"/>
     <property name="label" value="quot;enquot;,quot;Phonequot;"/>
     <property name="readonly" value="false"/>

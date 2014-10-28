@@ -1,14 +1,12 @@
 package org.jbpm.formModeler.ng.model.impl.fields;
 
-import org.jbpm.formModeler.ng.model.BasicTypeField;
+import org.jbpm.formModeler.ng.model.BasicField;
 import org.jbpm.formModeler.ng.model.FieldValueMarshaller;
 import org.jbpm.formModeler.ng.services.context.impl.marshalling.fieldMarshallers.StringMarshaller;
 
 import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
 
-public class InputTextArea extends BasicTypeField {
+public class InputTextArea extends BasicField {
     private Integer height = 15;
     private Integer width = 10;
 
@@ -22,7 +20,8 @@ public class InputTextArea extends BasicTypeField {
 
     @Override
     public String getFieldClass() {
-        return String.class.getName();    }
+        return String.class.getName();
+    }
 
     @Override
     public FieldValueMarshaller getMarshaller() {
@@ -30,8 +29,8 @@ public class InputTextArea extends BasicTypeField {
     }
 
     @Override
-    public String getIcon() {
-        return "scroll_zone.png";
+    public void setMarshaller(FieldValueMarshaller marshaller) {
+        if (marshaller instanceof StringMarshaller) this.marshaller = (StringMarshaller) marshaller;
     }
 
     public Integer getHeight() {
@@ -48,27 +47,5 @@ public class InputTextArea extends BasicTypeField {
 
     public void setWidth(Integer width) {
         this.width = width;
-    }
-
-    @Override
-    public Map<String, String> getCustomProperties() {
-        Map<String, String> result = new HashMap<String, String>();
-        result.put("height", String.valueOf(height));
-        result.put("width", String.valueOf(width));
-        return result;
-    }
-
-    @Override
-    public void setCustomProperties(Map<String, String> properties) {
-        try {
-            height = Integer.decode(properties.get("height"));
-        } catch (Exception ex) {
-            height = 10;
-        }
-        try {
-            width = Integer.decode(properties.get("width"));
-        } catch (Exception ex) {
-            width = 15;
-        }
     }
 }

@@ -29,11 +29,11 @@ public class TimestampFieldRenderer extends FieldRenderer {
     public InputContainer getFieldInput(final FieldDefinition description, final FormContext context) {
         if (description == null) return null;
         final DateTimeBox datetimepicker = new DateTimeBox();
-        datetimepicker.setId(description.getId());
+        datetimepicker.setId(description.getName());
 
         final FormContextStatus status = context.getContextStatus();
 
-        String strvalue = status.getFieldValue(description.getId());
+        String strvalue = status.getFieldValue(description.getName());
 
         Date value = null;
         if (strvalue != null && !"".equals(strvalue)) {
@@ -42,7 +42,7 @@ public class TimestampFieldRenderer extends FieldRenderer {
 
         datetimepicker.setValue(value);
 
-        JSONObject jsonProperties = new JSONObject(description.getData());
+        JSONObject jsonProperties = new JSONObject(description);
 
         JSONValue size = jsonProperties.get("size");
         if (size != null) {
@@ -55,7 +55,7 @@ public class TimestampFieldRenderer extends FieldRenderer {
                 Date value = dateValueChangeEvent.getValue();
                 String strvalue = null;
                 if (value != null) strvalue = String.valueOf(value.getTime());
-                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getUid(), description.getId(),  strvalue));
+                fieldChanged(description, context, strvalue);
             }
         });
         datetimepicker.setEnabled(!description.isReadOnly());

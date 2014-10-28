@@ -15,7 +15,8 @@
  */
 package org.jbpm.formModeler.ng.services.management.forms;
 
-import org.jbpm.formModeler.ng.model.BasicTypeField;
+import org.jbpm.formModeler.ng.model.BasicField;
+import org.jbpm.formModeler.ng.model.ComplexField;
 import org.jbpm.formModeler.ng.model.Field;
 
 import java.io.Serializable;
@@ -23,7 +24,9 @@ import java.util.List;
 
 public interface FieldManager extends Serializable {
 
-    List<BasicTypeField> getBasicFields();
+    List<BasicField> getBasicFields();
+
+    List<ComplexField> getComplexFields();
 
     List<Field> getSuitableFields(Field field);
 

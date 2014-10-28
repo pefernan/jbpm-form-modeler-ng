@@ -3,12 +3,12 @@ package org.jbpm.formModeler.ng.common.client.rendering.event;
 public class FieldChangedEvent {
     private String ctxUID;
     private String fieldName;
-    private String fieldUid;
+    private String fieldId;
     private String newValue;
 
-    public FieldChangedEvent(String ctxUID, String fieldUid, String fieldName, String newValue) {
+    public FieldChangedEvent(String ctxUID, String fieldId, String fieldName, String newValue) {
         this.ctxUID = ctxUID;
-        this.fieldUid = fieldUid;
+        this.fieldId = fieldId;
         this.fieldName = fieldName;
         this.newValue = newValue;
     }
@@ -25,12 +25,12 @@ public class FieldChangedEvent {
         this.ctxUID = ctxUID;
     }
 
-    public String getFieldUid() {
-        return fieldUid;
+    public String getFieldId() {
+        return fieldId;
     }
 
-    public void setFieldUid(String fieldUid) {
-        this.fieldUid = fieldUid;
+    public void setFieldId(String fieldId) {
+        this.fieldId = fieldId;
     }
 
     public String getFieldName() {

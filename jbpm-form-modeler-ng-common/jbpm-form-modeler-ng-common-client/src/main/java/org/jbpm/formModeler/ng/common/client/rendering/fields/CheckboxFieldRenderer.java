@@ -39,18 +39,18 @@ public class CheckboxFieldRenderer extends FieldRenderer {
 
         final CheckBox checkBox = new CheckBox(label);
 
-        checkBox.setName(description.getId());
-        checkBox.setId(description.getId());
+        checkBox.setName(description.getName());
+        checkBox.setId(description.getName());
 
         final FormContextStatus status = context.getContextStatus();
 
-        Boolean value = Boolean.valueOf(status.getFieldValue(description.getId()));
+        Boolean value = Boolean.valueOf(status.getFieldValue(description.getName()));
 
         checkBox.setValue(value);
         checkBox.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent changeEvent) {
-                changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), description.getUid(), description.getId(),  String.valueOf(checkBox.getValue())));
+                fieldChanged(description, context, checkBox.getValue().toString());
             }
         });
         checkBox.setEnabled(!description.isReadOnly());

@@ -15,10 +15,10 @@ import javax.inject.Inject;
 public abstract class FieldRenderer {
 
     @Inject
-    protected FieldLabelHelper fieldLabelHelper;
+    private FieldLabelHelper fieldLabelHelper;
 
     @Inject
-    protected Event<FieldChangedEvent> changedEvent;
+    private Event<FieldChangedEvent> changedEvent;
 
     public abstract String getCode();
     public abstract InputContainer getFieldInput(final FieldDefinition description, final FormContext context);
@@ -39,8 +39,8 @@ public abstract class FieldRenderer {
         return FieldTypeLabels.INSTANCE.defaultLabel();
     }
 
-    public boolean isEmpty(String value) {
-        return value == null || value.isEmpty();
+    public boolean isEmpty(Object value) {
+        return value == null;
     }
 
     public boolean isValidValue(String value) {
@@ -49,5 +49,9 @@ public abstract class FieldRenderer {
 
     public String getFieldLabel(FieldDefinition field) {
         return fieldLabelHelper.getFieldLabel(field);
+    }
+
+    protected void fieldChanged(FieldDefinition definition, FormContext context, String value) {
+        changedEvent.fire(new FieldChangedEvent(context.getCtxUID(), definition.getId(), definition.getName(), value));
     }
 }

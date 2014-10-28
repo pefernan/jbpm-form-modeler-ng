@@ -1,11 +1,9 @@
 package org.jbpm.formModeler.ng.common.client.rendering;
 
-import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.Form;
 import com.github.gwtbootstrap.client.ui.constants.FormType;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import org.jbpm.formModeler.ng.common.client.rendering.fields.FieldRenderer;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FieldDefinition;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormContext;
@@ -52,33 +50,24 @@ public abstract class FormLayoutRenderer {
     }
 
     protected Panel getFieldBox(FieldDefinition field, FormContext context) {
-        ControlGroup controlGroup = buildFieldControlGroup(field, context);
-        if (controlGroup == null) return null;
 
-        VerticalPanel panel = new VerticalPanel();
-        panel.add(controlGroup);
-
-        return panel;
-    }
-
-
-    private ControlGroup buildFieldControlGroup(FieldDefinition fieldDefinition, FormContext context) {
-        FieldRenderer renderer = getFieldRenderer(fieldDefinition);
+        FieldRenderer renderer = getFieldRenderer(field);
 
         if (renderer == null) return null;
 
-        InputContainer container = renderer.getFieldInput(fieldDefinition, context);
+        InputContainer container = renderer.getFieldInput(field, context);
 
-        inputContainers.put(fieldDefinition.getUid(), container);
+        inputContainers.put(field.getId(), container);
 
-        return container.getControlGroup();
+        return container.getControlGroupPanel();
     }
 
+
     protected FieldRenderer getFieldRenderer(FieldDefinition field) {
-        FieldRenderer renderer = providerManager.getProviderByType(field.getType());
+        FieldRenderer renderer = providerManager.getProviderByType(field.getCode());
 
         if (renderer == null) {
-            Window.alert("Unable to find renderer for: " + field.getType());
+            Window.alert("Unable to find renderer for: " + field.getCode());
             return null;
         }
         return renderer;

@@ -4,9 +4,11 @@ import com.github.gwtbootstrap.client.ui.*;
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.Image;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -17,6 +19,7 @@ import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jbpm.formModeler.ng.common.client.renderer.FormRendererComponent;
 import org.jbpm.formModeler.ng.common.client.rendering.event.FieldChangedEvent;
+import org.jbpm.formModeler.ng.common.client.rendering.js.FieldDefinition;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FormDefinition;
 import org.jbpm.formModeler.ng.common.client.rendering.FormLayoutRenderer;
 import org.jbpm.formModeler.ng.editor.client.editor.dataHolders.DataHoldersEditor;
@@ -81,11 +84,11 @@ public class FormModeler extends Composite {
     @UiField
     SimplePanel canvasContainer;
 
-    @Inject
-    private FormCanvas canvas;
-
     @UiField
     SimplePanel propertiesContainer;
+
+    @Inject
+    private FormCanvas canvas;
 
     private FormEditorContextTO context;
 
@@ -104,6 +107,7 @@ public class FormModeler extends Composite {
         labelText.setText(constants.form_modeler_label_position());
         initLayoutButtons();
         initLabelPositionButtons();
+        propertiesContainer.setVisible(false);
     }
 
     protected void initLayoutButtons() {
@@ -194,21 +198,24 @@ public class FormModeler extends Composite {
         initWidget(uiBinder.createAndBindUi(this));
         fieldsContainer.add(fieldsTreeEditor);
         canvasContainer.add(canvas);
+        propertiesContainer.add(rendererComponent);
     }
 
     public void editField(@Observes final StartEditFieldPropertyEvent event) {
         if (context.getCtxUID().equals(event.getContext())) {
             if (editionCtxUID != null) {
-                propertiesContainer.clear();
                 updateFieldContext(editionCtxUID, rendererComponent.getFormValues(), false);
             }
+
+            FieldDefinition field = canvas.getFormDefinition().getFieldDefinition(event.getFieldId());
+
             editorService.call(new RemoteCallback<EditionContextTO>() {
                 @Override
                 public void callback(final EditionContextTO response) {
-                    editedField = event.getFieldUid();
+                    editedField = event.getFieldId();
                     loadEditionForm(response);
                 }
-            }).startFieldEdition(event.getContext(), event.getFieldUid());
+            }).startFieldEdition(event.getContext(), Long.decode(event.getFieldId()), new JSONObject(field).toString());
         }
     }
 
@@ -217,7 +224,7 @@ public class FormModeler extends Composite {
             editorService.call(new RemoteCallback<String>() {
                                    @Override
                                    public void callback(String jsonResponse) {
-                                       if (editionCtxUID != null && event.getFieldUid().equals(editedField)) {
+                                       if (editionCtxUID != null && event.getFieldId().equals(editedField)) {
                                            propertiesContainer.clear();
                                            updateFieldContext(editionCtxUID, rendererComponent.getFormValues(), false);
                                            editionCtxUID = null;
@@ -235,24 +242,21 @@ public class FormModeler extends Composite {
                                        return false;
                                    }
                                }
-            ).removeFieldFromForm(context.getCtxUID(), Long.decode(event.getFieldUid()));
+            ).removeFieldFromForm(context.getCtxUID(), Long.decode(event.getFieldId()));
         }
     }
 
     protected void updateFieldContext(String editionCtxUID, String marshalledCtx, boolean persist) {
-        editorService.call(new RemoteCallback<String>() {
-            @Override
-            public void callback(String response) {
-                if (response != null) canvas.refreshContext(response);
-            }
-        }).editFieldValue(context.getCtxUID(), editionCtxUID, marshalledCtx, persist);
+        editorService.call().editFieldValue(context.getCtxUID(), editionCtxUID, marshalledCtx, persist);
     }
 
     protected void loadEditionForm(EditionContextTO contextTO) {
         if (contextTO == null) return;
         editionCtxUID = contextTO.getEditionContext();
         rendererComponent.renderFormContent(contextTO.getMarshalledContext());
-        propertiesContainer.add(rendererComponent);
+        propertiesContainer.setVisible(true);
+        canvas.getRenderer().getInputContainer(editedField).getControlGroupPanel();
+
         rendererComponent.setOnFieldChange(new Command() {
             @Override
             public void execute() {
@@ -262,13 +266,18 @@ public class FormModeler extends Composite {
                         editorService.call(new RemoteCallback<EditionContextTO>() {
                             @Override
                             public void callback(EditionContextTO response) {
-                                propertiesContainer.clear();
                                 updateFieldContext(editionCtxUID, rendererComponent.getFormValues(), false);
                                 loadEditionForm(response);
                             }
-                        }).changeFieldType(event.getCtxUID(), event.getFieldName(), event.getNewValue(), context.getCtxUID());
+                        }).changeFieldType(event.getCtxUID(), event.getFieldName(), event.getNewValue().toString(), context.getCtxUID());
                     } else {
-                        updateFieldContext(editionCtxUID, rendererComponent.getFormValues(), true);
+                        if (!rendererComponent.hasWrongFields()) {
+                            String values = rendererComponent.getFormValues();
+                            FieldDefinition field = JsonUtils.safeEval(values);
+                            canvas.getFormDefinition().addFieldDefinition(field.getId(), field);
+                            canvas.refresh();
+                            updateFieldContext(editionCtxUID, rendererComponent.getFormValues(), true);
+                        }
                     }
                 }
             }
