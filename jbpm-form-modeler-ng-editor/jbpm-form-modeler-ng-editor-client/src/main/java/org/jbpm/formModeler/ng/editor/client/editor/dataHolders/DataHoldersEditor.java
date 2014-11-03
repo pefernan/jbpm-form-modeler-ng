@@ -214,7 +214,9 @@ public class DataHoldersEditor extends Composite {
             Widget inputValue;
             if (builder instanceof RangedDataHolderBuilderTO) {
                 final ListBox typeValue = new ListBox();
+                typeValue.addItem("");
 
+                typeValue.setSelectedValue("");
                 RangedDataHolderBuilderTO rangedBuilder = (RangedDataHolderBuilderTO) builder;
 
                 Map<String, String> values = rangedBuilder.getValues();
