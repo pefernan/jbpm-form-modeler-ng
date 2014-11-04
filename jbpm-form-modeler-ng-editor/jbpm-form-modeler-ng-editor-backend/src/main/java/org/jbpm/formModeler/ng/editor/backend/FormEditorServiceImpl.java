@@ -276,6 +276,8 @@ public class FormEditorServiceImpl implements FormEditorService {
 
             resourceOpenedEvent.fire(new ResourceOpenedEvent(path, sessionInfo));
 
+            result.setHolderBuilderTOs(getAvailableDataHolderBuilders(context));
+
             return result;
         } catch (Exception e) {
             log.warn("Error loading form " + path.toURI(), e);
@@ -490,19 +492,14 @@ public class FormEditorServiceImpl implements FormEditorService {
         return null;
     }
 
-    @Override
-    public DataHolderBuilderTO[] getAvailableDataHolderBuilders(String ctxUID) {
-        FormRenderContext context = contextManager.getFormRenderContext(ctxUID);
-
-        if (context == null) return new DataHolderBuilderTO[0];
-
+    protected DataHolderBuilderTO[] getAvailableDataHolderBuilders(FormRenderContext context) {
         DataHolderBuilderTO[] response = new DataHolderBuilderTO[dataHolderManager.getHolderBuilders().size()];
 
         int i = 0;
         for (DataHolderBuilder builder : dataHolderManager.getHolderBuilders()) {
             if (builder instanceof RangedDataHolderBuilder) {
                 RangedDataHolderBuilder rangedBuilder = (RangedDataHolderBuilder) builder;
-                response[i] = new RangedDataHolderBuilderTO(builder.getId(), builder.getDataHolderName(context.getCurrentLocale()), builder.needsConfig(), rangedBuilder.getHolderSources(ctxUID));
+                response[i] = new RangedDataHolderBuilderTO(builder.getId(), builder.getDataHolderName(context.getCurrentLocale()), builder.needsConfig(), rangedBuilder.getHolderSources(context.getUID()));
             } else {
                 response[i] = new DataHolderBuilderTO(builder.getId(), builder.getDataHolderName(context.getCurrentLocale()), builder.needsConfig());
             }

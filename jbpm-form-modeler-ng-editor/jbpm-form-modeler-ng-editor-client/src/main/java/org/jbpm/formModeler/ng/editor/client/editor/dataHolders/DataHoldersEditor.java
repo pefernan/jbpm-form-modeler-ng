@@ -9,7 +9,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -47,7 +46,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-@Dependent
 public class DataHoldersEditor extends Composite {
     private static final int PAGE_SIZE = 10;
 
@@ -159,12 +157,7 @@ public class DataHoldersEditor extends Composite {
 
     public void initEditor(FormEditorContextTO context) {
         this.context = context;
-        editorService.call(new RemoteCallback<DataHolderBuilderTO[]>() {
-            @Override
-            public void callback(DataHolderBuilderTO[] builders) {
-                initDataHolderBuilders(builders);
-            }
-        }).getAvailableDataHolderBuilders(context.getCtxUID());
+        initDataHolderBuilders();
         refreshDataHoldersTable();
     }
 
@@ -187,10 +180,10 @@ public class DataHoldersEditor extends Composite {
         holdersProvider.addDataDisplay(grid);
     }
 
-    protected void initDataHolderBuilders(DataHolderBuilderTO[] builders) {
+    protected void initDataHolderBuilders() {
         holderTypes.clear();
         int row = 0;
-        for (final DataHolderBuilderTO builder : builders) {
+        for (final DataHolderBuilderTO builder : context.getHolderBuilderTOs()) {
             final int currentRow = row;
             SafeHtmlBuilder htmlBuilder = new SafeHtmlBuilder();
             RadioButton button = new RadioButton("type", htmlBuilder.appendHtmlConstant(builder.getLabel()).toSafeHtml());

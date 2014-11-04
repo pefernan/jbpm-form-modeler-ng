@@ -16,6 +16,7 @@
 package org.jbpm.formModeler.ng.editor.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderBuilderTO;
 
 import java.io.Serializable;
 
@@ -24,6 +25,7 @@ public class FormEditorContextTO implements Serializable {
     private String ctxUID;
     private String marshalledContext;
     private boolean loadError;
+    private DataHolderBuilderTO[] holderBuilderTOs;
 
     public FormEditorContextTO() {
     }
@@ -54,5 +56,13 @@ public class FormEditorContextTO implements Serializable {
 
     public void setMarshalledContext(String marshalledContext) {
         this.marshalledContext = marshalledContext;
+    }
+
+    public DataHolderBuilderTO[] getHolderBuilderTOs() {
+        return holderBuilderTOs;
+    }
+
+    public void setHolderBuilderTOs(DataHolderBuilderTO[] holderBuilderTOs) {
+        this.holderBuilderTOs = holderBuilderTOs;
     }
 }

@@ -16,7 +16,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 
-@Dependent
 public class FormCanvas extends AbstractFormRendererComponent {
 
     interface CanvasViewBinder

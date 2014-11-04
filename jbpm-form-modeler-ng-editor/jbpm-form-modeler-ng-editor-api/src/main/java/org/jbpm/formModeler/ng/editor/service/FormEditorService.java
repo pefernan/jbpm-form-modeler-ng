@@ -36,8 +36,6 @@ public interface FormEditorService {
 
     String addFieldFromTypeCode(String ctxUID, String code);
 
-    DataHolderBuilderTO[] getAvailableDataHolderBuilders(String ctxUID);
-
     String removeFieldFromForm(String ctxUID,  Long fieldId);
 
     String moveSelectedFieldToFieldPosition(String ctxUID, Long fieldId, int row, int column);

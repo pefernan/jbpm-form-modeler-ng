@@ -28,7 +28,6 @@ import java.util.Locale;
 import java.util.Map;
 
 @ApplicationScoped
-@Named("localeManager")
 public class LocaleManager implements Serializable {
 
     protected Logger log = LoggerFactory.getLogger(LocaleManager.class);
