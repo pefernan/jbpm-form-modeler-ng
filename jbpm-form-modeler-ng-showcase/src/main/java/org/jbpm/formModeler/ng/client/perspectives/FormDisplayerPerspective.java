@@ -106,14 +106,22 @@ public class FormDisplayerPerspective {
     }
 
     private List<? extends MenuItem> getFormDisplay() {
-        final List<MenuItem> result = new ArrayList<MenuItem>( 1 );
+        final List<MenuItem> result = new ArrayList<MenuItem>(1);
 
-        result.add( MenuFactory.newSimpleItem("Form Display").respondsWith( new Command() {
+        result.add(MenuFactory.newSimpleItem("Form Display").respondsWith(new Command() {
             @Override
             public void execute() {
-                placeManager.goTo( new DefaultPlaceRequest( "FMDisplayPerspective" ) );
+                placeManager.goTo(new DefaultPlaceRequest("FMDisplayPerspective"));
             }
-        } ).endMenu().build().getItems().get( 0 ) );
+        }).endMenu().build().getItems().get(0));
+
+        result.add(MenuFactory.newSimpleItem("Errai Binding Display").respondsWith(new Command() {
+            @Override
+            public void execute() {
+                placeManager.goTo(new DefaultPlaceRequest("EBPerspective"));
+            }
+        }).endMenu().build().getItems().get(0));
+
 
         return result;
     }

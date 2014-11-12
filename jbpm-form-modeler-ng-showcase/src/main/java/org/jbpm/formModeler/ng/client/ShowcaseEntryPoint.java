@@ -155,6 +155,14 @@ public class ShowcaseEntryPoint {
             }
         }).endMenu().build().getItems().get(0));
 
+        result.add(MenuFactory.newSimpleItem("Errai Binding Display").respondsWith(new Command() {
+            @Override
+            public void execute() {
+                placeManager.goTo(new DefaultPlaceRequest("EBPerspective"));
+            }
+        }).endMenu().build().getItems().get(0));
+
+
         return result;
     }
 

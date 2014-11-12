@@ -84,9 +84,6 @@ public class FormModeler extends Composite {
     @UiField
     SimplePanel canvasContainer;
 
-    @UiField
-    SimplePanel propertiesContainer;
-
     @Inject
     private FormCanvas canvas;
 
@@ -107,7 +104,6 @@ public class FormModeler extends Composite {
         labelText.setText(constants.form_modeler_label_position());
         initLayoutButtons();
         initLabelPositionButtons();
-        propertiesContainer.setVisible(false);
     }
 
     protected void initLayoutButtons() {
@@ -198,7 +194,6 @@ public class FormModeler extends Composite {
         initWidget(uiBinder.createAndBindUi(this));
         fieldsContainer.add(fieldsTreeEditor);
         canvasContainer.add(canvas);
-        propertiesContainer.add(rendererComponent);
     }
 
     public void editField(@Observes final StartEditFieldPropertyEvent event) {
@@ -225,7 +220,6 @@ public class FormModeler extends Composite {
                                    @Override
                                    public void callback(String jsonResponse) {
                                        if (editionCtxUID != null && event.getFieldId().equals(editedField)) {
-                                           propertiesContainer.clear();
                                            updateFieldContext(editionCtxUID, rendererComponent.getFormValues(), false);
                                            editionCtxUID = null;
                                            editedField = null;
@@ -254,9 +248,10 @@ public class FormModeler extends Composite {
         if (contextTO == null) return;
         editionCtxUID = contextTO.getEditionContext();
         rendererComponent.renderFormContent(contextTO.getMarshalledContext());
-        propertiesContainer.setVisible(true);
         canvas.getRenderer().getInputContainer(editedField).getControlGroupPanel();
-
+        Modal modal = new Modal();
+        modal.add(rendererComponent);
+        modal.show();
         rendererComponent.setOnFieldChange(new Command() {
             @Override
             public void execute() {
@@ -270,15 +265,12 @@ public class FormModeler extends Composite {
                                 loadEditionForm(response);
                             }
                         }).changeFieldType(event.getCtxUID(), event.getFieldName(), event.getNewValue().toString(), context.getCtxUID());
-                    } else {
-                        if (!rendererComponent.hasWrongFields()) {
-                            String values = rendererComponent.getFormValues();
-                            FieldDefinition field = JsonUtils.safeEval(values);
-                            canvas.getFormDefinition().addFieldDefinition(field.getId(), field);
-                            canvas.refresh();
-                            updateFieldContext(editionCtxUID, rendererComponent.getFormValues(), true);
-                        }
                     }
+                    String values = rendererComponent.getFormValues();
+                    FieldDefinition field = JsonUtils.safeEval(values);
+                    canvas.getFormDefinition().addFieldDefinition(field.getId(), field);
+                    canvas.refresh();
+                    updateFieldContext(editionCtxUID, rendererComponent.getFormValues(), true);
                 }
             }
         });

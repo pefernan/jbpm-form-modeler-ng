@@ -15,10 +15,10 @@
  */
 package org.jbpm.formModeler.ng.server.impl;
 
-import org.kie.uberfire.metadata.engine.Indexer;
-import org.kie.uberfire.metadata.io.IndexersFactory;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
+import org.uberfire.ext.metadata.engine.Indexer;
+import org.uberfire.ext.metadata.io.IndexersFactory;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;

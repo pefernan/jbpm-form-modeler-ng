@@ -39,8 +39,8 @@ public abstract class FieldRenderer {
         return FieldTypeLabels.INSTANCE.defaultLabel();
     }
 
-    public boolean isEmpty(Object value) {
-        return value == null;
+    public boolean isEmpty(String value) {
+        return value == null || "".equals(value);
     }
 
     public boolean isValidValue(String value) {

@@ -6,6 +6,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.ValueBoxBase;
 import org.jbpm.formModeler.ng.common.client.rendering.InputContainer;
 import org.jbpm.formModeler.ng.common.client.rendering.event.FieldChangedEvent;
 import org.jbpm.formModeler.ng.common.client.rendering.js.FieldDefinition;
@@ -62,6 +63,7 @@ public class DecimalFieldRenderer extends FieldRenderer {
             }
         });
         doubleBox.setEnabled(!description.isReadOnly());
+        doubleBox.setAlignment(ValueBoxBase.TextAlignment.RIGHT);
 
         InputContainer inputContainer = new InputContainer(doubleBox, getFieldLabel(description), this.supportsLabel(), description, context.getFormDefinition()) {
             public void setReadOnly(boolean readOnly) {

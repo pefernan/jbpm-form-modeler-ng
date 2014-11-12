@@ -35,6 +35,11 @@ public class ContextConfiguration {
         this.locale = locale;
     }
 
+    public ContextConfiguration(String formTemplate, Map<String, Object> inputData) {
+        this.formTemplate = formTemplate;
+        this.inputData = inputData;
+    }
+
     public ContextConfiguration(String formTemplate, Map<String, Object> inputData, Locale locale) {
         this.formTemplate = formTemplate;
         this.inputData = inputData;

@@ -32,12 +32,11 @@ import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderBuilderTO;
 import org.jbpm.formModeler.ng.editor.model.dataHolders.DataHolderTO;
 import org.jbpm.formModeler.ng.editor.model.dataHolders.RangedDataHolderBuilderTO;
 import org.jbpm.formModeler.ng.editor.service.FormEditorService;
-import org.kie.uberfire.client.tables.PagedTable;
+import org.uberfire.ext.widgets.common.client.tables.PagedTable;
 import org.uberfire.paging.PageRequest;
 import org.uberfire.paging.PageResponse;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;

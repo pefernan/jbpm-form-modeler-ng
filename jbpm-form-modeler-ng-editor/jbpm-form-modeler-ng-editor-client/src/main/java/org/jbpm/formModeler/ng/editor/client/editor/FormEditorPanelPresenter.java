@@ -26,10 +26,10 @@ import org.jbpm.formModeler.ng.editor.client.type.FormDefinitionResourceType;
 import org.jbpm.formModeler.ng.editor.model.FormEditorContextTO;
 import org.jbpm.formModeler.ng.editor.service.FormEditorService;
 import org.jbpm.formModeler.ng.editor.type.FormResourceTypeDefinition;
-import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.uberfire.client.common.BusyIndicatorView;
-import org.kie.uberfire.client.common.MultiPageEditor;
-import org.kie.uberfire.client.common.Page;
+import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.ext.widgets.common.client.common.MultiPageEditor;
+import org.uberfire.ext.widgets.common.client.common.Page;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.guvnor.structure.client.file.*;
 import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
@@ -60,7 +60,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
-import static org.kie.uberfire.client.common.ConcurrentChangePopup.*;
+import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.*;
 
 @Dependent
 @WorkbenchEditor(identifier = "FormModelerNGEditor", supportedTypes = { FormDefinitionResourceType.class })

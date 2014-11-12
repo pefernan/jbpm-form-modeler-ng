@@ -14,5 +14,6 @@
   <modules>
     <module>jbpm-form-modeller-ng-process-backend</module>
     <module>jbpm-form-modeler-ng-data-modeler</module>
+    <module>jbpm-form-modeler-ng-human-task</module>
   </modules>
 </project>
