@@ -202,7 +202,7 @@
     </dependency>
     <dependency>
       <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-project-api</artifactId>
+      <artifactId>guvnor-project-client</artifactId>
     </dependency>
     <dependency>
       <groupId>org.guvnor</groupId>
@@ -259,10 +259,6 @@
       <artifactId>kie-wb-common-project-explorer-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.services</groupId>
-      <artifactId>kie-wb-common-security</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.kie.workbench.widgets</groupId>
       <artifactId>kie-wb-common-ui</artifactId>
     </dependency>
@@ -281,6 +277,14 @@
     <dependency>
       <groupId>org.kie.workbench.widgets</groupId>
       <artifactId>kie-wb-config-resource-widget</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-default-editor-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-default-editor-client</artifactId>
     </dependency>
 
     <!-- Search -->
@@ -442,6 +446,7 @@
             <compileSourcesArtifact>org.guvnor:guvnor-workingset-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.guvnor:guvnor-services-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.guvnor:guvnor-project-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.guvnor:guvnor-project-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.guvnor:guvnor-message-console-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.guvnor:guvnor-message-console-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.guvnor:guvnor-asset-mgmt-api</compileSourcesArtifact>
@@ -458,7 +463,6 @@
             <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-metadata-widget</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-config-resource-widget</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-services-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-security</compileSourcesArtifact>
 
             <!-- UberFire -->
             <compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>

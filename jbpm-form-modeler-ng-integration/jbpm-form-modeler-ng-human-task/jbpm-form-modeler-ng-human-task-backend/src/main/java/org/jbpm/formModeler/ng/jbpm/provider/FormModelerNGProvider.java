@@ -1,14 +1,16 @@
 package org.jbpm.formModeler.ng.jbpm.provider;
 
 import org.apache.commons.io.IOUtils;
-import org.jbpm.console.ng.bd.service.DataServiceEntryPoint;
+import org.drools.core.util.StringUtils;
 import org.jbpm.formModeler.ng.services.context.ContextConfiguration;
 import org.jbpm.formModeler.ng.services.context.FormRenderContext;
 import org.jbpm.formModeler.ng.services.context.FormRenderContextManager;
 import org.jbpm.formModeler.ng.services.context.FormRenderContextMarshaller;
 import org.jbpm.kie.services.impl.form.FormProvider;
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
+import org.jbpm.services.api.DefinitionService;
 import org.jbpm.services.api.model.ProcessDefinition;
+import org.jbpm.services.api.model.UserTaskAssignment;
 import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.model.InternalTask;
 import org.slf4j.Logger;
@@ -19,10 +21,7 @@ import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Dependent
 public class FormModelerNGProvider implements FormProvider {
@@ -35,7 +34,7 @@ public class FormModelerNGProvider implements FormProvider {
     private FormRenderContextMarshaller contextMarshaller;
 
     @Inject
-    private DataServiceEntryPoint dataServiceEntryPoint;
+    private DefinitionService bpmn2Service;
 
     @Override
     public int getPriority() {
@@ -70,10 +69,9 @@ public class FormModelerNGProvider implements FormProvider {
 
     @Override
     public String render(String name, Task task, ProcessDefinition process, Map<String, Object> renderContext) {
-        Map<String,List<Map<String,String>>> outputs = dataServiceEntryPoint.getTaskOutputAssignments(((ProcessAssetDesc) process).getDeploymentId(), process.getId(), task.getName());
-        Map<String, List<Map<String, String>>> inputs = dataServiceEntryPoint.getTaskInputAssignments(((ProcessAssetDesc) process).getDeploymentId(), process.getId(), task.getName());
+
         InputStream template = null;
-        if(task != null && process != null){
+        if(task != null && process != null) {
             String lookupName = "";
             String formName = ((InternalTask)task).getFormName();
             if(formName != null && !formName.equals("")){
@@ -92,7 +90,8 @@ public class FormModelerNGProvider implements FormProvider {
 
         try {
             String formDefinition = IOUtils.toString(template, "UTF-8");
-            Map<String, Object> formMappings = new HashMap<String, Object>();
+
+            Map<String, Object> formMappings = buildFormValuesMap(process.getDeploymentId(), process.getId(), task.getName(), renderContext);
 
             ContextConfiguration configuration = new ContextConfiguration(formDefinition, formMappings);
             FormRenderContext context = contextManager.newContext(configuration);
@@ -106,6 +105,47 @@ public class FormModelerNGProvider implements FormProvider {
         }
 
         return null;
+    }
+
+    protected Map<String, Object> buildFormValuesMap(String deploymentId, String processId, String taskName, Map<String, Object> renderContext) {
+        Map<String, Object> formValues = new HashMap<String, Object>();
+
+        Map<String, String> inputMappings = bpmn2Service.getTaskInputMappings(deploymentId, processId, taskName);
+        List<UserTaskAssignment> inputAssignments = bpmn2Service.getTaskInputAssignments(deploymentId, processId, taskName);
+
+        Map<String, String> outputMappings = bpmn2Service.getTaskOutputMappings(deploymentId, processId, taskName);
+        List<UserTaskAssignment> outputAssignments = bpmn2Service.getTaskOutputAssignments(deploymentId, processId, taskName);
+
+        Map<String, Map<String, String>> taskAssignments = new HashMap<String, Map<String, String>>();
+
+        for (UserTaskAssignment inputAssignment : inputAssignments) {
+            String from = inputAssignment.getFrom();
+            String taskFrom = inputMappings.get(inputAssignment.getTo());
+            Map<String, String> assignment = taskAssignments.get(from);
+            if (assignment == null) assignment = new HashMap<String, String>();
+            assignment.put("from", taskFrom);
+            taskAssignments.put(from, assignment);
+        }
+
+        for (UserTaskAssignment outputAssignment : outputAssignments) {
+            String to = outputAssignment.getTo();
+            String taskTo = outputMappings.get(outputAssignment.getFrom());
+            Map<String, String> assignment = taskAssignments.get(to);
+            if (assignment == null) assignment = new HashMap<String, String>();
+            assignment.put("to", taskTo);
+            taskAssignments.put(to, assignment);
+        }
+
+        for (Map<String, String> assignment : taskAssignments.values()) {
+            String from = assignment.get("from");
+            String to = assignment.get("to");
+
+            if (!StringUtils.isEmpty(from)) {
+                if (StringUtils.isEmpty(to)) formValues.put(from, renderContext.get(from));
+                else formValues.put(to, renderContext.get(from));
+            }
+        }
+        return formValues;
     }
 
 

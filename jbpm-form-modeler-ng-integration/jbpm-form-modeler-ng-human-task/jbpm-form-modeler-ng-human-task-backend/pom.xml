@@ -24,7 +24,7 @@
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-console-ng-business-domain-api</artifactId>
+      <artifactId>jbpm-services-api</artifactId>
     </dependency>
   </dependencies>
 
